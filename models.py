@@ -3,12 +3,13 @@ from datetime import datetime
 from flask_bcrypt import Bcrypt
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Table
+from flask_login import UserMixin
 
 bcrypt = Bcrypt()
 db = SQLAlchemy()
 
 
-class User(db.Model):
+class User(db.Model, UserMixin):
 
     __tablename__ = 'users'
 
@@ -52,6 +53,32 @@ class User(db.Model):
     )
     saved_jobs = db.relationship('SavedJob', back_populates='user', cascade="all, delete")
     job_hunts = db.relationship('JobHunt', back_populates='user', cascade="all, delete")
+
+    def __repr__(self):
+        return f"<User #{self.id}: {self.username}, {self.email}>"
+
+    @classmethod
+    def signup(cls, email, username, password, first_name, last_name, country, state, linkedin_url):
+        """Sign up user.
+
+        Hashes password and adds user to system.
+        """
+
+        hashed_pwd = bcrypt.generate_password_hash(password).decode('UTF-8')
+
+        user = User(
+            email=email,
+            username=username,
+            password=hashed_pwd,
+            first_name=first_name,
+            last_name=last_name,
+            country=country,
+            state=state,
+            linkedin_url=linkedin_url
+        )
+
+        db.session.add(user)
+        return user
 
 class SavedJob(db.Model):
 
@@ -133,6 +160,9 @@ class SavedJob(db.Model):
     user = db.relationship('User', back_populates='saved_jobs')
     job_app = db.relationship("JobApp", back_populates="user", uselist=False, cascade="all, delete")
 
+    def __repr__(self):
+        return f"<Job #{self.id}: {self.company}, {self.title}>"
+
 class JobHunt(db.Model):
 
     __tablename__ = 'job_hunts'
@@ -176,6 +206,9 @@ class JobHunt(db.Model):
     job_apps = db.relationship('JobApp', back_populates='job_hunt', cascade="all, delete")
     strategies = db.relationship("Strategy", back_populates="job_hunt", cascade="all, delete")
     hired_by = db.relationship('JobApp')
+
+    def __repr__(self):
+        return f"<Job Hunt #{self.id}: {self.job_title_desired}, {self.status}>"
 
 
 app_strategy = db.Table('app_strategy',
@@ -248,6 +281,9 @@ class JobApp(db.Model):
     job_hunt = db.relationship("JobHunt", back_populates="job_apps")
     strategies = db.relationship('Strategy', secondary=app_strategy, back_populates='job_apps')
 
+    def __repr__(self):
+        return f"<Job App #{self.id}: {self.saved_job.company}, {self.current_status}>"
+
 class Strategy(db.Model):
 
     __tablename__ = 'strategies'
@@ -268,6 +304,9 @@ class Strategy(db.Model):
     )
     job_hunt = db.relationship("JobHunt", back_populates="strategies")
     job_apps = db.relationship("JobApp", secondary=app_strategy, back_populates="strategies")
+
+    def __repr__(self):
+        return f"<Strategy #{self.id}: {self.name}>"
 
 
 def connect_db(app):
