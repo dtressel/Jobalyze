@@ -178,7 +178,7 @@ class JobHunt(db.Model):
     hired_by = db.relationship('JobApp')
 
 
-app_strategy = Table('app_strategy',
+app_strategy = db.Table('app_strategy',
     db.Column('job_app_id',
         db.Integer,
         db.ForeignKey('saved_jobs.id'),
