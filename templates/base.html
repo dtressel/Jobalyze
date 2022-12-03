@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/static/style.css">
+  <title>{% block title %}{% endblock %}</title>
+</head>
+<body>
+  <header>
+    <div class="navigation-bar">
+      <h1 class="logo">Jobalyze</h1>
+      {% if current_user %}
+      <a href="/register" class="log-links">Register</a>
+      <a href="/login" class="log-links">Login</a>
+      {% else %}
+      <form method="post" action="/logout"> 
+        <button type="submit" class="button-to-link log-links">Logout</a>
+      </form>
+      {% endif %}
+    </div>
+  </header>
+  <main>
+    {% block content %}{% endblock %}
+  </main>  
+</body>
+</html>

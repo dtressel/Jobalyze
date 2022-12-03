@@ -1,0 +1,28 @@
+@font-face {
+  font-family: 'Zen Dots';
+  src: url(/fonts/Zen_Dots/ZenDots-Regular.ttf);
+}
+
+* {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.logo {
+  color: rgb(32, 151, 112);
+  font-family: 'Zen Dots';
+}
+
+.navigation-bar .logo {
+  grid-column: 1 / 2;
+}
+
+body {
+  background-color: rgb(202, 202, 202);
+}
+
+.navigation-bar {
+  width: 100%;
+  display: grid;
+  background-color: white;
+  grid-template-columns: auto 1fr 1fr 1fr;
+}
