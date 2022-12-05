@@ -198,14 +198,13 @@ class JobHunt(db.Model):
         db.ForeignKey('users.id'),
         nullable = False
     )
-    hired_by_app_id = db.Column(
-        db.Integer,
-        db.ForeignKey('job_apps.id')
-    )
+    hired_by_app_id = db.Column(db.Integer)
+    # value referes to JobApp id
+    # no postgres relationship used to avoid error
+    
     user = db.relationship('User', back_populates='job_hunts')
     job_apps = db.relationship('JobApp', back_populates='job_hunt', cascade="all, delete")
     strategies = db.relationship("Strategy", back_populates="job_hunt", cascade="all, delete")
-    hired_by = db.relationship('JobApp')
 
     def __repr__(self):
         return f"<Job Hunt #{self.id}: {self.job_title_desired}, {self.status}>"
