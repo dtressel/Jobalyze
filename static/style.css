@@ -9,8 +9,13 @@
 }
 
 .logo {
-  color: rgb(32, 151, 112);
+  color: rgb(0, 120, 128);
   font-family: 'Zen Dots';
+  text-shadow: 4px 4px 8px rgb(164, 188, 181);
+  font-size: 36px;
+  background-color: rgba(107, 161, 208, 1);
+  padding: 5px;
+  margin: 0;
 }
 
 .navigation-bar .logo {
@@ -19,6 +24,7 @@
 
 body {
   background-color: rgb(202, 202, 202);
+  margin: 0;
 }
 
 .navigation-bar {
@@ -26,4 +32,14 @@ body {
   display: grid;
   background-color: white;
   grid-template-columns: auto 1fr 1fr 1fr;
+}
+
+.user-icon-div {
+  grid-column: 4 / 5;
+  display: flex;
+  align-items: center;
+}
+
+.user-icon-img {
+  height: 40px;
 }

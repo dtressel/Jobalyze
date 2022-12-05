@@ -11,14 +11,14 @@
   <header>
     <div class="navigation-bar">
       <h1 class="logo">Jobalyze</h1>
-      {% if current_user %}
-      <a href="/register" class="log-links">Register</a>
-      <a href="/login" class="log-links">Login</a>
+      {% if current_user.is_authenticated %}
+
       {% else %}
-      <form method="post" action="/logout"> 
-        <button type="submit" class="button-to-link log-links">Logout</a>
-      </form>
+
       {% endif %}
+      <div class="user-icon-div">
+        <img class="user-icon-img" src="/static/icons/user-icon-small.png">
+      </div>
     </div>
   </header>
   <main>
