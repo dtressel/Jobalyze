@@ -158,7 +158,7 @@ class SavedJob(db.Model):
         nullable = False
     )
     user = db.relationship('User', back_populates='saved_jobs')
-    job_app = db.relationship("JobApp", back_populates="user", uselist=False, cascade="all, delete")
+    job_app = db.relationship("JobApp", back_populates="saved_job", uselist=False, cascade="all, delete")
 
     def __repr__(self):
         return f"<Job #{self.id}: {self.company}, {self.title}>"
@@ -180,7 +180,10 @@ class JobHunt(db.Model):
         nullable=False,
         default=datetime.utcnow()
     )
-    status = db.Column(db.Integer)
+    status = db.Column(
+        db.Integer,
+        default=0
+    )
     # range: 0-2
     # values:
     #     0: Actively Applying
@@ -213,7 +216,7 @@ class JobHunt(db.Model):
 app_strategy = db.Table('app_strategy',
     db.Column('job_app_id',
         db.Integer,
-        db.ForeignKey('saved_jobs.id'),
+        db.ForeignKey('job_apps.id'),
         primary_key=True
     ),
     db.Column('strategy_id',
@@ -289,7 +292,6 @@ class Strategy(db.Model):
 
     id = db.Column(
         db.Integer,
-        db.ForeignKey('saved_jobs.id'),
         primary_key=True
     )
     name = db.Column(
