@@ -1,10 +1,11 @@
 import os
 
-from flask import Flask, render_template, redirect, session
+from flask import Flask, render_template, redirect, flash, request, abort, session
 # For auth:
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
+from is_safe_url import is_safe_url
 from models import db, connect_db, User
-from forms import RegistrationForm, UserLoginForm, UserEditForm
+from forms import RegistrationForm, LoginForm, UserEditForm
 
 app = Flask(__name__)
 
@@ -34,7 +35,8 @@ def homepage():
     """Show homepage"""
 
     if current_user.is_anonymous:
-        return render_template('home_anon.html', current_user=current_user)
+        form = LoginForm()
+        return render_template('home_anon.html', form=form, current_user=current_user)
     else:
         return render_template('home_user.html', current_user=current_user)
 
@@ -44,7 +46,8 @@ def homepage():
 def register():
     """Register User"""
 
-    if current_user:
+    if current_user.is_authenticated:
+        flash(f'{current_user.username} is already logged in.')
         return redirect('/')
 
     form = RegistrationForm()
@@ -67,7 +70,36 @@ def register():
 
         # login user
         login_user(new_user)
+        flash(f'Welcome {new_user.username}!')
 
         return redirect('/')
     else:
         return render_template('register.html', form = form, current_user=current_user)
+
+@app.route('/login', methods=["GET", "POST"])
+def login():
+    "Show login form and handle submission"
+
+    if current_user.is_authenticated:
+        flash(f'{current_user.username} is already logged in.')
+        return redirect('/')
+
+    form = LoginForm()
+    if form.validate_on_submit():
+        authenticated_user = User.authenticate_user(
+            username = form.username.data,
+            password = form.password.data
+        )
+        if authenticated_user:
+            login_user(authenticated_user)
+            flash(f'Welcome {authenticated_user.username}!')
+
+            next = request.args.get('next')
+            # is_safe_url should check if the url is safe for redirects.
+            if not is_safe_url(next):
+                return abort(400)
+
+            return redirect(next or '/')
+        else:
+            form.password.errors = ['Incorrect username or password.']
+    return render_template('login.html', form=form)

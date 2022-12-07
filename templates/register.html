@@ -1,12 +1,9 @@
 {% extends 'base.html' %}
 
-{% block title %}home_anon{% endblock %}
+{% block title %}home_user{% endblock %}
 
 {% block content %}
-<h2>Welcome to Jobalyze!</h2>
-<p>A Job Search tool to track your applications, analyze your application results, and search for jobs!</p>
-<p>Find jobs using our job search through the National Labor Exchange or Login to access all our tools!</p>
-<form method="POST" action="/login">
+<form method="POST">
   {{form.hidden_tag()}}
   {% for field in form if field.widget.input_type != 'hidden' %}
     <div class="form-row">

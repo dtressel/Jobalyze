@@ -23,7 +23,7 @@ class RegistrationForm(FlaskForm):
         EqualTo(fieldname="password", message="Passwords do not  match.")
     ])
 
-class UserLoginForm(FlaskForm):
+class LoginForm(FlaskForm):
     """Form to login user."""
 
     username = StringField("Username", validators=[InputRequired()])
