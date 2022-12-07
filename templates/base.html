@@ -8,21 +8,38 @@
   <title>{% block title %}{% endblock %}</title>
 </head>
 <body>
-  <header>
-    <div class="navigation-bar">
-      <h1 class="logo">Jobalyze</h1>
-      {% if current_user.is_authenticated %}
-
-      {% else %}
-
-      {% endif %}
-      <div class="user-icon-div">
-        <img class="user-icon-img" src="/static/icons/user-icon-small.png">
-      </div>
+  <div class="nav-bar-outer-wrapper">
+    <div class="nav-bar-inner-wrapper">
+      <header class="navigation-bar">
+        <h1 class="logo">Jobalyze</h1>
+        <div class="primary-icon-wrapper">
+          <div class="icon-div">
+            <img class="icon-img" src="/static/icons/home-icon-small.png">
+          </div>
+          <div class="icon-div">
+            <img class="icon-img" src="/static/icons/job-search-small.png">
+          </div>
+          {% if current_user.is_authenticated %}
+          <div class="icon-div">
+            <img class="icon-img" src="/static/icons/job-add-small.png">
+          </div>
+          <div class="icon-div">
+            <img class="icon-img" src="/static/icons/dashboard-icon-small.png">
+          </div>
+        {% endif %}
+        </div>
+        <div class="user-icon-div">
+          <img class="icon-img" src="/static/icons/user-icon-small.png">
+        </div>
+      </header>
     </div>
-  </header>
-  <main>
-    {% block content %}{% endblock %}
-  </main>  
+  </div>
+  <div class="main-outer-wrapper">
+    <div class="main-inner-wrapper">
+      <main>
+        {% block content %}{% endblock %}
+      </main>
+    </div>
+  </div>
 </body>
 </html>

@@ -8,6 +8,15 @@
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
+.nav-bar-outer-wrapper, .main-outer-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.nav-bar-outer-wrapper {
+  background-color: white;
+}
+
 .logo {
   color: rgb(0, 120, 128);
   font-family: 'Zen Dots';
@@ -15,7 +24,8 @@
   font-size: 36px;
   background-color: rgba(107, 161, 208, 1);
   padding: 5px;
-  margin: 0;
+  margin: 0 clamp(5px, 2%, 20px) 0 0;
+  border-radius: 2px;
 }
 
 .navigation-bar .logo {
@@ -29,17 +39,32 @@ body {
 
 .navigation-bar {
   width: 100%;
+  /* height: 5%; */
   display: grid;
-  background-color: white;
-  grid-template-columns: auto 1fr 1fr 1fr;
+  grid-template-columns: auto 1fr auto;
+}
+
+.primary-icon-wrapper {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  grid-column: 2 / 3;
+}
+
+.user-icon-div, .icon-div {
+  display: flex;
+  align-items: center;
+  margin: 0 clamp(5px, 2%, 20px)
 }
 
 .user-icon-div {
-  grid-column: 4 / 5;
-  display: flex;
-  align-items: center;
+  grid-column: 3 / 4;
 }
 
-.user-icon-img {
-  height: 40px;
+.icon-img {
+  height: 36px;
+}
+
+.nav-bar-inner-wrapper, .main-inner-wrapper {
+  width: clamp(360px, 100%, 1280px);
 }
