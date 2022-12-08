@@ -11,10 +11,10 @@
   <div class="nav-bar-outer-wrapper">
     <div class="nav-bar-inner-wrapper">
       <header class="navigation-bar">
-        <h1 class="logo">Jobalyze</h1>
+        <a class="logo-a" href="/"><h1 class="logo">Jobalyze</h1></a>
         <div class="primary-icon-wrapper">
           <div class="icon-div">
-            <img class="icon-img" src="/static/icons/home-icon-small.png">
+            <a href="/"><img class="icon-img" src="/static/icons/home-icon-small.png"></a>
           </div>
           <div class="icon-div">
             <img class="icon-img" src="/static/icons/job-search-small.png">
@@ -26,10 +26,18 @@
           <div class="icon-div">
             <img class="icon-img" src="/static/icons/dashboard-icon-small.png">
           </div>
-        {% endif %}
+          {% endif %}
         </div>
         <div class="user-icon-div">
-          <img class="icon-img" src="/static/icons/user-icon-small.png">
+          <img class="icon-img" id="user-icon" src="/static/icons/user-icon-small.png">
+          <div class="user-icon-popup display-none" id="user-icon-popup">
+          {% if current_user.is_authenticated %}
+          <a href="/logout">logout</a>
+          {% else %}
+          <a href="/login">login</a>
+          <a href="/register">register</a>
+          {% endif %}
+          </div>
         </div>
       </header>
     </div>
@@ -41,5 +49,6 @@
       </main>
     </div>
   </div>
+  <script src="/static/base.js"></script>
 </body>
 </html>

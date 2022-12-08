@@ -15,6 +15,11 @@
 
 .nav-bar-outer-wrapper {
   background-color: white;
+  padding: 0 12px 0 0;
+}
+
+.main-outer-wrapper {
+  padding: 0 12px;
 }
 
 .logo {
@@ -26,6 +31,10 @@
   padding: 5px;
   margin: 0 clamp(5px, 2%, 20px) 0 0;
   border-radius: 2px;
+}
+
+.logo-a {
+  text-decoration: none;
 }
 
 .navigation-bar .logo {
@@ -54,17 +63,48 @@ body {
 .user-icon-div, .icon-div {
   display: flex;
   align-items: center;
-  margin: 0 clamp(5px, 2%, 20px)
+}
+
+.icon-div {
+  margin: 0 clamp(5px, 2%, 20px);
 }
 
 .user-icon-div {
   grid-column: 3 / 4;
+  position: relative;
+}
+
+.user-icon-popup {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  border: 1px solid gray;
+  background: white;
+  padding: 8px;
+  border-radius: 4px;
+}
+
+.user-icon-popup > a {
+  text-decoration: none;
+  color: rgb(97, 97, 97);
+}
+
+.user-icon-popup > a:hover {
+  text-decoration: underline;
 }
 
 .icon-img {
   height: 36px;
 }
 
+.icon-img:hover {
+  cursor: pointer;
+}
+
 .nav-bar-inner-wrapper, .main-inner-wrapper {
   width: clamp(360px, 100%, 1280px);
+}
+
+.display-none {
+  display: none;
 }
