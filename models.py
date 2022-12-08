@@ -58,7 +58,7 @@ class User(db.Model, UserMixin):
         return f"<User #{self.id}: {self.username}, {self.email}>"
 
     @classmethod
-    def signup(cls, email, username, password, first_name, last_name, country, state, linkedin_url):
+    def signup(cls, email, username, password):
         """Sign up user.
 
         Hashes password and adds user to system.
@@ -66,19 +66,25 @@ class User(db.Model, UserMixin):
 
         hashed_pwd = bcrypt.generate_password_hash(password).decode('UTF-8')
 
-        user = User(
+        user = cls(
             email=email,
             username=username,
-            password=hashed_pwd,
-            first_name=first_name,
-            last_name=last_name,
-            country=country,
-            state=state,
-            linkedin_url=linkedin_url
+            password=hashed_pwd
         )
 
         db.session.add(user)
         return user
+
+    @classmethod
+    def authenticate_user(cls, username, password):
+        """Authenticates user on log in and returns user instance"""
+
+        user = cls.query.filter_by(username=username).first()
+
+        if user and bcrypt.check_password_hash(user.password, password):
+            return user
+        else:
+            return False
 
 class SavedJob(db.Model):
 
@@ -159,6 +165,8 @@ class SavedJob(db.Model):
     )
     user = db.relationship('User', back_populates='saved_jobs')
     job_app = db.relationship("JobApp", back_populates="saved_job", uselist=False, cascade="all, delete")
+    # Make sure to not allow or at least warn a user that deleting a saved job that has a job app
+    # will also delete the job app.
 
     def __repr__(self):
         return f"<Job #{self.id}: {self.company}, {self.title}>"
