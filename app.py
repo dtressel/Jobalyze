@@ -3,7 +3,7 @@ import os
 from flask import Flask, render_template, redirect, flash, request, abort, session
 # For auth:
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
-from is_safe_url import is_safe_url
+from utilities import is_safe_url
 from models import db, connect_db, User
 from forms import RegistrationForm, LoginForm, UserEditForm
 
@@ -19,14 +19,19 @@ app.config['SQLALCHEMY_ECHO'] = False
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', "aji32ojfuJHwp")
 
 connect_db(app)
+# with app.app_context():
+#     db.create_all()
 
 # For auth:
 login_manager = LoginManager()
 login_manager.init_app(app)
+login_manager.login_view = 'login'
+login_manager.login_message = "Please log in to acccess this page."
+login_manager.login_message_category = 'info'
 
 @login_manager.user_loader
 def load_user(user_id):
-    return User.get(user_id)
+    return User.query.get(user_id)
 
 # Home:
 
@@ -53,7 +58,7 @@ def register():
     form = RegistrationForm()
 
     if form.validate_on_submit():
-        new_user = User.create_user(
+        new_user = User.signup(
             username = form.username.data,
             email = form.email.data,
             password = form.password.data
@@ -96,10 +101,22 @@ def login():
 
             next = request.args.get('next')
             # is_safe_url should check if the url is safe for redirects.
-            if not is_safe_url(next):
+            if not is_safe_url(next, request.host_url):
                 return abort(400)
 
             return redirect(next or '/')
         else:
             form.password.errors = ['Incorrect username or password.']
     return render_template('login.html', form=form)
+
+@app.route('/logout')
+@login_required
+def logout():
+    """Logs out a user"""
+
+    logout_user()
+    return redirect('/')
+
+@app.route('/jobs')
+def search_jobs():
+    """Shows form to search jobs through Career OneStop API"""
