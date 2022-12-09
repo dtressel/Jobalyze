@@ -4,8 +4,7 @@
 
 {% block content %}
 <h2>Search For Jobs</h2>
-<form method="POST">
-  {{form.hidden_tag()}}
+<form method="GET" action="/jobs/search">
   {% for field in form if field.widget.input_type != 'hidden' %}
     <div class="form-row">
       {{field.label}}

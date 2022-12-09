@@ -3,9 +3,7 @@
 {% block title %}home_user{% endblock %}
 
 {% block content %}
-<h2>Search Results</h2>
-<form method="POST">
-  {{form.hidden_tag()}}
+<form method="GET">
   {% for field in form if field.widget.input_type != 'hidden' %}
     <div class="form-row">
       {{field.label}}
@@ -23,4 +21,22 @@
     </div>
   </div>
 </form>
+<h2>Search Results</h2>
+<div>{{results['Jobcount']}} jobs found</div>
+{% for job in results['Jobs'] %}
+<div class="api-job-list-item">
+  <p>Job Title: {{job['JobTitle']}}</p>
+  <p>Company: {{job['Company']}}</p>
+  <p>Date Posted: {{job['AccquisitionDate']}}</p>
+  <p>Location: {{job['Location']}}</p>
+  <p>Posting URL: {{job['URL']}}</p>
+  <p>Federal Contractor: 
+    {% if job['Fc'] == 'True' %}
+    yes
+    {% else %}
+    no
+    {% endif %}
+  </p>
+</div>
+{% endfor %}
 {% endblock %}

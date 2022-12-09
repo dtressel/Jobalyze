@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SelectField, IntegerField, BooleanField
+from wtforms import StringField, PasswordField, SelectField, IntegerField, BooleanField, HiddenField
 from wtforms.validators import DataRequired, InputRequired, Email, Length, EqualTo
 
 class RegistrationForm(FlaskForm):
@@ -93,4 +93,5 @@ class ApiJobSearchForm(FlaskForm):
     days = IntegerField("Days Old")
     companyName = StringField("Company Name")
     remote = BooleanField("Remote Only")
+    startRecord = HiddenField("Start", default=0)
     # If remote only is selected, add "remote" to user's keyword input

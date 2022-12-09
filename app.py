@@ -120,27 +120,35 @@ def logout():
     logout_user()
     return redirect('/')
 
-@app.route('/jobs', methods=["GET", "POST"])
-def search_jobs():
+@app.route('/jobs')
+def jobs_page():
     """Shows form to search jobs through Career OneStop API"""
 
     form = ApiJobSearchForm()
-    if form.validate_on_submit():
+
+    return render_template('job_search.html', form=form)
+
+@app.route('/jobs/search')
+def jobs_search_result():
+    """Shows the results of a job search through Career OneStop API"""
+
+    form = ApiJobSearchForm(request.args, meta={'csrf': False})
+    if form.validate():
         keyword = form.keyword.data
         location = form.location.data
         radius = form.radius.data
         days = form.days.data
         companyName = form.companyName.data
+        startRecord = form.startRecord.data
         if form.remote.data:
             keyword = keyword + " remote"
 
         resp = requests.get(
-            f'{COS_BASE_URL}/{COS_USER_ID}/{keyword}/{location}/{radius}/0/0/0/10/{days}',
-            params={"companyName": companyName, "locationFilter": None, "source": "NLx", "showFilters": False},
+            f'{COS_BASE_URL}/{COS_USER_ID}/{keyword}/{location}/{radius}/0/0/{startRecord}/10/{days}',
+            params={"companyName": companyName, "locationFilter": None, "source": "NLx", "showFilters": True},
             headers={"Content-Type": "application/json", "Authorization": f'Bearer {COS_API_TOKEN}'}
         )
         results = resp.json()
         import pdb; pdb.set_trace()
-        return render_template('job_search_results.html', results=results, form=form)
-
-    return render_template('job_search.html', methods=["GET", "POST"], form=form)
+    
+    return render_template('job_search_results.html', form=form, results=results)
