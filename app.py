@@ -1,11 +1,14 @@
 import os
+import requests
 
 from flask import Flask, render_template, redirect, flash, request, abort, session
 # For auth:
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
+
 from utilities import is_safe_url
 from models import db, connect_db, User
-from forms import RegistrationForm, LoginForm, UserEditForm
+from forms import RegistrationForm, LoginForm, ApiJobSearchForm, UserEditForm
+from keys import COS_API_TOKEN, COS_USER_ID, COS_BASE_URL
 
 app = Flask(__name__)
 
@@ -117,6 +120,27 @@ def logout():
     logout_user()
     return redirect('/')
 
-@app.route('/jobs')
+@app.route('/jobs', methods=["GET", "POST"])
 def search_jobs():
     """Shows form to search jobs through Career OneStop API"""
+
+    form = ApiJobSearchForm()
+    if form.validate_on_submit():
+        keyword = form.keyword.data
+        location = form.location.data
+        radius = form.radius.data
+        days = form.days.data
+        companyName = form.companyName.data
+        if form.remote.data:
+            keyword = keyword + " remote"
+
+        resp = requests.get(
+            f'{COS_BASE_URL}/{COS_USER_ID}/{keyword}/{location}/{radius}/0/0/0/10/{days}',
+            params={"companyName": companyName, "locationFilter": None, "source": "NLx", "showFilters": False},
+            headers={"Content-Type": "application/json", "Authorization": f'Bearer {COS_API_TOKEN}'}
+        )
+        results = resp.json()
+        import pdb; pdb.set_trace()
+        return render_template('job_search_results.html', results=results, form=form)
+
+    return render_template('job_search.html', methods=["GET", "POST"], form=form)

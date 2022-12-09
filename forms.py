@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SelectField
+from wtforms import StringField, PasswordField, SelectField, IntegerField, BooleanField
 from wtforms.validators import DataRequired, InputRequired, Email, Length, EqualTo
 
 class RegistrationForm(FlaskForm):
@@ -83,3 +83,14 @@ class UserEditForm(FlaskForm):
     linkedin_url = StringField('Linkedin URL', validators=[
         Length(max=150, message="Must be less than 150 characters.")
     ])
+
+class ApiJobSearchForm(FlaskForm):
+    """Form to login user."""
+
+    keyword = StringField("What", validators=[InputRequired()])
+    location = StringField("Where", validators=[InputRequired()])
+    radius = IntegerField("Radius")
+    days = IntegerField("Days Old")
+    companyName = StringField("Company Name")
+    remote = BooleanField("Remote Only")
+    # If remote only is selected, add "remote" to user's keyword input
