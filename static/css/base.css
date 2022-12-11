@@ -1,7 +1,7 @@
 @font-face {
   font-family: 'Zen Dots';
   font-weight: normal;
-  src: url(fonts/Zen_Dots/ZenDots-Regular.ttf);
+  src: url(/static/fonts/Zen_Dots/ZenDots-Regular.ttf);
 }
 
 * {

@@ -1,3 +1,5 @@
+// JS for user icon popup show and hide
+
 // Load DOM objects:
 const userIcon = document.getElementById('user-icon');
 const userIconPopup = document.getElementById('user-icon-popup');
@@ -25,7 +27,7 @@ function leaveUserIcon() {
 
 // When click on anywhere in the window close popup
 // except when clicking on empty space in popup
-// in that case re-add window click event listener when mouse moves
+// in that case don't hide re-add window click event listener when mouse moves
 function hideUserIconPopup(evt) {
   if (evt.target.id != "user-icon-popup") {
     userIconPopup.classList.add('display-none');

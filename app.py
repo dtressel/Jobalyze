@@ -1,5 +1,4 @@
 import os
-import requests
 
 from flask import Flask, render_template, redirect, flash, request, abort, session
 # For auth:
@@ -8,7 +7,7 @@ from flask_login import LoginManager, login_user, login_required, logout_user, c
 from utilities import is_safe_url
 from models import db, connect_db, User
 from forms import RegistrationForm, LoginForm, ApiJobSearchForm, UserEditForm
-from keys import COS_API_TOKEN, COS_USER_ID, COS_BASE_URL
+from api_requests import get_jobs, get_job_details
 
 app = Flask(__name__)
 
@@ -134,21 +133,14 @@ def jobs_search_result():
 
     form = ApiJobSearchForm(request.args, meta={'csrf': False})
     if form.validate():
-        keyword = form.keyword.data
-        location = form.location.data
-        radius = form.radius.data
-        days = form.days.data
-        companyName = form.companyName.data
-        startRecord = form.startRecord.data
-        if form.remote.data:
-            keyword = keyword + " remote"
+        results_dict = get_jobs(form)
+        first_job_details = get_job_details(results_dict['Jobs'][0]['JvId'])
 
-        resp = requests.get(
-            f'{COS_BASE_URL}/{COS_USER_ID}/{keyword}/{location}/{radius}/0/0/{startRecord}/10/{days}',
-            params={"companyName": companyName, "locationFilter": None, "source": "NLx", "showFilters": True},
-            headers={"Content-Type": "application/json", "Authorization": f'Bearer {COS_API_TOKEN}'}
-        )
-        results = resp.json()
-        import pdb; pdb.set_trace()
-    
-    return render_template('job_search_results.html', form=form, results=results)
+    return render_template('job_search_results.html', form=form, results=results_dict, details=first_job_details)
+
+@app.route('/jobs/details/<job_id>/json')
+def send_job_details_json(job_id):
+    """Sends json of job details to be handled by JavaScript"""
+
+    results_json = get_job_details(job_id)
+    return results_json

@@ -1,0 +1,39 @@
+.search-results-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.left-column-list {
+  grid-column: 1 / 2;
+  overflow: scroll;
+  border: 2px solid black;
+}
+
+.right-column-details {
+  grid-column: 2 / 3;
+  overflow: scroll;
+  border: 2px solid black;
+}
+
+.api-job-list-item {
+  border: 1px solid gray;
+  border-radius: 5px;
+  margin: 8px 0;
+  padding: 6px;
+  background: white;
+  box-shadow: 5px 5px 5px 5px gray;
+}
+
+.list-item-inner-wrapper {
+  pointer-events: none;
+}
+
+.api-job-list-item:hover {
+  cursor: pointer;
+}
+
+.title-apply {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
