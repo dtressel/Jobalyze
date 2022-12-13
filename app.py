@@ -145,6 +145,7 @@ def send_job_details_json(job_id):
     """Sends json of job details to be handled by JavaScript"""
 
     results_json = get_job_details(job_id)
+    # *****Check to see if job is already saved******
     return results_json
 
 @app.route('/jobs/save', methods=['POST'])
@@ -152,4 +153,5 @@ def send_job_details_json(job_id):
 def save_job():
     saved_job = SavedJob.save_job(current_user.id, request.get_json())
 
+    # fix this return
     return "success"
