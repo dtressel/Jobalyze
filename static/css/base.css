@@ -6,6 +6,7 @@
 
 * {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  box-sizing: border-box;
 }
 
 .nav-bar-outer-wrapper, .main-outer-wrapper {

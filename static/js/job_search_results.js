@@ -6,17 +6,22 @@ const jobLocation = document.getElementById('details-location');
 const datePosted = document.getElementById('details-date-posted');
 const description = document.getElementById('details-description');
 
+const rightColumn = document.getElementById('right-column');
+const saveButton = document.getElementById('save-button');
+
 // DOM objects left side
-const leftColumnList = document.getElementById('left-column-list');
+const leftColumn = document.getElementById('left-column');
 const jobCards = document.getElementsByClassName('api-job-list-item');
 
 // Save job details when accessed to object so that when re-acccessed
 // it doesn't haven't to make a duplicate API request.
-const savedJobDetails = {};
+const cachedJobDetails = {};
 // Other variables:
 let currentHighlightedCard = 0;
 
-leftColumnList.addEventListener('click', jobListClick);
+// Event Listeners:
+leftColumn.addEventListener('click', jobListClick);
+saveButton.addEventListener('click', saveButtonClick);
 
 function jobListClick(evt) {
   console.log('in jobListClick');
@@ -31,6 +36,7 @@ function jobListClick(evt) {
 }
 
 function highlightCard(DomId) {
+  // called by jobListClick and showFirstDetails
   console.log('in highlightCard');
   jobCards[currentHighlightedCard].classList.remove('highlight-card');
   jobCards[DomId].classList.add('highlight-card');
@@ -38,18 +44,75 @@ function highlightCard(DomId) {
 }
 
 async function showJobDetails(jobId, DomId) {
+  // called by jobListClick and showFirstDetails
   console.log('in ShowJobDetails');
+  rightColumn.classList.add('display-none');
   const jobDetails = await getJobDetails(jobId, DomId);
   console.log(jobDetails);
+  updateDom(jobDetails);
+  rightColumn.classList.remove('display-none');
 }
 
 async function getJobDetails(jobId, DomId) {
+  // called by showJobDetails
   console.log('in getJobDetails');
-  if (DomId in savedJobDetails) {
-    return savedJobDetails[DomId];
+  if (DomId in cachedJobDetails) {
+    return cachedJobDetails[DomId];
   }
   const resp = await fetch(`/jobs/details/${jobId}/json`);
-  const json = await resp.json();
-  savedJobDetails[DomId] = json;
-  return json;
+  const jobDetails = await resp.json();
+  cachedJobDetails[DomId] = jobDetails;
+  return jobDetails;
 }
+
+function updateDom(jobDetails) {
+  // called by showJobDetails
+  jobTitle.textContent = jobDetails.JobTitle;
+  url.setAttribute('href', jobDetails.URL);
+  companyName.textContent = jobDetails.Company;
+  jobLocation.textContent = jobDetails.Location;
+  datePosted.textContent = `Date Posted: ${jobDetails.DatePosted}`;
+  description.innerHTML = jobDetails.Description;
+}
+
+function showFirstDetails() {
+  highlightCard(0);
+  showJobDetails(jobCards[0].dataset.jobId, 0);
+}
+
+function saveButtonClick() {
+  details = getDetailsFromSearch();
+  const resp = saveJob(details);
+  console.log(resp);
+}
+
+function getDetailsFromSearch() {
+  const details = cachedJobDetails[currentHighlightedCard];
+  const jobCard = jobCards[currentHighlightedCard];
+  return {
+    company: details.Company,
+    title: details.JobTitle,
+    date_posted: details.DatePosted,
+    location: details.Location,
+    job_description: details.Description,
+    application_link: details.URL,
+    cos_id: jobCard.dataset.jobId,
+    federal_contractor: jobCard.dataset.fc
+  }
+}
+
+async function saveJob(details) {
+  const resp = await fetch('/jobs/save', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify(details)
+  })
+
+  return resp
+} 
+
+// On Load:
+showFirstDetails();
+
+// ****ADD highlight styling and other styling****
+// ****ADD JS media query for mobile view to view job details on separate page****

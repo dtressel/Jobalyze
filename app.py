@@ -5,9 +5,9 @@ from flask import Flask, render_template, redirect, flash, request, abort, sessi
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 
 from utilities import is_safe_url
-from models import db, connect_db, User
+from models import db, connect_db, User, SavedJob
 from forms import RegistrationForm, LoginForm, ApiJobSearchForm, UserEditForm
-from api_requests import get_jobs, get_job_details
+from api_requests import get_jobs, get_job_details, get_page_navigation_values
 
 app = Flask(__name__)
 
@@ -21,7 +21,9 @@ app.config['SQLALCHEMY_ECHO'] = False
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', "aji32ojfuJHwp")
 
 connect_db(app)
+
 # with app.app_context():
+#     db.drop_all()
 #     db.create_all()
 
 # For auth:
@@ -134,9 +136,9 @@ def jobs_search_result():
     form = ApiJobSearchForm(request.args, meta={'csrf': False})
     if form.validate():
         results_dict = get_jobs(form)
-        first_job_details = get_job_details(results_dict['Jobs'][0]['JvId'])
+        page_data = get_page_navigation_values(form)
 
-    return render_template('job_search_results.html', form=form, results=results_dict, details=first_job_details)
+    return render_template('job_search_results.html', form=form, results=results_dict, page_data=page_data)
 
 @app.route('/jobs/details/<job_id>/json')
 def send_job_details_json(job_id):
@@ -144,3 +146,10 @@ def send_job_details_json(job_id):
 
     results_json = get_job_details(job_id)
     return results_json
+
+@app.route('/jobs/save', methods=['POST'])
+@login_required
+def save_job():
+    saved_job = SavedJob.save_job(current_user.id, request.get_json())
+
+    return "success"

@@ -1,4 +1,5 @@
 import requests
+import math
 
 from keys import COS_API_TOKEN, COS_USER_ID, COS_BASE_URL
 
@@ -21,6 +22,15 @@ def get_jobs(form):
     )
         
     return resp.json()
+
+def get_page_navigation_values(form):
+    next_page_record = int(form.startRecord.data) + 10
+    last_page_record = int(form.startRecord.data) - 10
+    if last_page_record < 0:
+        last_page_record = 0
+    page_number = math.ceil(next_page_record / 10)
+    return {'next_page_record': next_page_record, 'last_page_record': last_page_record, 'page_number': page_number}
+
 
 def get_job_details(job_id):
     """job_id is COS job id"""

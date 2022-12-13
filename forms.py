@@ -85,7 +85,7 @@ class UserEditForm(FlaskForm):
     ])
 
 class ApiJobSearchForm(FlaskForm):
-    """Form to login user."""
+    """Form to fetch api job list data."""
 
     keyword = StringField("What", validators=[InputRequired()])
     location = StringField("Where", validators=[InputRequired()])
@@ -93,5 +93,5 @@ class ApiJobSearchForm(FlaskForm):
     days = IntegerField("Days Old")
     companyName = StringField("Company Name")
     remote = BooleanField("Remote Only")
+        # If remote only is selected, add "remote" to user's keyword input
     startRecord = HiddenField("Start", default=0)
-    # If remote only is selected, add "remote" to user's keyword input

@@ -1,18 +1,77 @@
+html {
+  height: 100%;
+}
+
+body {
+  height: 100%;
+  display: flex;
+  flex-flow: column;
+}
+
+.nav-bar-outer-wrapper {
+  flex: 0 1 auto;
+}
+
+.main-outer-wrapper {
+  flex: 1 1 auto;
+}
+
+main {
+  height: 100%;
+  display: flex;
+  flex-flow: column;
+}
+
+main > form {
+  flex: 0 1 auto;
+}
+
+main > hr {
+  flex: 0 1 auto;
+}
+
 .search-results-wrapper {
   display: grid;
   grid-template-columns: 1fr 1fr;
+  flex: 1 1 auto;
 }
 
-.left-column-list {
+.left-column-wrapper {
   grid-column: 1 / 2;
-  overflow: scroll;
+  height: 100%;
+  position: relative;
   border: 2px solid black;
 }
 
-.right-column-details {
+.right-column-wrapper {
   grid-column: 2 / 3;
-  overflow: scroll;
+  height: 100%;
+  position: relative;
   border: 2px solid black;
+}
+
+.left-column {
+  height: 100%;
+  position: absolute; 
+  overflow-y: scroll;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.right-column {
+  height: 100%;
+  position: absolute;
+  overflow-y: scroll;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.hor-buttons-div {
+  display: flex;
 }
 
 .api-job-list-item {

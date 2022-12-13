@@ -155,6 +155,12 @@ class SavedJob(db.Model):
     application_link = db.Column(
         db.String(500)
     )
+    cos_id = db.Column(
+        db.Text
+    )
+    federal_contractor = db.Column(
+        db.Text
+    )
     user_notes = db.Column(
         db.Text
     )
@@ -170,6 +176,32 @@ class SavedJob(db.Model):
 
     def __repr__(self):
         return f"<Job #{self.id}: {self.company}, {self.title}>"
+
+    @classmethod
+    def save_job(cls, user_id, details_obj):
+        """Saves a job."""
+
+        job_to_save = cls(
+            user_id = user_id,
+            company = details_obj.get('company'),
+            title = details_obj.get('title'),
+            date_posted = details_obj.get('date_posted'),
+            location = details_obj.get('location'),
+            company_size = details_obj.get('company_size'),
+            job_type = details_obj.get('job_type'),
+            experience_level = details_obj.get('experience_level'),
+            salary_min = details_obj.get('salary_min'),
+            salary_max = details_obj.get('salary_max'),
+            job_description = details_obj.get('job_description'),
+            application_link = details_obj.get('application_link'),
+            cos_id = details_obj.get('cos_id'),
+            federal_contractor = details_obj.get('federal_contractor'),
+            user_notes = details_obj.get('user_notes')
+        )
+
+        db.session.add(job_to_save)
+        db.session.commit()
+        return job_to_save
 
 class JobHunt(db.Model):
 

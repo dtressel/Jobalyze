@@ -27,36 +27,72 @@
 </form>
 <hr>
 <div class="search-results-wrapper" id="search-results-wrapper">
-  <div class="left-column-list" id="left-column-list">
-    <div>{{results['Jobcount']}} jobs found</div>
-    {% for job in results['Jobs'] %}
-    <div class="api-job-list-item {% if loop.first %}highlight-card{% endif %}" id="{{loop.index0}}" data-job-id="{{job['JvId']}}">
-      <div class="list-item-inner-wrapper">
-        <h3>{{job['JobTitle']}}</h3>
-        <div>{{job['Company']}}</div>
-        <div>{{job['Location']}}</div>
-        <p>Date Posted: {{job['AccquisitionDate']}}</p>
-        <p>Posting URL: {{job['URL']}}</p>
-        <p>Federal Contractor: 
-          {% if job['Fc'] == 'True' %}
-          yes
-          {% else %}
-          no
-          {% endif %}
-        </p>
+  <div class="left-column-wrapper">
+    <div class="left-column" id="left-column">
+      <div>{{results['Jobcount']}} jobs found</div>
+      {% for job in results['Jobs'] %}
+      <div class="api-job-list-item {% if loop.first %}highlight-card{% endif %}" id="{{loop.index0}}" data-job-id="{{job['JvId']}}" data-fc="{{job['Fc']}}">
+        <div class="list-item-inner-wrapper">
+          <h3>{{job['JobTitle']}}</h3>
+          <div>{{job['Company']}}</div>
+          <div>{{job['Location']}}</div>
+          <p>Date Posted: {{job['AccquisitionDate']}}</p>
+          <p>Posting URL: {{job['URL']}}</p>
+          <p>Federal Contractor: 
+            {% if job['Fc'] == 'True' %}
+            yes
+            {% else %}
+            no
+            {% endif %}
+          </p>
+        </div>
+      </div>
+      {% endfor %}
+      <div>
+        <p>Page {{page_data.page_number}}</p>
+        {% if page_data.page_number > 1 %}
+        <form method="Get">
+          <div class="display-none">
+            {{form.keyword}}
+            {{form.location}}
+            {{form.radius}}
+            {{form.days}}
+            {{form.companyName}}
+            {{form.remote}}
+            {{form.startRecord(value = page_data.last_page_record)}}
+          </div>
+          <button type="submit">Last</button>
+        </form>
+        {% endif %}
+        <form method="Get">
+          <div class="display-none">
+            {{form.keyword}}
+            {{form.location}}
+            {{form.radius}}
+            {{form.days}}
+            {{form.companyName}}
+            {{form.remote}}
+            {{form.startRecord(value = page_data.next_page_record)}}
+          </div>
+          <button type="submit">Next</button>
+        </form>
       </div>
     </div>
-    {% endfor %}
   </div>
-  <div class="right-column-details">
-    <div class="title-apply">
-      <h3 id="details-job-title">{{details['JobTitle']}}</h3>
-      <a id="details-url" target="_blank" href="{{details['URL']}}"><button>Apply</button></a>
+  <div class="right-column-wrapper">
+    <div class="right-column" id="right-column" class="display-none">
+      <div class="title-apply">
+        <h3 id="details-job-title"></h3>
+        <div class="hor-buttons-div">
+          <button id="save-button" {% if current_user.is_anonymous %}class="display-none"{% endif %}>Save</button>
+          <a id="details-url" target="_blank"><button>Apply</button></a>
+        </div>
+      </div>
+      <div id="details-company-name"></div>
+      <div id="details-location"></div>
+      <div id="details-date-posted"></div>
+      <div id="details-description"></div>
     </div>
-    <div id="details-company-name">{{details['Company']}}</div>
-    <div id="details-location">{{details['Location']}}</div>
-    <div id="details-date-posted">Date Posted: {{details['DatePosted']}}</div>
-    <div id="details-description">{{details['Description'] | safe}}</div>
   </div>
 </div>
 {% endblock %}
