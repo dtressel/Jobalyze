@@ -140,12 +140,17 @@ def jobs_search_result():
 
     return render_template('job_search_results.html', form=form, results=results_dict, page_data=page_data)
 
-@app.route('/jobs/details/<job_id>/json')
-def send_job_details_json(job_id):
+@app.route('/jobs/details/<cos_id>/json')
+def send_job_details_json(cos_id):
     """Sends json of job details to be handled by JavaScript"""
 
-    results_json = get_job_details(job_id)
-    # *****Check to see if job is already saved******
+    results_json = get_job_details(cos_id)
+    # Check to see if job is already saved:
+    if current_user.is_authenticated:
+        if SavedJob.already_saved(current_user.id, cos_id):
+            print('****Already Saved*****')
+            results_json['saved'] = 'true'
+
     return results_json
 
 @app.route('/jobs/save', methods=['POST'])

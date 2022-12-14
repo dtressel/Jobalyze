@@ -32,11 +32,11 @@ def get_page_navigation_values(form):
     return {'next_page_record': next_page_record, 'last_page_record': last_page_record, 'page_number': page_number}
 
 
-def get_job_details(job_id):
+def get_job_details(cos_id):
     """job_id is COS job id"""
     
     resp = requests.get(
-        f'{COS_BASE_URL}/{COS_USER_ID}/{job_id}',
+        f'{COS_BASE_URL}/{COS_USER_ID}/{cos_id}',
         headers={"Content-Type": "application/json", "Authorization": f'Bearer {COS_API_TOKEN}'}
     )
 

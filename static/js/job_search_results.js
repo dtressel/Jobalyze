@@ -8,6 +8,7 @@ const description = document.getElementById('details-description');
 
 const rightColumn = document.getElementById('right-column');
 const saveButton = document.getElementById('save-button');
+const savedIcon = document.getElementById('saved-icon');
 
 // DOM objects left side
 const leftColumn = document.getElementById('left-column');
@@ -16,8 +17,10 @@ const jobCards = document.getElementsByClassName('api-job-list-item');
 // Save job details when accessed to object so that when re-acccessed
 // it doesn't haven't to make a duplicate API request.
 const cachedJobDetails = {};
+
 // Other variables:
 let currentHighlightedCard = 0;
+let selectedJobSaved = false;
 
 // Event Listeners:
 leftColumn.addEventListener('click', jobListClick);
@@ -73,6 +76,18 @@ function updateDom(jobDetails) {
   jobLocation.textContent = jobDetails.Location;
   datePosted.textContent = `Date Posted: ${jobDetails.DatePosted}`;
   description.innerHTML = jobDetails.Description;
+  // If the saved status of the newly selected job (jobDetails) does not match the saved 
+  // status of the previously selected job (selectedJobSaved), then toggle DOM elements and variable:
+  if (!jobDetails.saved === selectedJobSaved) {
+    toggleSaved();
+  }
+}
+
+function toggleSaved() {
+  // called by updateDom
+  saveButton.classList.toggle('display-none');
+  savedIcon.classList.toggle('display-none');
+  selectedJobSaved = !selectedJobSaved;
 }
 
 function showFirstDetails() {
@@ -80,13 +95,18 @@ function showFirstDetails() {
   showJobDetails(jobCards[0].dataset.jobId, 0);
 }
 
-function saveButtonClick() {
+async function saveButtonClick() {
   details = getDetailsFromSearch();
-  const resp = saveJob(details);
+  const resp = await saveJob(details);
   console.log(resp);
+  if (resp.status === 200) {
+    toggleSaved();
+  }
+  // ************************ADD ERROR HANDLING***********************************
 }
 
 function getDetailsFromSearch() {
+  // called by saveButtonClick
   const details = cachedJobDetails[currentHighlightedCard];
   const jobCard = jobCards[currentHighlightedCard];
   return {
@@ -102,6 +122,7 @@ function getDetailsFromSearch() {
 }
 
 async function saveJob(details) {
+  // called by saveButtonClick
   const resp = await fetch('/jobs/save', {
     method: 'POST',
     headers: {'Content-Type': 'application/json'},
@@ -114,5 +135,4 @@ async function saveJob(details) {
 // On Load:
 showFirstDetails();
 
-// ****ADD highlight styling and other styling****
 // ****ADD JS media query for mobile view to view job details on separate page****

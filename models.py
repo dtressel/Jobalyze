@@ -198,10 +198,19 @@ class SavedJob(db.Model):
             federal_contractor = details_obj.get('federal_contractor'),
             user_notes = details_obj.get('user_notes')
         )
-
+        # **********************need some error handling if not saved**********************
         db.session.add(job_to_save)
         db.session.commit()
         return job_to_save
+
+    @classmethod
+    def already_saved(cls, user_id, cos_id):
+        """Checks to see if job found through API is already saved"""
+
+        id_if_exists = db.session.query(cls.id).filter(cls.user_id == user_id,
+            cls.cos_id == cos_id).first()
+
+        return id_if_exists != None
 
 class JobHunt(db.Model):
 
