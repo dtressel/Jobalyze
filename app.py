@@ -5,9 +5,9 @@ from flask import Flask, render_template, redirect, flash, request, abort, sessi
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 
 from utilities import is_safe_url
-from models import db, connect_db, User, SavedJob, JobHunt
+from models import db, connect_db, User, SavedJob, JobHunt, JobApp
 from forms import RegistrationForm, LoginForm, ApiJobSearchForm, ManualJobAddForm, UserEditForm
-from api_requests import get_jobs, get_job_details, get_page_navigation_values
+from api_requests import get_jobs, get_job_details, get_page_navigation_values, get_postings_for_dashboard
 
 app = Flask(__name__)
 
@@ -121,7 +121,7 @@ def logout():
     logout_user()
     return redirect('/')
 
-@app.route('/jobs')
+@app.route('/cos-jobs')
 def jobs_page():
     """Shows form to search jobs through Career OneStop API"""
 
@@ -129,7 +129,7 @@ def jobs_page():
 
     return render_template('job_search.html', form=form)
 
-@app.route('/jobs/search')
+@app.route('/cos-jobs/search')
 def jobs_search_result():
     """Shows the results of a job search through Career OneStop API"""
 
@@ -140,7 +140,7 @@ def jobs_search_result():
 
     return render_template('job_search_results.html', form=form, results=results_dict, page_data=page_data)
 
-@app.route('/jobs/details/<cos_id>/json')
+@app.route('/cos-jobs/details/<cos_id>/json')
 def send_job_details_json(cos_id):
     """Sends json of job details to be handled by JavaScript"""
 
@@ -153,7 +153,21 @@ def send_job_details_json(cos_id):
 
     return results_json
 
-@app.route('/jobs/save', methods=['POST'])
+@app.route('/cos-jobs/details/<cos_id>')
+# *****************not fully implemented************************
+def show_job_details_page(cos_id):
+    """Shows a job details page for an api job"""
+
+    results_json = get_job_details(cos_id)
+    # Check to see if job is already saved:
+    if current_user.is_authenticated:
+        if SavedJob.already_saved(current_user.id, cos_id):
+            print('****Already Saved*****')
+            results_json['saved'] = 'true'
+
+    return render_template('job_details_api.html')  
+
+@app.route('/saved-jobs/add/cos', methods=['POST'])
 @login_required
 def save_job():
     """Saves a job to the database"""
@@ -163,7 +177,7 @@ def save_job():
     # fix this return
     return "success"
 
-@app.route('/jobs/add', methods=['Get', 'POST'])
+@app.route('/saved-jobs/add', methods=['Get', 'POST'])
 @login_required
 def add_job():
     """Allows user to add a manually entered job to saved jobs through a form"""
@@ -172,6 +186,7 @@ def add_job():
 
     if form.validate_on_submit():
         saved_job = SavedJob.save_job(current_user.id, form.data)
+        # ******************** Add failed API error handling ******************
         return redirect('/')
 
     return render_template('job_add.html', form=form)
@@ -186,7 +201,12 @@ def dashboard_page_no_hunt():
 
     saved_jobs_list = SavedJob.get_dashboard_saved_jobs_list(current_user.id)
 
-    return render_template('dashboard.html', current_hunt=current_hunt, saved_jobs_list=saved_jobs_list)
+    return render_template('dashboard.html',
+    current_hunt=current_hunt,
+    saved_jobs_list=saved_jobs_list,
+    job_apps_list = None,
+    new_job_postings = None,
+    goals = None)
 
 @app.route('/dashboard/<hunt_id>')
 def dashboard_page_load_hunt(hunt_id):
@@ -200,8 +220,16 @@ def dashboard_page_load_hunt(hunt_id):
 
     current_hunt = JobHunt.query.get(hunt_id)
     saved_jobs_list = SavedJob.get_dashboard_saved_jobs_list(current_user.id)
+    job_apps_list = JobApp.get_dashboard_job_apps_list(current_user.id)
+    new_job_postings = get_postings_for_dashboard(current_hunt)
+    goals = None
 
-    return render_template('dashboard.html', current_hunt=current_hunt, saved_jobs_list=saved_jobs_list)
+    return render_template('dashboard.html',
+        current_hunt=current_hunt,
+        saved_jobs_list=saved_jobs_list,
+        job_apps_list=job_apps_list,
+        new_job_postings=new_job_postings,
+        goals=goals)
 
 @app.route('/saved-jobs/<saved_job_id>')
 def show_saved_job(saved_job_id):

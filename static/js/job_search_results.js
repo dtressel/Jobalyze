@@ -62,7 +62,7 @@ async function getJobDetails(jobId, DomId) {
   if (DomId in cachedJobDetails) {
     return cachedJobDetails[DomId];
   }
-  const resp = await fetch(`/jobs/details/${jobId}/json`);
+  const resp = await fetch(`/cos-jobs/details/${jobId}/json`);
   const jobDetails = await resp.json();
   cachedJobDetails[DomId] = jobDetails;
   return jobDetails;
@@ -123,7 +123,7 @@ function getDetailsFromSearch() {
 
 async function saveJob(details) {
   // called by saveButtonClick
-  const resp = await fetch('/jobs/save', {
+  const resp = await fetch('/saved-jobs/add/cos', {
     method: 'POST',
     headers: {'Content-Type': 'application/json'},
     body: JSON.stringify(details)

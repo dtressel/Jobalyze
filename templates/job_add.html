@@ -4,7 +4,8 @@
 
 {% block content %}
 <h2>Manually Add a Job to Saved Jobs</h2>
-<form method="GET" action="/jobs/search">
+<!-- ********************* fix below  ****************************** -->
+<form method="POST">
   {% for field in form if field.widget.input_type != 'hidden' %}
     <div class="form-row">
       {{field.label}}

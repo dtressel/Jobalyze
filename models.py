@@ -251,11 +251,23 @@ class JobHunt(db.Model):
     o_net_code = db.Column(
         db.String(10)
     )
+    location = db.Column(db.String(100),
+        nullable=False,
+        default='US')
+    radius = db.Column(db.Integer)
     date_begun = db.Column(
         db.DateTime,
         nullable=False,
         default=datetime.utcnow()
     )
+    hired_by = db.Column(db.DateTime)
+    app_goal_time_frame = db.Column(db.Integer)
+    # range: 0-2
+    # values:
+    #     1: Daily
+    #     1: Weekly
+    #     2: Monthly
+    app_goal_number = db.Column(db.Integer)
     status = db.Column(
         db.Integer,
         default=0
@@ -361,6 +373,12 @@ class JobApp(db.Model):
 
     def __repr__(self):
         return f"<Job App #{self.id}: {self.saved_job.company}, {self.current_status}>"
+
+    @classmethod
+    def get_dashboard_job_apps_list(cls, user_id):
+        """creates shortened and prioritized saved_jobs list for dashboard"""
+
+        return cls.query.filter_by(user_id = user_id).order_by(cls.date_applied.desc()).limit(8)
 
 class Strategy(db.Model):
 

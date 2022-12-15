@@ -29,6 +29,25 @@ def get_jobs(form):
         
     return resp.json()
 
+def get_postings_for_dashboard(hunt):
+    """get job postings for dashboard based on hunt"""
+
+    if hunt.o_net_code:
+        keyword = hunt.o_net_code
+    else:
+        keyword = hunt.job_title_desired
+    location = hunt.location
+    radius = hunt.radius
+    days_old = 1
+
+    resp = requests.get(
+        f'{COS_BASE_URL}/{COS_USER_ID}/{keyword}/{location}/{radius}/0/0/0/10/{days_old}',
+        params={"locationFilter": None, "source": "NLx", "showFilters": True},
+        headers={"Content-Type": "application/json", "Authorization": f'Bearer {COS_API_TOKEN}'}
+    )
+
+    return resp.json()
+
 def get_page_navigation_values(form):
     next_page_record = int(form.startRecord.data) + 10
     last_page_record = int(form.startRecord.data) - 10

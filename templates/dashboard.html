@@ -1,9 +1,11 @@
 {% extends 'base.html' %}
 
-{% block stylesheets %}{% endblock %}
+{% block stylesheets %}
+<link rel="stylesheet" href="/static/css/dashboard.css">
+{% endblock %}
 
 
-{% block title %}home_user{% endblock %}
+{% block title %}Dashboard{% endblock %}
 
 
 {% block content %}
@@ -33,44 +35,56 @@
       <h3>Saved Jobs</h3>
       <a><img src="/static/icons/Expand-icon-small.png"></a>
     </div>
+    {% if saved_jobs_list %}
     <ul>
       {% for job in saved_jobs_list %}
-      <a href="/saved-jobs/{{job.id}}"><li>{{job.company}}, {{job.title}}</li></a>
+      <li>{{job.company}}, <a href="/saved-jobs/{{job.id}}">{{job.title}}</a></li>
       {% endfor %}
     </ul>
+    {% else %}
+    <div class="empty-list-note">You have not saved any jobs</div>
+    {% endif %}
   </div>
   <div id="main-upper-right">
     <div class="heading-expand">
-      <h3>Saved Jobs</h3>
+      <h3>Job Apps</h3>
       <a><img src="/static/icons/Expand-icon-small.png"></a>
     </div>
+    {% if job_apps_list %}
     <ul>
-      {% for job in saved_jobs_list %}
-      <a href="/saved-jobs/{{job.id}}"><li>{{job.company}}, {{job.title}}</li></a>
+      {% for app in job_apps_list %}
+      <a href="/job-apps/{{app.id}}"><li>{{app.saved_job.company}}, {{app.saved_job.title}}</li></a>
       {% endfor %}
     </ul>
+    {% else %}
+    <div class="empty-list-note">You have not applied to any jobs yet.</div>
+    {% endif %}
   </div>
   <div id="main-lower-left">
     <div class="heading-expand">
-      <h3>Saved Jobs</h3>
+      <h3>New Job Postings</h3>
       <a><img src="/static/icons/Expand-icon-small.png"></a>
     </div>
+    {% if new_job_postings %}
     <ul>
-      {% for job in saved_jobs_list %}
-      <a href="/saved-jobs/{{job.id}}"><li>{{job.company}}, {{job.title}}</li></a>
+      {% for job in new_job_postings['Jobs'] %}
+      <a href="/saved-jobs/{{job.id}}"><li>{{job['Company']}}, {{job['JobTitle']}}</li></a>
       {% endfor %}
     </ul>
+    {% else %}
+    <p>Create a job hunt to see recent job postings here!</p>
+    {% endif %}
   </div>
   <div id="main-lower-right">
     <div class="heading-expand">
-      <h3>Saved Jobs</h3>
+      <h3>Progress</h3>
       <a><img src="/static/icons/Expand-icon-small.png"></a>
     </div>
-    <ul>
-      {% for job in saved_jobs_list %}
-      <a href="/saved-jobs/{{job.id}}"><li>{{job.company}}, {{job.title}}</li></a>
-      {% endfor %}
-    </ul>
+    {% if current_hunt.app_goal_number and current_hunt.app_goal_time_frame %}
+      You have goals!
+    {% else %}
+      You have not created goals yet.
+    {% endif %}
   </div>
 </div>
 {% endblock %}
