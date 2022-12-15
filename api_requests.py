@@ -14,6 +14,12 @@ def get_jobs(form):
     startRecord = form.startRecord.data
     if form.remote.data:
         keyword = keyword + " remote"
+    if not location:
+        location = "US"
+    if not radius:
+        radius = 50
+    if not days:
+        days = 0
 
     resp = requests.get(
         f'{COS_BASE_URL}/{COS_USER_ID}/{keyword}/{location}/{radius}/0/0/{startRecord}/10/{days}',

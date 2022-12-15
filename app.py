@@ -5,8 +5,8 @@ from flask import Flask, render_template, redirect, flash, request, abort, sessi
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 
 from utilities import is_safe_url
-from models import db, connect_db, User, SavedJob
-from forms import RegistrationForm, LoginForm, ApiJobSearchForm, UserEditForm
+from models import db, connect_db, User, SavedJob, JobHunt
+from forms import RegistrationForm, LoginForm, ApiJobSearchForm, ManualJobAddForm, UserEditForm
 from api_requests import get_jobs, get_job_details, get_page_navigation_values
 
 app = Flask(__name__)
@@ -156,7 +156,57 @@ def send_job_details_json(cos_id):
 @app.route('/jobs/save', methods=['POST'])
 @login_required
 def save_job():
+    """Saves a job to the database"""
+
     saved_job = SavedJob.save_job(current_user.id, request.get_json())
 
     # fix this return
     return "success"
+
+@app.route('/jobs/add', methods=['Get', 'POST'])
+@login_required
+def add_job():
+    """Allows user to add a manually entered job to saved jobs through a form"""
+
+    form = ManualJobAddForm()
+
+    if form.validate_on_submit():
+        saved_job = SavedJob.save_job(current_user.id, form.data)
+        return redirect('/')
+
+    return render_template('job_add.html', form=form)
+
+@app.route('/dashboard')
+def dashboard_page_no_hunt():
+    """Shows generic dashboard page to user who has not created a hunt"""
+
+    current_hunt = User.current_hunt(current_user)
+    if current_hunt:
+        return redirect(f'/dashboard/{current_hunt.id}')
+
+    saved_jobs_list = SavedJob.get_dashboard_saved_jobs_list(current_user.id)
+
+    return render_template('dashboard.html', current_hunt=current_hunt, saved_jobs_list=saved_jobs_list)
+
+@app.route('/dashboard/<hunt_id>')
+def dashboard_page_load_hunt(hunt_id):
+    """Shows dashboard page with information displayed pertaining to chosen hunt"""
+
+    # job_hunts (available from current_user)
+    # saved_jobs (available from current_user)
+    # current job_hunt (queried below)
+    # job_apps (available from current job_hunt)
+    # recent job postings (get from front end)
+
+    current_hunt = JobHunt.query.get(hunt_id)
+    saved_jobs_list = SavedJob.get_dashboard_saved_jobs_list(current_user.id)
+
+    return render_template('dashboard.html', current_hunt=current_hunt, saved_jobs_list=saved_jobs_list)
+
+@app.route('/saved-jobs/<saved_job_id>')
+def show_saved_job(saved_job_id):
+    """Shows details of a particular saved job"""
+
+    saved_job = SavedJob.query.get(saved_job_id)
+
+    return render_template('saved_job_details', saved_job=saved_job)

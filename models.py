@@ -57,6 +57,12 @@ class User(db.Model, UserMixin):
     def __repr__(self):
         return f"<User #{self.id}: {self.username}, {self.email}>"
 
+    def current_hunt(self):
+        """Find a users most recent job hunt"""
+        if self.job_hunts:
+            return self.job_hunts[-1]
+        return None
+
     @classmethod
     def signup(cls, email, username, password):
         """Sign up user.
@@ -143,6 +149,14 @@ class SavedJob(db.Model):
     experience_level = db.Column(
         db.String(100)
     )
+    # range: 0-5
+    # values:
+    #     0: Internship
+    #     1: Entry level
+    #     2: Associate
+    #     3: Mid-Senior level
+    #     4: Director
+    #     5: Executive
     salary_min = db.Column(
         db.Integer
     )
@@ -153,7 +167,7 @@ class SavedJob(db.Model):
         db.Text
     )
     application_link = db.Column(
-        db.String(500)
+        db.Text
     )
     cos_id = db.Column(
         db.Text
@@ -212,6 +226,12 @@ class SavedJob(db.Model):
 
         return id_if_exists != None
 
+    @classmethod
+    def get_dashboard_saved_jobs_list(cls, user_id):
+        """creates shortened and prioritized saved_jobs list for dashboard"""
+
+        return cls.query.filter_by(user_id = user_id).order_by(cls.date_posted.desc()).limit(8)
+
 class JobHunt(db.Model):
 
     __tablename__ = 'job_hunts'
@@ -220,9 +240,16 @@ class JobHunt(db.Model):
         db.Integer,
         primary_key=True
     )
+    name = db.Column(
+        db.String(50),
+        nullable=False
+    )
     job_title_desired = db.Column(
         db.Text,
         nullable=False
+    )
+    o_net_code = db.Column(
+        db.String(10)
     )
     date_begun = db.Column(
         db.DateTime,

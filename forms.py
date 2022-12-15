@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SelectField, IntegerField, BooleanField, HiddenField
-from wtforms.validators import DataRequired, InputRequired, Email, Length, EqualTo
+from wtforms import StringField, PasswordField, SelectField, IntegerField, BooleanField, HiddenField, TextAreaField, DateField, URLField
+from wtforms.validators import DataRequired, InputRequired, Email, Length, EqualTo, Optional
 
 class RegistrationForm(FlaskForm):
     """Form to register a user."""
@@ -87,11 +87,52 @@ class UserEditForm(FlaskForm):
 class ApiJobSearchForm(FlaskForm):
     """Form to fetch api job list data."""
 
-    keyword = StringField("What", validators=[InputRequired()])
-    location = StringField("Where", validators=[InputRequired()])
-    radius = IntegerField("Radius")
-    days = IntegerField("Days Old")
+    keyword = StringField("What", validators=[InputRequired()], render_kw={"placeholder": "job title, O*NET code, or keywords"})
+    location = StringField("Where", render_kw={"placeholder": "zip code or city, state"})
+    radius = IntegerField("Radius", validators=[Optional()], render_kw={"placeholder": "miles"})
+    days = IntegerField("Days Old", validators=[Optional()])
     companyName = StringField("Company Name")
     remote = BooleanField("Remote Only")
         # If remote only is selected, add "remote" to user's keyword input
     startRecord = HiddenField("Start", default=0)
+
+class ManualJobAddForm(FlaskForm):
+    """Form to manually add a job."""
+
+    company = StringField("Company")
+    title = StringField("Job Title")
+    location = StringField("Location",  validators=[
+        Length(max=100, message="Must be less than 100 characters.")    
+    ])
+    application_link = URLField("Link")
+    job_description = TextAreaField("Description")
+    user_notes = TextAreaField("User Notes")
+    date_posted = DateField("Date Posted")
+    job_type = SelectField("Job Type", choices=[
+        (0, 'Full-time'),
+        (1, 'Part-time'),
+        (2, 'Contract'),
+        (3, 'Internship'),
+        (4, 'Volunteer')
+    ])
+    experience_level = SelectField("Experience Level", choices=[
+        (0, 'Internship'),
+        (1, 'Entry level'),
+        (2, 'Associate'),
+        (3, 'Mid-Senior level'),
+        (4, 'Director'),
+        (5, 'Executive'),
+    ])
+    company_size = SelectField("Company Size", choices=[
+        (0, '1-10 employees'),
+        (1, '11-50 employees'),
+        (2, '51-200 employees'),
+        (3, '201-500 employees'),
+        (4, '501-1000 employees'),
+        (5, '1001-5000 employees'),
+        (6, '5001-10,000 employees'),
+        (7, '10,001+ employees')
+    ])
+    salary_min = IntegerField("Salary Min")
+    salary_max = IntegerField("Salary Max")
+

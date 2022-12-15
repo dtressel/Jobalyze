@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% block stylesheets %}{% endblock %}
+
+
+{% block title %}home_user{% endblock %}
+
+
+{% block content %}
+<div class="top-grid">
+  <div id="top-left">
+    <h2>Dashboard</h2>
+  </div>
+  <div id="top-center">
+    <label for="job-hunt-select">Job Hunt</label>
+    {% if current_hunt %}
+    <select name="job_hunt" id="job-hunt-select">
+      {% for hunt in current_user.job_hunts|reverse %}
+      <option value="hunt.id">hunt.name</option>
+      {% endfor %}
+    </select>
+    {% else %}
+    <div>No Job Hunts Created</div>
+    {% endif %}
+  </div>
+  <div id="top-right">
+    <div id="hired-button" class="hired-button">Hired!</div>
+  </div>
+</div>
+<div class="main-grid">
+  <div id="main-upper-left">
+    <div class="heading-expand">
+      <h3>Saved Jobs</h3>
+      <a><img src="/static/icons/Expand-icon-small.png"></a>
+    </div>
+    <ul>
+      {% for job in saved_jobs_list %}
+      <a href="/saved-jobs/{{job.id}}"><li>{{job.company}}, {{job.title}}</li></a>
+      {% endfor %}
+    </ul>
+  </div>
+  <div id="main-upper-right">
+    <div class="heading-expand">
+      <h3>Saved Jobs</h3>
+      <a><img src="/static/icons/Expand-icon-small.png"></a>
+    </div>
+    <ul>
+      {% for job in saved_jobs_list %}
+      <a href="/saved-jobs/{{job.id}}"><li>{{job.company}}, {{job.title}}</li></a>
+      {% endfor %}
+    </ul>
+  </div>
+  <div id="main-lower-left">
+    <div class="heading-expand">
+      <h3>Saved Jobs</h3>
+      <a><img src="/static/icons/Expand-icon-small.png"></a>
+    </div>
+    <ul>
+      {% for job in saved_jobs_list %}
+      <a href="/saved-jobs/{{job.id}}"><li>{{job.company}}, {{job.title}}</li></a>
+      {% endfor %}
+    </ul>
+  </div>
+  <div id="main-lower-right">
+    <div class="heading-expand">
+      <h3>Saved Jobs</h3>
+      <a><img src="/static/icons/Expand-icon-small.png"></a>
+    </div>
+    <ul>
+      {% for job in saved_jobs_list %}
+      <a href="/saved-jobs/{{job.id}}"><li>{{job.company}}, {{job.title}}</li></a>
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+{% endblock %}
+
+
+{% block scripts %}{% endblock %}
