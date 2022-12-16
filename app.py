@@ -159,13 +159,14 @@ def show_job_details_page(cos_id):
     """Shows a job details page for an api job"""
 
     results_json = get_job_details(cos_id)
+    results_json['saved'] = False
     # Check to see if job is already saved:
     if current_user.is_authenticated:
         if SavedJob.already_saved(current_user.id, cos_id):
             print('****Already Saved*****')
-            results_json['saved'] = 'true'
+            results_json['saved'] = True
 
-    return render_template('job_details_api.html')  
+    return render_template('job_details_api.html', job_details=results_json)  
 
 @app.route('/saved-jobs/add/cos', methods=['POST'])
 @login_required

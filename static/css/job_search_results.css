@@ -99,6 +99,11 @@ main > hr {
   align-items: center;
 }
 
+.details-full-screen {
+  display: flex;
+  justify-content: space-between;
+}
+
 .highlight-card {
   box-shadow: 1px 1px 1px 3px rgba(107, 161, 208, 1);
   outline: 1px solid rgba(0, 120, 128, 0.5);

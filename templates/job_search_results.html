@@ -85,13 +85,18 @@
         <h3 id="details-job-title"></h3>
         <div class="hor-buttons-div">
           <button id="save-button" {% if current_user.is_anonymous %}class="display-none"{% endif %}>Save</button>
-          <div id="saved-icon" class="display-none">saved</div>
+          <div id="saved-icon" class="display-none">Saved</div>
           <a id="details-url" target="_blank"><button>Apply</button></a>
         </div>
       </div>
-      <div id="details-company-name"></div>
-      <div id="details-location"></div>
-      <div id="details-date-posted"></div>
+      <div class="details-full-screen">
+        <div>
+          <div id="details-company-name"></div>
+          <div id="details-location"></div>
+          <div id="details-date-posted"></div>
+        </div>
+        <a id="full-screen-details-link"><button>Full screen</button></a>
+      </div>
       <div id="details-description"></div>
     </div>
   </div>

@@ -9,12 +9,13 @@ const description = document.getElementById('details-description');
 const rightColumn = document.getElementById('right-column');
 const saveButton = document.getElementById('save-button');
 const savedIcon = document.getElementById('saved-icon');
+const fullScreenDetailsLink = document.getElementById('full-screen-details-link')
 
 // DOM objects left side
 const leftColumn = document.getElementById('left-column');
 const jobCards = document.getElementsByClassName('api-job-list-item');
 
-// Save job details when accessed to object so that when re-acccessed
+// Cache job details when accessed to object so that when re-acccessed
 // it doesn't haven't to make a duplicate API request.
 const cachedJobDetails = {};
 
@@ -52,7 +53,7 @@ async function showJobDetails(jobId, DomId) {
   rightColumn.classList.add('display-none');
   const jobDetails = await getJobDetails(jobId, DomId);
   console.log(jobDetails);
-  updateDom(jobDetails);
+  updateDom(jobDetails, jobId);
   rightColumn.classList.remove('display-none');
 }
 
@@ -68,10 +69,11 @@ async function getJobDetails(jobId, DomId) {
   return jobDetails;
 }
 
-function updateDom(jobDetails) {
+function updateDom(jobDetails, jobId) {
   // called by showJobDetails
   jobTitle.textContent = jobDetails.JobTitle;
   url.setAttribute('href', jobDetails.URL);
+  fullScreenDetailsLink.setAttribute('href', `/cos-jobs/details/${jobId}`)
   companyName.textContent = jobDetails.Company;
   jobLocation.textContent = jobDetails.Location;
   datePosted.textContent = `Date Posted: ${jobDetails.DatePosted}`;
