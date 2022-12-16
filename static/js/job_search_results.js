@@ -98,10 +98,12 @@ function showFirstDetails() {
 }
 
 async function saveButtonClick() {
-  details = getDetailsFromSearch();
+  domId = currentHighlightedCard;
+  details = getDetailsFromSearch(domId);
   const resp = await saveJob(details);
   console.log(resp);
   if (resp.status === 200) {
+    cachedJobDetails[domId].saved = 'true';
     toggleSaved();
   }
   // ************************ADD ERROR HANDLING***********************************
@@ -109,8 +111,8 @@ async function saveButtonClick() {
 
 function getDetailsFromSearch() {
   // called by saveButtonClick
-  const details = cachedJobDetails[currentHighlightedCard];
-  const jobCard = jobCards[currentHighlightedCard];
+  const details = cachedJobDetails[domId];
+  const jobCard = jobCards[domId];
   return {
     company: details.Company,
     title: details.JobTitle,
