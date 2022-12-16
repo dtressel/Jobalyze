@@ -33,39 +33,39 @@ function jobListClick(evt) {
   if (evt.target.classList[0] === 'api-job-list-item') {
     console.log('in jobListClick if statement');
     const jobId = evt.target.dataset.jobId;
-    const DomId = evt.target.id;
-    highlightCard(DomId);
-    showJobDetails(jobId, DomId);
+    const domId = evt.target.id;
+    highlightCard(domId);
+    showJobDetails(jobId, domId);
   }
 }
 
-function highlightCard(DomId) {
+function highlightCard(domId) {
   // called by jobListClick and showFirstDetails
   console.log('in highlightCard');
   jobCards[currentHighlightedCard].classList.remove('highlight-card');
-  jobCards[DomId].classList.add('highlight-card');
-  currentHighlightedCard = DomId;
+  jobCards[domId].classList.add('highlight-card');
+  currentHighlightedCard = domId;
 }
 
-async function showJobDetails(jobId, DomId) {
+async function showJobDetails(jobId, domId) {
   // called by jobListClick and showFirstDetails
   console.log('in ShowJobDetails');
   rightColumn.classList.add('display-none');
-  const jobDetails = await getJobDetails(jobId, DomId);
+  const jobDetails = await getJobDetails(jobId, domId);
   console.log(jobDetails);
   updateDom(jobDetails, jobId);
   rightColumn.classList.remove('display-none');
 }
 
-async function getJobDetails(jobId, DomId) {
+async function getJobDetails(jobId, domId) {
   // called by showJobDetails
   console.log('in getJobDetails');
-  if (DomId in cachedJobDetails) {
-    return cachedJobDetails[DomId];
+  if (domId in cachedJobDetails) {
+    return cachedJobDetails[domId];
   }
   const resp = await fetch(`/cos-jobs/details/${jobId}/json`);
   const jobDetails = await resp.json();
-  cachedJobDetails[DomId] = jobDetails;
+  cachedJobDetails[domId] = jobDetails;
   return jobDetails;
 }
 
