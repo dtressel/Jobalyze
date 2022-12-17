@@ -1,28 +1,30 @@
 {% extends 'base.html' %}
 
-{% block stylesheets %}{% endblock %}
+{% block stylesheets %}
+<link rel="stylesheet" href="/static/css/job_details_api.css">
+{% endblock %}
 
 {% block title %}Job Details{% endblock %}
 
 {% block content %}
-<div class="right-column-wrapper">
-  <div class="right-column" id="right-column" class="display-none">
-    <div class="title-apply">
-      <h3 id="details-job-title">{{job_details['JobTitle']}}</h3>
-      <div class="hor-buttons-div">
-        {% if current_user.is_authenticated %}
-        <button id="save-button" {% if job_details.saved %}class="display-none"{% endif %}>Save</button>
-        <div id="saved-icon" {% if not job_details.saved %}class="display-none"{% endif %}>Saved</div>
-        {% endif %}
-        <a id="details-url" target="_blank" href="{{job_details['URL']}}"><button>Apply</button></a>
-      </div>
+<div class="details-wrapper" id="details-wrapper" class="display-none" data-cos-id="{{cos_id}}" data-fc="{{fc}}">
+  <div class="title-apply">
+    <h3 id="details-job-title"></h3>
+    <div class="hor-buttons-div">
+      {% if current_user.is_authenticated %}
+      <button id="save-button" {% if saved %}class="display-none"{% endif %}>Save</button>
+      <div id="saved-icon" {% if not saved %}class="display-none"{% endif %}>Saved</div>
+      {% endif %}
+      <a id="details-url" target="_blank"><button>Apply</button></a>
     </div>
-    <div id="details-company-name">{{job_details['Company']}}</div>
-    <div id="details-location">{{job_details['Location']}}</div>
-    <div id="details-date-posted">Date Posted: {{job_details['DatePosted']}}</div>
-    <div id="details-description">{{job_details['Description'] | safe}}</div>
   </div>
+  <div id="details-company-name"></div>
+  <div id="details-location"></div>
+  <div id="details-date-posted"></div>
+  <div id="details-description"></div>
 </div>
 {% endblock %}
 
-{% block scripts %}{% endblock %}
+{% block scripts %}
+<script src="/static/js/job_details_api.js"></script>
+{% endblock %}

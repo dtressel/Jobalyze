@@ -22,58 +22,55 @@ const cachedJobDetails = {};
 // Other variables:
 let currentHighlightedCard = 0;
 let selectedJobSaved = false;
+let saveProcessing = false;
 
 // Event Listeners:
 leftColumn.addEventListener('click', jobListClick);
 saveButton.addEventListener('click', saveButtonClick);
 
 function jobListClick(evt) {
-  console.log('in jobListClick');
-  console.log(evt);
+  // if click on job list card
   if (evt.target.classList[0] === 'api-job-list-item') {
-    console.log('in jobListClick if statement');
-    const jobId = evt.target.dataset.jobId;
     const domId = evt.target.id;
+    const cosId = evt.target.dataset.cosId;
+    const fc = evt.target.dataset.fc;
+    console.log(fc)
     highlightCard(domId);
-    showJobDetails(jobId, domId);
+    showJobDetails(cosId, domId, fc);
   }
 }
 
 function highlightCard(domId) {
   // called by jobListClick and showFirstDetails
-  console.log('in highlightCard');
   jobCards[currentHighlightedCard].classList.remove('highlight-card');
   jobCards[domId].classList.add('highlight-card');
   currentHighlightedCard = domId;
 }
 
-async function showJobDetails(jobId, domId) {
+async function showJobDetails(cosId, domId, fc) {
   // called by jobListClick and showFirstDetails
-  console.log('in ShowJobDetails');
   rightColumn.classList.add('display-none');
-  const jobDetails = await getJobDetails(jobId, domId);
-  console.log(jobDetails);
-  updateDom(jobDetails, jobId);
+  const jobDetails = await getJobDetails(cosId, domId);
+  updateDom(jobDetails, cosId, fc);
   rightColumn.classList.remove('display-none');
 }
 
-async function getJobDetails(jobId, domId) {
+async function getJobDetails(cosId, domId) {
   // called by showJobDetails
-  console.log('in getJobDetails');
   if (domId in cachedJobDetails) {
     return cachedJobDetails[domId];
   }
-  const resp = await fetch(`/cos-jobs/details/${jobId}/json`);
+  const resp = await fetch(`/cos-jobs/details/${cosId}/json`);
   const jobDetails = await resp.json();
   cachedJobDetails[domId] = jobDetails;
   return jobDetails;
 }
 
-function updateDom(jobDetails, jobId) {
+function updateDom(jobDetails, cosId, fc) {
   // called by showJobDetails
   jobTitle.textContent = jobDetails.JobTitle;
   url.setAttribute('href', jobDetails.URL);
-  fullScreenDetailsLink.setAttribute('href', `/cos-jobs/details/${jobId}`)
+  fullScreenDetailsLink.setAttribute('href', `/cos-jobs/details/${cosId}?fc=${fc}`)
   companyName.textContent = jobDetails.Company;
   jobLocation.textContent = jobDetails.Location;
   datePosted.textContent = `Date Posted: ${jobDetails.DatePosted}`;
@@ -94,10 +91,14 @@ function toggleSaved() {
 
 function showFirstDetails() {
   highlightCard(0);
-  showJobDetails(jobCards[0].dataset.jobId, 0);
+  showJobDetails(jobCards[0].dataset.cosId, 0, jobCards[0].dataset.fc);
 }
 
 async function saveButtonClick() {
+  if (saveProcessing) {
+    return
+  }
+  saveProcessing = true;
   domId = currentHighlightedCard;
   details = getDetailsFromSearch(domId);
   const resp = await saveJob(details);
@@ -106,6 +107,7 @@ async function saveButtonClick() {
     cachedJobDetails[domId].saved = 'true';
     toggleSaved();
   }
+  saveProcessing = false;
   // ************************ADD ERROR HANDLING***********************************
 }
 
@@ -120,7 +122,7 @@ function getDetailsFromSearch() {
     location: details.Location,
     job_description: details.Description,
     application_link: details.URL,
-    cos_id: jobCard.dataset.jobId,
+    cos_id: jobCard.dataset.cosId,
     federal_contractor: jobCard.dataset.fc
   }
 }

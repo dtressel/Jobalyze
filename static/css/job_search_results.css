@@ -74,6 +74,7 @@ main > hr {
 
 .hor-buttons-div {
   display: flex;
+  align-items: center;
 }
 
 .api-job-list-item {

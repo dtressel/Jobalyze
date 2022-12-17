@@ -31,7 +31,7 @@
     <div class="left-column" id="left-column">
       <div>{{results['Jobcount']}} jobs found</div>
       {% for job in results['Jobs'] %}
-      <div class="api-job-list-item {% if loop.first %}highlight-card{% endif %}" id="{{loop.index0}}" data-job-id="{{job['JvId']}}" data-fc="{{job['Fc']}}">
+      <div class="api-job-list-item {% if loop.first %}highlight-card{% endif %}" id="{{loop.index0}}" data-cos-id="{{job['JvId']}}" data-fc="{{job['Fc']}}">
         <div class="list-item-inner-wrapper">
           <h3>{{job['JobTitle']}}</h3>
           <div>{{job['Company']}}</div>

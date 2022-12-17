@@ -1,0 +1,10 @@
+.title-apply {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.hor-buttons-div {
+  display: flex;
+  align-items: center;
+}
