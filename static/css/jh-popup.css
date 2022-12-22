@@ -1,0 +1,22 @@
+.popup {
+  position: absolute;
+  top: 18px;
+  left: 0;
+  right: 0;
+  margin: auto;
+  background-color: rgb(0, 120, 128);
+  width: 400px;
+  height: 450px;
+  border-radius: 10px;
+  box-shadow: 10px 5px 30px 5px gray;
+  padding: 0 16px;
+}
+
+.popup > h2 {
+  text-align: center;
+}
+
+.popup-button-div {
+  display: flex;
+  justify-content: center;
+}

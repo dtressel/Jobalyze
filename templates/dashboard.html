@@ -2,6 +2,7 @@
 
 {% block stylesheets %}
 <link rel="stylesheet" href="/static/css/dashboard.css">
+<link rel="stylesheet" href="/static/css/jh-popup.css">
 {% endblock %}
 
 
@@ -24,6 +25,7 @@
     {% else %}
     <div>No Job Hunts Created</div>
     {% endif %}
+    <button id="new-job-hunt-button">Start New Job Hunt</button>
   </div>
   <div id="top-right">
     <div id="hired-button" class="hired-button">Hired!</div>
@@ -87,7 +89,12 @@
     {% endif %}
   </div>
 </div>
+
+{% include "jh-popup.html" %}
+
 {% endblock %}
 
-
-{% block scripts %}{% endblock %}
+{% block scripts %}
+<script src="/static/js/jh-popup.js"></script>
+<script src="/static/js/dashboard.js"></script>
+{% endblock %}

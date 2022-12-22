@@ -189,6 +189,7 @@ def add_job():
     return render_template('job_add.html', form=form)
 
 @app.route('/dashboard')
+@login_required
 def dashboard_page_no_hunt():
     """Shows generic dashboard page to user who has not created a hunt"""
 
@@ -206,6 +207,7 @@ def dashboard_page_no_hunt():
     goals = None)
 
 @app.route('/dashboard/<hunt_id>')
+@login_required
 def dashboard_page_load_hunt(hunt_id):
     """Shows dashboard page with information displayed pertaining to chosen hunt"""
 
@@ -229,9 +231,20 @@ def dashboard_page_load_hunt(hunt_id):
         goals=goals)
 
 @app.route('/saved-jobs/<saved_job_id>')
+@login_required
 def show_saved_job(saved_job_id):
     """Shows details of a particular saved job"""
 
     saved_job = SavedJob.query.get(saved_job_id)
 
     return render_template('saved_job_details', saved_job=saved_job)
+
+@app.route('/job-hunts/add', methods=['POST'])
+@login_required
+def save_job_hunt():
+    """Saves a job hunt to the database"""
+
+    saved_job_hunt = JobHunt.save_job(current_user.id, request.get_json())
+
+    # fix this return
+    return "success"   

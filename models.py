@@ -195,6 +195,15 @@ class SavedJob(db.Model):
     def save_job(cls, user_id, details_obj):
         """Saves a job."""
 
+        # Check to see if Job is already saved. When a user saves a job in the fullscreen view, a back
+        # press in the browswer will reveal the same job with the "save" button still clickable, which
+        # can allow the user to click Save twice. This is why we need to check.
+
+
+        if details_obj.get('cos_id'):
+            if cls.query.filter_by(user_id = user_id, cos_id = details_obj['cos_id']).first():
+                return "already saved"
+
         job_to_save = cls(
             user_id = user_id,
             company = details_obj.get('company'),
@@ -255,12 +264,18 @@ class JobHunt(db.Model):
         nullable=False,
         default='US')
     radius = db.Column(db.Integer)
+    non_us = db.Column(db.Boolean,
+        nullable=False,
+        default=False)
+    remote = db.Column(db.Boolean,
+        nullable=False,
+        default=False)
     date_begun = db.Column(
         db.DateTime,
         nullable=False,
         default=datetime.utcnow()
     )
-    hired_by = db.Column(db.DateTime)
+    hired_by_goal_date = db.Column(db.DateTime)
     app_goal_time_frame = db.Column(db.Integer)
     # range: 0-2
     # values:
@@ -299,6 +314,29 @@ class JobHunt(db.Model):
 
     def __repr__(self):
         return f"<Job Hunt #{self.id}: {self.job_title_desired}, {self.status}>"
+
+    @classmethod
+    def save_job_hunt(cls, user_id, hunt_obj):
+        """Saves a job hunt."""
+
+        hunt_to_save = cls(
+            user_id = user_id,
+            name = hunt_obj.get('name'),
+            job_title_desired = hunt_obj.get('job_title_desired'),
+            o_net_code = hunt_obj.get('o_net_code'),
+            location = hunt_obj.get('location'),
+            radius = hunt_obj.get('radius'),
+            non_us = hunt_obj.get('non_us'),
+            remote = hunt_obj.get('remote'),
+            app_goal_time_frame = hunt_obj.get('app_goal_time_frame'),
+            app_goal_number = hunt_obj.get('app_goal_number'),
+            hired_by_goal_date = hunt_obj.get('hired_by_goal_date'),
+            description = hunt_obj.get('description')
+        )
+        # **********************need some error handling if not saved**********************
+        db.session.add(hunt_to_save)
+        db.session.commit()
+        return hunt_to_save
 
 
 app_strategy = db.Table('app_strategy',
