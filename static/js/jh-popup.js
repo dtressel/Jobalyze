@@ -41,7 +41,7 @@ function continueWizard() {
       popup8();
       break;
     case 9: 
-      popup9();
+      finishJhAdd();
       break;
   }
 }
@@ -130,15 +130,13 @@ function popup8() {
   popupWindowNum++;
 }
 
-function popup9() {
-  hideAllScreens();
+function finishJhAdd() {
   // get data from screen 8:
   newJobHuntObj.name = document.getElementById('jh-name').value;
   newJobHuntObj.description = document.getElementById('jh-description').value;
-  sendJhToBackend();
-  popupCancelButton.textContent = 'Close';
-  popupContinueButton.classList.add('display-none');
-  popupScreens[9].classList.remove('display-none');
+  // Automatically fill and submit hidden form to send to backend
+  fillHiddenForm();
+  document.getElementById('new-job-hunt-form').submit();
 }
 
 function cancelWizard() {
@@ -158,13 +156,29 @@ function hideAllScreens() {
   }
 }
 
-async function sendJhToBackend() {
-    // called by popup9()
-    const resp = await fetch('/job-hunts/add', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify(newJobHuntObj)
-    })
-  
-    return resp
+function fillHiddenForm() {
+  document.querySelector('#new-job-hunt-form > input[name="name"]').value = newJobHuntObj.name;
+  document.querySelector('#new-job-hunt-form > input[name="job_title_desired"]').value = newJobHuntObj.job_title_desired;
+  document.querySelector('#new-job-hunt-form > input[name="o_net_code"]').value = newJobHuntObj.o_net_code;
+  document.querySelector('#new-job-hunt-form > input[name="location"]').value = newJobHuntObj.location;
+  document.querySelector('#new-job-hunt-form > input[name="radius"]').value = newJobHuntObj.radius;
+  document.querySelector('#new-job-hunt-form > input[name="non_us"]').value = newJobHuntObj.non_us;
+  document.querySelector('#new-job-hunt-form > input[name="remote"]').value = newJobHuntObj.remote;
+  document.querySelector('#new-job-hunt-form > input[name="app_goal_time_frame"]').value = newJobHuntObj.app_goal_time_frame;
+  document.querySelector('#new-job-hunt-form > input[name="app_goal_number"]').value = newJobHuntObj.app_goal_number;
+  document.querySelector('#new-job-hunt-form > input[name="hired_by_goal_date"]').value = newJobHuntObj.hired_by_goal_date;
+  document.querySelector('#new-job-hunt-form > input[name="description"]').value = newJobHuntObj.description;
 }
+
+// Old submission function when submitting from front end
+
+// async function sendJhToBackend() {
+//     // called by popup9()
+//     const resp = await fetch('/job-hunts/add', {
+//       method: 'POST',
+//       headers: {'Content-Type': 'application/json'},
+//       body: JSON.stringify(newJobHuntObj)
+//     })
+  
+//     return resp
+// }

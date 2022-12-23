@@ -136,3 +136,17 @@ class ManualJobAddForm(FlaskForm):
     salary_min = IntegerField("Salary Min")
     salary_max = IntegerField("Salary Max")
 
+class NewJobHuntForm(FlaskForm):
+    """Form to manually add a job."""
+
+    name = StringField()
+    job_title_desired = StringField()
+    o_net_code = StringField()
+    location = StringField()
+    radius = IntegerField()
+    non_us = BooleanField()
+    remote = BooleanField()
+    app_goal_time_frame = IntegerField()
+    app_goal_number = IntegerField()
+    hired_by_goal_date = DateField()
+    description = StringField()

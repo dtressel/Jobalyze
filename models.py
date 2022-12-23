@@ -279,7 +279,7 @@ class JobHunt(db.Model):
     app_goal_time_frame = db.Column(db.Integer)
     # range: 0-2
     # values:
-    #     1: Daily
+    #     0: Daily
     #     1: Weekly
     #     2: Monthly
     app_goal_number = db.Column(db.Integer)
@@ -362,6 +362,8 @@ class JobApp(db.Model):
         db.ForeignKey('saved_jobs.id'),
         primary_key=True
     )
+    user_id = db.Column(db.Integer,
+        nullable=False)
     date_applied = db.Column(
         db.DateTime,
         nullable=False,
@@ -416,7 +418,8 @@ class JobApp(db.Model):
     def get_dashboard_job_apps_list(cls, user_id):
         """creates shortened and prioritized saved_jobs list for dashboard"""
 
-        return cls.query.filter_by(user_id = user_id).order_by(cls.date_applied.desc()).limit(8)
+        import pdb; pdb.set_trace()
+        return db.session.query(cls).filter(cls.saved_job.user_id == user_id).order_by(cls.date_applied.desc()).limit(8)
 
 class Strategy(db.Model):
 

@@ -80,9 +80,9 @@
     <div class="input-group">
       <label for="app-goal-time-frame">every</label>
       <select type="text" id="app-goal-time-frame">
-        <option value="day">day</option>
-        <option value="week" selected>week</option>
-        <option value="month">month</option>
+        <option value="0">day</option>
+        <option value="1" selected>week</option>
+        <option value="2">month</option>
       </select>
     </div>
   </div>
@@ -112,3 +112,9 @@
     <button id="popup-cancel-button">Cancel</button>
   </div>
 </div>
+<form method="POST" class="display-none" id="new-job-hunt-form">
+  {{form.hidden_tag()}}
+  {% for field in form if field.widget.input_type != 'hidden' %}
+  {{field}}
+  {% endfor %}
+</form>

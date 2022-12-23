@@ -6,7 +6,7 @@ from flask_login import LoginManager, login_user, login_required, logout_user, c
 
 from utilities import is_safe_url
 from models import db, connect_db, User, SavedJob, JobHunt, JobApp
-from forms import RegistrationForm, LoginForm, ApiJobSearchForm, ManualJobAddForm, UserEditForm
+from forms import RegistrationForm, LoginForm, ApiJobSearchForm, ManualJobAddForm, NewJobHuntForm, UserEditForm
 from api_requests import get_jobs, get_job_details, get_page_navigation_values, get_postings_for_dashboard
 
 app = Flask(__name__)
@@ -188,10 +188,19 @@ def add_job():
 
     return render_template('job_add.html', form=form)
 
-@app.route('/dashboard')
+@app.route('/dashboard', methods=['GET', 'POST'])
 @login_required
 def dashboard_page_no_hunt():
     """Shows generic dashboard page to user who has not created a hunt"""
+
+    form = NewJobHuntForm()
+    import pdb; pdb.set_trace()
+
+    if form.validate_on_submit():
+        print('Job Hunt form validated')
+        new_hunt = JobHunt.save_job_hunt(current_user.id, form.data)
+        # ******************** Add failed API error handling ******************
+        return redirect('/dashboard')
 
     current_hunt = User.current_hunt(current_user)
     if current_hunt:
@@ -200,11 +209,12 @@ def dashboard_page_no_hunt():
     saved_jobs_list = SavedJob.get_dashboard_saved_jobs_list(current_user.id)
 
     return render_template('dashboard.html',
-    current_hunt=current_hunt,
-    saved_jobs_list=saved_jobs_list,
-    job_apps_list = None,
-    new_job_postings = None,
-    goals = None)
+        current_hunt = current_hunt,
+        saved_jobs_list = saved_jobs_list,
+        job_apps_list = None,
+        new_job_postings = None,
+        goals = None,
+        form = form)
 
 @app.route('/dashboard/<hunt_id>')
 @login_required
@@ -217,6 +227,14 @@ def dashboard_page_load_hunt(hunt_id):
     # job_apps (available from current job_hunt)
     # recent job postings (get from front end)
 
+    form = NewJobHuntForm()
+
+    if form.validate_on_submit():
+        print('Job Hunt form validated')
+        new_hunt = JobHunt.save_job_hunt(current_user.id, form.data)
+        # ******************** Add failed API error handling ******************
+        return redirect('/dashboard')
+
     current_hunt = JobHunt.query.get(hunt_id)
     saved_jobs_list = SavedJob.get_dashboard_saved_jobs_list(current_user.id)
     job_apps_list = JobApp.get_dashboard_job_apps_list(current_user.id)
@@ -228,7 +246,8 @@ def dashboard_page_load_hunt(hunt_id):
         saved_jobs_list=saved_jobs_list,
         job_apps_list=job_apps_list,
         new_job_postings=new_job_postings,
-        goals=goals)
+        goals=goals,
+        form=form)
 
 @app.route('/saved-jobs/<saved_job_id>')
 @login_required
