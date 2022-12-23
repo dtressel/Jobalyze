@@ -178,6 +178,8 @@ class SavedJob(db.Model):
     user_notes = db.Column(
         db.Text
     )
+    last_cos_update = db.Column(db.DateTime,
+        default=datetime.utcnow())
     user_id = db.Column(
         db.Integer,
         db.ForeignKey('users.id'),
@@ -352,7 +354,6 @@ app_strategy = db.Table('app_strategy',
     )
 )
 
-
 class JobApp(db.Model):
 
     __tablename__ = 'job_apps'
@@ -418,8 +419,7 @@ class JobApp(db.Model):
     def get_dashboard_job_apps_list(cls, user_id):
         """creates shortened and prioritized saved_jobs list for dashboard"""
 
-        import pdb; pdb.set_trace()
-        return db.session.query(cls).filter(cls.saved_job.user_id == user_id).order_by(cls.date_applied.desc()).limit(8)
+        return cls.query.filter_by(user_id = user_id).order_by(cls.date_applied.desc()).limit(8)
 
 class Strategy(db.Model):
 

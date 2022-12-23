@@ -49,3 +49,25 @@ main {
   display: flex;
   justify-content: space-between;
 }
+
+.main-grid-quadrant {
+  margin: 5px;
+  padding: 5px;
+  border: 1px solid white;
+  border-radius: 5px;
+  box-shadow: inset 0 -3em 3em rgba(0, 0, 0, 0.1), 0 0 0 2px rgb(255, 255, 255),
+  0.3em 0.3em 1em rgba(0, 0, 0, 0.3);
+}
+
+.main-grid-quadrant h3 {
+  margin: 8px 0;
+}
+
+.top-grid-section {
+  display: flex;
+  align-items: center;
+}
+
+.top-grid-section:nth-of-type(2), .top-grid-section:nth-of-type(3) {
+  justify-content: center;
+}

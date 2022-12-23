@@ -162,6 +162,8 @@ def show_job_details_page(cos_id):
     if current_user.is_authenticated:
         saved = SavedJob.already_saved(current_user.id, cos_id)
 
+    # Job details API request are sent from front end after page loads
+
     return render_template('job_details_api.html', cos_id=cos_id, fc=request.args['fc'], saved=saved)  
 
 @app.route('/saved-jobs/add/cos', methods=['POST'])
@@ -194,7 +196,6 @@ def dashboard_page_no_hunt():
     """Shows generic dashboard page to user who has not created a hunt"""
 
     form = NewJobHuntForm()
-    import pdb; pdb.set_trace()
 
     if form.validate_on_submit():
         print('Job Hunt form validated')
@@ -255,8 +256,9 @@ def show_saved_job(saved_job_id):
     """Shows details of a particular saved job"""
 
     saved_job = SavedJob.query.get(saved_job_id)
+    
 
-    return render_template('saved_job_details', saved_job=saved_job)
+    return render_template('job_details_saved.html', saved_job=saved_job)
 
 @app.route('/job-hunts/add', methods=['POST'])
 @login_required

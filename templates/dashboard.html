@@ -11,15 +11,15 @@
 
 {% block content %}
 <div class="top-grid">
-  <div id="top-left">
+  <div id="top-left" class="top-grid-section">
     <h2>Dashboard</h2>
   </div>
-  <div id="top-center">
+  <div id="top-center" class="top-grid-section">
     <label for="job-hunt-select">Job Hunt</label>
     {% if current_hunt %}
     <select name="job_hunt" id="job-hunt-select">
       {% for hunt in current_user.job_hunts|reverse %}
-      <option value="hunt.id">hunt.name</option>
+      <option value="{{hunt.id}}">{{hunt.name}}</option>
       {% endfor %}
     </select>
     {% else %}
@@ -27,15 +27,15 @@
     {% endif %}
     <button id="new-job-hunt-button">Start New Job Hunt</button>
   </div>
-  <div id="top-right">
+  <div id="top-right" class="top-grid-section">
     <div id="hired-button" class="hired-button">Hired!</div>
   </div>
 </div>
 <div class="main-grid">
-  <div id="main-upper-left">
+  <div id="main-upper-left" class="main-grid-quadrant">
     <div class="heading-expand">
       <h3>Saved Jobs</h3>
-      <a><img src="/static/icons/Expand-icon-small.png"></a>
+      <a><img src="/static/icons/Expand-icon-30.png"></a>
     </div>
     {% if saved_jobs_list %}
     <ul>
@@ -47,10 +47,10 @@
     <div class="empty-list-note">You have not saved any jobs</div>
     {% endif %}
   </div>
-  <div id="main-upper-right">
+  <div id="main-upper-right" class="main-grid-quadrant">
     <div class="heading-expand">
       <h3>Job Apps</h3>
-      <a><img src="/static/icons/Expand-icon-small.png"></a>
+      <a><img src="/static/icons/Expand-icon-30.png"></a>
     </div>
     {% if job_apps_list %}
     <ul>
@@ -62,25 +62,25 @@
     <div class="empty-list-note">You have not applied to any jobs yet.</div>
     {% endif %}
   </div>
-  <div id="main-lower-left">
+  <div id="main-lower-left" class="main-grid-quadrant">
     <div class="heading-expand">
       <h3>New Job Postings</h3>
-      <a><img src="/static/icons/Expand-icon-small.png"></a>
+      <a><img src="/static/icons/Expand-icon-30.png"></a>
     </div>
     {% if new_job_postings %}
     <ul>
       {% for job in new_job_postings['Jobs'] %}
-      <a href="/saved-jobs/{{job.id}}"><li>{{job['Company']}}, {{job['JobTitle']}}</li></a>
+      <li>{{job['Company']}}, <a href="/cos-jobs/details/{{job['JvId']}}?fc={{job['Fc']}}">{{job['JobTitle']}}</a></li>
       {% endfor %}
     </ul>
     {% else %}
     <p>Create a job hunt to see recent job postings here!</p>
     {% endif %}
   </div>
-  <div id="main-lower-right">
+  <div id="main-lower-right" class="main-grid-quadrant">
     <div class="heading-expand">
       <h3>Progress</h3>
-      <a><img src="/static/icons/Expand-icon-small.png"></a>
+      <a><img src="/static/icons/Expand-icon-30.png"></a>
     </div>
     {% if current_hunt.app_goal_number and current_hunt.app_goal_time_frame %}
       You have goals!
