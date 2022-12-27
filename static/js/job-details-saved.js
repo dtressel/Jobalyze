@@ -20,21 +20,23 @@ function detailsDivClick(evt) {
   }
 }
 
-function addButtonClick(element) {
-  element.classList.add('display-none');
-  element.parentElement.lastElementChild.classList.remove('display-none');
-  switch(element.parentElement.id) {
+function addButtonClick(addButton) {
+  addButton.classList.add('display-none');
+  const detailsRowId = addButton.dataset.groupId;
+  console.log(`${detailsRowId}-input-group`);
+  document.getElementById(`${detailsRowId}-input-group`).classList.remove('display-none');
+  switch(detailsRowId) {
     case "details-company-size": 
-      addCompanySize(element);
+      addCompanySize();
       break;
     case "details-salary-range": 
-      addSalaryRange(element.parentElement.lastElementChild.firstElementChild);
+      addSalaryRange();
       break;
     case "details-job-type": 
-      addJobType(element);
+      addJobType();
       break;
     case "details-federal-contractor": 
-      addFederalContractor(element);
+      addFederalContractor();
       break;
     case "details-user-notes": 
       addUserNotes();
@@ -54,8 +56,9 @@ function addCompanySize() {
 
 }
 
-function addSalaryRange(element) {
-  textInputToCurrency(element);
+function addSalaryRange() {
+  textInputToCurrency(document.getElementById('salary-range-1-input'));
+  textInputToCurrency(document.getElementById('salary-range-2-input'));
 }
 
 function addJobType() {

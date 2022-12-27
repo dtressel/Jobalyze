@@ -1,5 +1,5 @@
-function textInputToCurrency(htmlInput) {
-  htmlInput.addEventListener('input', replaceValue);
+function textInputToCurrency(textInput) {
+  textInput.addEventListener('input', replaceValue);
 }
 
 function replaceValue(evt) {
