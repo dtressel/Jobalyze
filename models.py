@@ -230,12 +230,23 @@ class SavedJob(db.Model):
 
     @classmethod
     def already_saved(cls, user_id, cos_id):
-        """Checks to see if job found through API is already saved"""
+        """Checks to see if job found through API is already saved. Returns True or False."""
 
         id_if_exists = db.session.query(cls.id).filter(cls.user_id == user_id,
             cls.cos_id == cos_id).first()
+        import pdb; pdb.set_trace()
 
         return id_if_exists != None
+
+    @classmethod
+    def already_saved_id(cls, user_id, cos_id):
+        """Checks to see if job found through API is already saved. Returns JobSaved id or None."""
+
+        id_if_exists = db.session.query(cls.id).filter(cls.user_id == user_id,
+            cls.cos_id == cos_id).first()
+        if id_if_exists:
+            return id_if_exists[0]
+        return id_if_exists
 
     @classmethod
     def get_dashboard_saved_jobs_list(cls, user_id):
@@ -399,9 +410,6 @@ class JobApp(db.Model):
     )
     date_closed = db.Column(
         db.DateTime
-    )
-    user_notes = db.Column(
-        db.Text
     )
     job_hunt_id = db.Column(
         db.Integer,

@@ -8,21 +8,105 @@
 {% block title %}Job Details{% endblock %}
 
 {% block content %}
-<div class="right-column-wrapper">
-  <div class="right-column" id="right-column" class="display-none">
-    <div class="title-apply">
-      <h3 id="details-job-title">{{saved_job.title}}</h3>
-      <div class="hor-buttons-div">
-        <a id="details-url" href="{{saved_job.application_link}}" target="_blank"><button>Apply</button></a>
+<div class="details-wrapper" id="details-wrapper">
+  <div class="title-apply">
+    <h3 id="details-job-title">{{saved_job.title}}</h3>
+    <div class="hor-buttons-div">
+      <a id="details-url" href="{{saved_job.application_link}}" target="_blank"><button>Apply</button></a>
+    </div>
+  </div>
+  <div class="details-i-applied">
+    <div>
+      <div id="details-company-name">{{saved_job.company}}</div>
+      <div id="details-location">{{saved_job.location}}</div>
+      <div id="details-date-posted">{{saved_job.date_posted}}</div>
+    </div>
+    <a id="i-applied-link"><button>I applied</button></a>
+  </div>
+  <div id="details-description">{{saved_job.job_description | safe}}</div>
+  <hr>
+  <div id="additional-details">
+    <h3>Additional Details</h3>
+    <div id="details-company-size">
+      <span>Company size: </span>
+      {% if saved_job.company_size %}
+      <span>{{saved_job.company_size}}</span>
+      {% else %}
+      <button>Add</button>
+      {% endif %}
+      <span class="display-none">
+        <select>
+          <option value="0">1-10 employees</option>
+          <option value="1">11-50 employees</option>
+          <option value="2">51-200 employees</option>
+          <option value="3">201-500 employees</option>
+          <option value="4">501-1,000 employees</option>
+          <option value="5">1,001-5,000 employees</option>
+          <option value="6">5,001-10,000 employees</option>
+          <option value="7">10,001+ employees</option>
+        </select>
+        <button>Save</button>
+        <button>Cancel</button>
+      </span>
+    </div>
+    <div id="details-salary-range">
+      <span>Salary range: </span>
+      {% if saved_job.salary_min %}
+      <span>${{saved_job.salary_min}}-${{saved_job.salary_max}}</span>
+      {% else %}
+      <button>Add</button>
+      {% endif %}
+      <span class="display-none">
+        <input type="text" id="number-with-commas">
+        <button>Save</button>
+        <button>Cancel</button>
+      </span>
+    </div>
+    <div id="details-job-type">
+      <span>Job type: </span>
+      {% if saved_job.job_type %}
+      <span>{{saved_job.job_type}}</span>
+      {% else %}
+      <button>Add</button>
+      {% endif %}
+      <span class="display-none">
+        <input type="text">
+        <button>Save</button>
+        <button>Cancel</button>
+      </span>
+    </div>
+    <div id="details-federal-contractor">
+      <span>Federal contractor: </span>
+      {% if saved_job.federal_contractor %}
+      <span>{{saved_job.federal_contractor}}</span>
+      {% else %}
+      <button>Add</button>
+      {% endif %}
+      <span class="display-none">
+        <input type="text">
+        <button>Save</button>
+        <button>Cancel</button>
+      </span>
+    </div>
+    <div id="details-user-notes">
+      <span>User notes: </span>
+      {% if saved_job.user_notes %}
+      <span>{{saved_job.user_notes}}</span>
+      {% else %}
+      <button>Add</button>
+      {% endif %}
+      <div class="display-none">
+        <textarea></textarea>
+        <button>Save</button>
+        <button>Cancel</button>
       </div>
     </div>
-    <div id="details-company-name">{{saved_job.company}}</div>
-    <div id="details-location">{{saved_job.location}}</div>
-    <div id="details-date-posted">{{saved_job.date_posted}}</div>
-    <div id="details-description">{{saved_job.job_description | safe}}</div>
   </div>
 </div>
 {% endblock %}
 
 
-{% block scripts %}{% endblock %}
+{% block scripts %}
+<script src="/static/js/currency-input.js"></script>
+<script src="/static/js/job-details-saved.js"></script>
+{% endblock %}

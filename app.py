@@ -256,7 +256,6 @@ def show_saved_job(saved_job_id):
     """Shows details of a particular saved job"""
 
     saved_job = SavedJob.query.get(saved_job_id)
-    
 
     return render_template('job_details_saved.html', saved_job=saved_job)
 
@@ -268,4 +267,31 @@ def save_job_hunt():
     saved_job_hunt = JobHunt.save_job(current_user.id, request.get_json())
 
     # fix this return
-    return "success"   
+    return "success"  
+
+@app.route('/job-apps/add')
+@login_required
+def save_job_app():
+    """Saves a job application for a job that has not already been saved."""
+
+    return render_template('job_app_add_unsaved.html')
+
+@app.route('/job-apps/add/cos/<cos_id>')
+@login_required
+def save_job_app_cos(cos_id):
+    """Saves a job application for a job from the COS API that has not already been saved."""
+
+    saved_job_id = SavedJob.already_saved_id(current_user.id, cos_id)
+    if saved_job_id:
+        return redirect(f'/job-apps/add/saved/{saved_job_id}')
+
+    return render_template('job_app_add_cos.html')
+
+@app.route('/job-apps/add/saved/<saved_id>')
+@login_required
+def save_job_app_saved(saved_id):
+    """Saves a job application for a job that has been saved."""
+
+    saved_job = SavedJob.query.get(saved_id)
+
+    return render_template('job_app_add_saved.html', saved_job=saved_job)

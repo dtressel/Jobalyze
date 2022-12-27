@@ -4,9 +4,13 @@
   src: url(/static/fonts/Zen_Dots/ZenDots-Regular.ttf);
 }
 
-* {
+*, *::before, *::after {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   box-sizing: border-box;
+}
+
+input, textarea, button, select {
+  font: inherit;
 }
 
 .nav-bar-outer-wrapper, .main-outer-wrapper {

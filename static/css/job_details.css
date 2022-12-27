@@ -1,3 +1,8 @@
+/* .details-wrapper {
+  border: 1px solid rgba(140, 140, 140, 0.524);
+  border-radius: 10px;
+} */
+
 .title-apply {
   display: flex;
   justify-content: space-between;
@@ -7,4 +12,9 @@
 .hor-buttons-div {
   display: flex;
   align-items: center;
+}
+
+.details-i-applied {
+  display: flex;
+  justify-content: space-between;
 }
