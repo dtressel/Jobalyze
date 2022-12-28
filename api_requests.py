@@ -1,7 +1,7 @@
 import requests
 import math
 
-from keys import COS_API_TOKEN, COS_USER_ID, COS_BASE_URL
+from keys import COS_API_TOKEN, COS_USER_ID, COS_BASE_URL, COS_API_TOKEN_BAD, COS_BASE_URL_BAD
 
 def get_jobs(form):
     """form is WTForm form object, convet_to_dict is True (return dict) or False (return json)"""
@@ -21,11 +21,16 @@ def get_jobs(form):
     if not days:
         days = 0
 
-    resp = requests.get(
-        f'{COS_BASE_URL}/{COS_USER_ID}/{keyword}/{location}/{radius}/0/0/{startRecord}/10/{days}',
-        params={"companyName": companyName, "locationFilter": None, "source": "NLx", "showFilters": True},
-        headers={"Content-Type": "application/json", "Authorization": f'Bearer {COS_API_TOKEN}'}
-    )
+    try:
+        resp = requests.get(
+            f'{COS_BASE_URL}/{COS_USER_ID}/{keyword}/{location}/{radius}/0/0/{startRecord}/10/{days}',
+            params={"companyName": companyName, "locationFilter": None, "source": "NLx", "showFilters": True},
+            headers={"Content-Type": "application/json", "Authorization": f'Bearer {COS_API_TOKEN}'}
+        )
+    except:
+        return {'Message': 'COS API did not respond', 'ErrorCode': 600}
+        
+    import pdb; pdb.set_trace()
         
     return resp.json()
 
