@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, render_template, redirect, flash, request, abort, session
+from flask import Flask, render_template, redirect, flash, request, abort, make_response, session
 # For auth:
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 
@@ -175,7 +175,7 @@ def save_job():
 
     saved_job = SavedJob.save_job(current_user.id, request.get_json())
 
-    # fix this return
+    # *******************return proper response object**********************
     return "success"
 
 @app.route('/saved-jobs/add', methods=['Get', 'POST'])
@@ -191,6 +191,15 @@ def add_job():
         return redirect('/')
 
     return render_template('job_add.html', form=form)
+
+@app.route('/saved-jobs/edit/json', methods=['POST'])
+@login_required
+def edit_saved_job():
+    """Endpoint for frontend to post an edit to a saved job."""
+
+    resp = SavedJob.edit_saved_job(current_user.id, request.get_json())
+
+    return make_response(resp['body'], resp['status'])
 
 @app.route('/dashboard', methods=['GET', 'POST'])
 @login_required

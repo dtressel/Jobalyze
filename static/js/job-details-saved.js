@@ -1,74 +1,74 @@
 additionalDetailsDiv = document.getElementById('additional-details');
 
+const savedJobId = document.getElementById('details-wrapper').dataset.savedJobId;
+
 additionalDetailsDiv.addEventListener('click', detailsDivClick);
 
 function detailsDivClick(evt) {
   if (evt.target.localName === "button") {
-    console.log(evt);
     switch (evt.target.textContent) {
       case "Add":
         addButtonClick(evt.target);
         break;
       case "Save":
-        saveButtonClick();
+        saveButtonClick(evt.target);
         break;
       case "Cancel":
-        cancelButtonClick(evt.target.parentElement.parentElement.id);
+        cancelButtonClick(evt.target);
         break;
     }
-
   }
 }
 
 function addButtonClick(addButton) {
   addButton.classList.add('display-none');
   const detailsRowId = addButton.dataset.groupId;
-  console.log(`${detailsRowId}-input-group`);
   document.getElementById(`${detailsRowId}-input-group`).classList.remove('display-none');
-  switch(detailsRowId) {
-    case "details-company-size": 
-      addCompanySize();
+  if (detailsRowId === "details-salary-range") {
+    textInputToCurrency(document.getElementById('details-salary-range-1-input'));
+    textInputToCurrency(document.getElementById('details-salary-range-2-input'));
+  }
+}
+
+async function saveButtonClick(saveButton) {
+  switch(saveButton.dataset.groupId) {
+    case "details-company-size":
+      console.log(document.getElementById('details-company-size-input').value);
+      await postToServer({company_size: document.getElementById('details-company-size-input').value});
       break;
     case "details-salary-range": 
-      addSalaryRange();
+      await postToServer({salary_min: document.getElementById('details-salary-range-1-input').value,
+        salary_max: document.getElementById('details-salary-range-2-input').value});
       break;
     case "details-job-type": 
-      addJobType();
+      await postToServer({job_type: document.getElementById('details-job-type-input').value});
       break;
     case "details-federal-contractor": 
-      addFederalContractor();
+      await postToServer({federal_contractor: document.getElementById('details-federal-contractor-input').value});
       break;
     case "details-user-notes": 
-      addUserNotes();
+      await postToServer({user_notes: document.getElementById('details-user-notes-input').value});
       break;
   }
 }
 
-function saveButtonClick() {
-
+async function postToServer(dataObj) {
+  const details = {saved_job_id: savedJobId, data: dataObj};
+  const resp = await fetch('/saved-jobs/edit/json', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify(details)
+  })
 }
 
-function cancelButtonClick(detailGroupId) {
-  detailgroupDiv
-}
-
-function addCompanySize() {
-
-}
-
-function addSalaryRange() {
-  textInputToCurrency(document.getElementById('salary-range-1-input'));
-  textInputToCurrency(document.getElementById('salary-range-2-input'));
-}
-
-function addJobType() {
-
-}
-
-function addFederalContractor() {
-
-}
-
-function addUserNotes() {
-
+function cancelButtonClick(cancelButton) {
+  const detailsRowId = cancelButton.dataset.groupId;
+  if (detailsRowId === "details-salary-range") {
+    document.getElementById('details-salary-range-1-input').value = '';
+    document.getElementById('details-salary-range-2-input').value = '';
+  } else {
+    document.getElementById(`${detailsRowId}-input`).value = '';
+  }
+  document.getElementById(`${detailsRowId}-input-group`).classList.add('display-none');
+  document.getElementById(`${detailsRowId}-add`).classList.remove('display-none');
 }

@@ -109,29 +109,29 @@ class ManualJobAddForm(FlaskForm):
     user_notes = TextAreaField("User Notes")
     date_posted = DateField("Date Posted")
     job_type = SelectField("Job Type", choices=[
-        (0, 'Full-time'),
-        (1, 'Part-time'),
-        (2, 'Contract'),
-        (3, 'Internship'),
-        (4, 'Volunteer')
+        ('f', 'Full-time'),
+        ('p', 'Part-time'),
+        ('c', 'Contract'),
+        ('i', 'Internship'),
+        ('v', 'Volunteer')
     ])
     experience_level = SelectField("Experience Level", choices=[
-        (0, 'Internship'),
-        (1, 'Entry level'),
-        (2, 'Associate'),
-        (3, 'Mid-Senior level'),
-        (4, 'Director'),
-        (5, 'Executive'),
+        ('i', 'Internship'),
+        ('e', 'Entry level'),
+        ('a', 'Associate'),
+        ('m', 'Mid-Senior level'),
+        ('d', 'Director'),
+        ('x', 'Executive'),
     ])
     company_size = SelectField("Company Size", choices=[
-        (0, '1-10 employees'),
-        (1, '11-50 employees'),
-        (2, '51-200 employees'),
-        (3, '201-500 employees'),
-        (4, '501-1000 employees'),
-        (5, '1001-5000 employees'),
-        (6, '5001-10,000 employees'),
-        (7, '10,001+ employees')
+        (1, '1-10 employees'),
+        (2, '11-50 employees'),
+        (3, '51-200 employees'),
+        (4, '201-500 employees'),
+        (5, '501-1,000 employees'),
+        (6, '1,001-5,000 employees'),
+        (7, '5,001-10,000 employees'),
+        (8, '10,001+ employees')
     ])
     salary_min = IntegerField("Salary Min")
     salary_max = IntegerField("Salary Max")

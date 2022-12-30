@@ -124,39 +124,39 @@ class SavedJob(db.Model):
     company_size = db.Column(
         db.Integer
     )
-    # range: 0-7
+    # range: 1-8
     # values:
-    #     0: 1-10 employees.
-    #     1: 11-50 employees.
-    #     2: 51-200 employees.
-    #     3: 201-500 employees.
-    #     4: 501-1000 employees.
-    #     5: 1001-5000 employees.
-    #     6: 5001-10,000 employees.
-    #     7: 10,001+ employees.
+    #     1: 1-10 employees.
+    #     2: 11-50 employees.
+    #     3: 51-200 employees.
+    #     4: 201-500 employees.
+    #     5: 501-1000 employees.
+    #     6: 1001-5000 employees.
+    #     7: 5001-10,000 employees.
+    #     8: 10,001+ employees.
 
     job_type = db.Column(
-        db.Integer
+        db.String(1)
     )
-    # range: 0-4
+    # range: 1-5
     # values:
-    #     0: Full-time
-    #     1: Part-time
-    #     2: Contract
-    #     3: Internship
-    #     4: Volunteer
+    #     f: Full-time
+    #     p: Part-time
+    #     c: Contract
+    #     i: Internship
+    #     v: Volunteer
 
     experience_level = db.Column(
-        db.String(100)
+        db.String(1)
     )
-    # range: 0-5
+    # range: 1-6
     # values:
-    #     0: Internship
-    #     1: Entry level
-    #     2: Associate
-    #     3: Mid-Senior level
-    #     4: Director
-    #     5: Executive
+    #     i: Internship
+    #     e: Entry level
+    #     a: Associate
+    #     m: Mid-Senior level
+    #     d: Director
+    #     x: Executive
     salary_min = db.Column(
         db.Integer
     )
@@ -173,7 +173,7 @@ class SavedJob(db.Model):
         db.Text
     )
     federal_contractor = db.Column(
-        db.Text
+        db.Boolean
     )
     user_notes = db.Column(
         db.Text
@@ -193,6 +193,25 @@ class SavedJob(db.Model):
     def __repr__(self):
         return f"<Job #{self.id}: {self.company}, {self.title}>"
 
+    @classmethod
+    def edit_saved_job(cls, user_id, details_obj):
+        """Edits a saved job. Returns an object to be converted into a response object in app.py."""
+
+        saved_job = cls.query.get(details_obj['saved_job_id'])
+        if saved_job.user_id == user_id:
+            print ('************** User Ids matched! *******************')
+            try:
+                job_to_edit = cls.query.get(details_obj['saved_job_id'])
+                for key in details_obj['data']:
+                    setattr(job_to_edit, key, details_obj['data'][key])
+                db.session.add(job_to_edit)
+                db.session.commit()
+            except: 
+                return {'body': {'message': 'Sorry, we were unable to process your request. Please try again later!'}, 'status': 500}
+            return {'body': {'message': 'Update Successful!'}, 'status': 200}
+        else:
+            return {'body': {'message': 'Unauthorized: This saved job is associated with another user.'}, 'status': 403}
+    
     @classmethod
     def save_job(cls, user_id, details_obj):
         """Saves a job."""
@@ -289,22 +308,20 @@ class JobHunt(db.Model):
         default=datetime.utcnow()
     )
     hired_by_goal_date = db.Column(db.DateTime)
-    app_goal_time_frame = db.Column(db.Integer)
-    # range: 0-2
+    app_goal_time_frame = db.Column(db.String(1))
     # values:
-    #     0: Daily
-    #     1: Weekly
-    #     2: Monthly
+    #     d: Daily
+    #     w: Weekly
+    #     m: Monthly
     app_goal_number = db.Column(db.Integer)
     status = db.Column(
-        db.Integer,
-        default=0
+        db.String(1),
+        default='a'
     )
-    # range: 0-2
     # values:
-    #     0: Actively Applying
-    #     1: Closed, Hired
-    #     2: Closed, Abandoned
+    #     a: Actively Applying
+    #     h: Closed, Hired
+    #     c: Closed, Abandoned
     
     description = db.Column(
         db.Text
