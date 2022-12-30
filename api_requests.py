@@ -30,8 +30,6 @@ def get_jobs(form):
     except:
         return {'Message': 'COS API did not respond', 'ErrorCode': 600}
         
-    import pdb; pdb.set_trace()
-        
     return resp.json()
 
 def get_postings_for_dashboard(hunt):
