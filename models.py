@@ -185,6 +185,9 @@ class SavedJob(db.Model):
         db.ForeignKey('users.id'),
         nullable = False
     )
+    exclude = db.Column(db.Boolean,
+        default=False)
+        # exclude from saved job list?
     user = db.relationship('User', back_populates='saved_jobs')
     job_app = db.relationship("JobApp", back_populates="saved_job", uselist=False, cascade="all, delete")
     # Make sure to not allow or at least warn a user that deleting a saved job that has a job app
@@ -220,32 +223,26 @@ class SavedJob(db.Model):
         # press in the browswer will reveal the same job with the "save" button still clickable, which
         # can allow the user to click Save twice. This is why we need to check.
 
-
         if details_obj.get('cos_id'):
             if cls.query.filter_by(user_id = user_id, cos_id = details_obj['cos_id']).first():
                 return "already saved"
 
-        job_to_save = cls(
-            user_id = user_id,
-            company = details_obj.get('company'),
-            title = details_obj.get('title'),
-            date_posted = details_obj.get('date_posted'),
-            location = details_obj.get('location'),
-            company_size = details_obj.get('company_size'),
-            job_type = details_obj.get('job_type'),
-            experience_level = details_obj.get('experience_level'),
-            salary_min = details_obj.get('salary_min'),
-            salary_max = details_obj.get('salary_max'),
-            job_description = details_obj.get('job_description'),
-            application_link = details_obj.get('application_link'),
-            cos_id = details_obj.get('cos_id'),
-            federal_contractor = details_obj.get('federal_contractor'),
-            user_notes = details_obj.get('user_notes')
-        )
+        if details_obj.get('federal_contractor'):
+            if details_obj['federal_contractor'] == "True":
+                details_obj['federal_contractor'] = True
+            if details_obj['federal_contractor'] == "False":
+                details_obj['federal_contractor'] = False
+
+        job_to_save = cls(user_id = user_id)
+
+        for key in details_obj:
+            setattr(job_to_save, key, details_obj[key])
+
+        import pdb; pdb.set_trace()
         # **********************need some error handling if not saved**********************
         db.session.add(job_to_save)
         db.session.commit()
-        return job_to_save
+        return job_to_save  
 
     @classmethod
     def already_saved(cls, user_id, cos_id):
@@ -253,7 +250,6 @@ class SavedJob(db.Model):
 
         id_if_exists = db.session.query(cls.id).filter(cls.user_id == user_id,
             cls.cos_id == cos_id).first()
-        import pdb; pdb.set_trace()
 
         return id_if_exists != None
 
@@ -349,20 +345,11 @@ class JobHunt(db.Model):
     def save_job_hunt(cls, user_id, hunt_obj):
         """Saves a job hunt."""
 
-        hunt_to_save = cls(
-            user_id = user_id,
-            name = hunt_obj.get('name'),
-            job_title_desired = hunt_obj.get('job_title_desired'),
-            o_net_code = hunt_obj.get('o_net_code'),
-            location = hunt_obj.get('location'),
-            radius = hunt_obj.get('radius'),
-            non_us = hunt_obj.get('non_us'),
-            remote = hunt_obj.get('remote'),
-            app_goal_time_frame = hunt_obj.get('app_goal_time_frame'),
-            app_goal_number = hunt_obj.get('app_goal_number'),
-            hired_by_goal_date = hunt_obj.get('hired_by_goal_date'),
-            description = hunt_obj.get('description')
-        )
+        hunt_to_save = cls(user_id = user_id)
+
+        for key in hunt_obj:
+            setattr(hunt_to_save, key, hunt_obj[key])
+
         # **********************need some error handling if not saved**********************
         db.session.add(hunt_to_save)
         db.session.commit()
