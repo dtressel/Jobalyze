@@ -18,8 +18,8 @@
     - Saved Jobs table with storing the data for the jobs that users have saved.
     - Job Hunts table storing a user’s “job hunts.”
     - Job Applications table (extends Saved Jobs table) that stores additional information about the jobs that a user has applied to.
-    - Strategies table that stores a user’s defined strategies for each job hunt.
-    - Applications/Strategies table that connects the strategies with the applications that user used those strategies for (man-to-many relationship).
+    - Factors table that stores a user’s defined strategies for each job hunt.
+    - Applications/Factors table that connects the factors with the applications that user used those factors for (man-to-many relationship).
 5. API
     - I plan to use the Career One Stop “List Jobs” API: https://www.careeronestop.org/Developers/WebAPI/Jobs/list-jobs.aspx
     - This API seems well-maintained and is completely free with no request limits.

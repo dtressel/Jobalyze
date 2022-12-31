@@ -372,7 +372,7 @@ class JobHunt(db.Model):
     
     user = db.relationship('User', back_populates='job_hunts')
     job_apps = db.relationship('JobApp', back_populates='job_hunt', cascade="all, delete")
-    strategies = db.relationship("Strategy", back_populates="job_hunt", cascade="all, delete")
+    factors = db.relationship("Factor", back_populates="job_hunt", cascade="all, delete")
 
     def __repr__(self):
         return f"<Job Hunt #{self.id}: {self.job_title_desired}, {self.status}>"
@@ -392,15 +392,15 @@ class JobHunt(db.Model):
         return hunt_to_save
 
 
-app_strategy = db.Table('app_strategy',
+app_factor = db.Table('app_factor',
     db.Column('job_app_id',
         db.Integer,
         db.ForeignKey('job_apps.id'),
         primary_key=True
     ),
-    db.Column('strategy_id',
+    db.Column('factor_id',
         db.Integer,
-        db.ForeignKey('strategies.id'),
+        db.ForeignKey('factors.id'),
         primary_key=True
     )
 )
@@ -458,7 +458,7 @@ class JobApp(db.Model):
     )
     saved_job = db.relationship("SavedJob", back_populates="job_app")
     job_hunt = db.relationship("JobHunt", back_populates="job_apps")
-    strategies = db.relationship('Strategy', secondary=app_strategy, back_populates='job_apps')
+    factors = db.relationship('Factor', secondary=app_factor, back_populates='job_apps')
 
     def __repr__(self):
         return f"<Job App #{self.id}: {self.saved_job.company}, {self.current_status}>"
@@ -469,9 +469,9 @@ class JobApp(db.Model):
 
         return cls.query.filter_by(user_id = user_id).order_by(cls.date_applied.desc()).limit(8)
 
-class Strategy(db.Model):
+class Factor(db.Model):
 
-    __tablename__ = 'strategies'
+    __tablename__ = 'factors'
 
     id = db.Column(
         db.Integer,
@@ -486,11 +486,11 @@ class Strategy(db.Model):
         db.ForeignKey('job_hunts.id'),
         nullable = False
     )
-    job_hunt = db.relationship("JobHunt", back_populates="strategies")
-    job_apps = db.relationship("JobApp", secondary=app_strategy, back_populates="strategies")
+    job_hunt = db.relationship("JobHunt", back_populates="factors")
+    job_apps = db.relationship("JobApp", secondary=app_factor, back_populates="factors")
 
     def __repr__(self):
-        return f"<Strategy #{self.id}: {self.name}>"
+        return f"<Factor #{self.id}: {self.name}>"
 
 
 def connect_db(app):

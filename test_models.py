@@ -7,7 +7,7 @@ print('*************************running test-models.py**************************
 import os
 from unittest import TestCase
 
-from models import db, User, SavedJob, JobApp, JobHunt, Strategy, app_strategy, datetime
+from models import db, User, SavedJob, JobApp, JobHunt, Factor, app_factor, datetime
 
 # Use test database:
 os.environ['DATABASE_URL'] = "postgresql:///jobalyze_test"
@@ -31,8 +31,8 @@ class UserModelTestCase(TestCase):
             SavedJob.query.delete()
             JobApp.query.delete()
             JobHunt.query.delete()
-            Strategy.query.delete()
-            # app_strategy.query.delete()
+            Factor.query.delete()
+            # app_factor.query.delete()
             db.session.commit()
 
         self.client = app.test_client()
@@ -46,8 +46,8 @@ class UserModelTestCase(TestCase):
     #         SavedJob.query.delete()
     #         JobApp.query.delete()
     #         JobHunt.query.delete()
-    #         Strategy.query.delete()
-    #         # app_strategy.query.delete()
+    #         Factor.query.delete()
+    #         # app_factor.query.delete()
     #         db.session.commit()
 
     def test_user_model(self):
@@ -116,25 +116,25 @@ class UserModelTestCase(TestCase):
             db.session.add_all([job_app1, job_app2, job_app3])
             db.session.commit()
 
-            strategy1 = Strategy(
+            factor1 = Factor(
                 name='wrote coverletter',
                 job_hunt_id=job_hunt1.id
             )
-            strategy2 = Strategy(
+            factor2 = Factor(
                 name='local company',
                 job_hunt_id=job_hunt1.id
             )
-            strategy3 = Strategy(
+            factor3 = Factor(
                 name='resume 1',
                 job_hunt_id=job_hunt2.id
             )
 
-            db.session.add_all([strategy1, strategy2])
+            db.session.add_all([factor1, factor2])
             db.session.commit()
 
-            job_app1.strategies.extend([strategy1, strategy2])
-            job_app2.strategies.append(strategy1)
-            job_app3.strategies.append(strategy3)
+            job_app1.factors.extend([factor1, factor2])
+            job_app2.factors.append(factor1)
+            job_app3.factors.append(factor3)
             db.session.commit()
 
             db.session.delete(user1)
