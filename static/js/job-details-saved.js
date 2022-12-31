@@ -1,4 +1,6 @@
-additionalDetailsDiv = document.getElementById('additional-details');
+const additionalDetailsDiv = document.getElementById('additional-details');
+const salaryMin = document.getElementById('salary-min');
+const salaryMax = document.getElementById('salary-max');
 
 const savedJobId = document.getElementById('details-wrapper').dataset.savedJobId;
 
@@ -30,18 +32,23 @@ function addButtonClick(addButton) {
   }
 }
 
+// ************************** add error handling and hide form when done *********************************
 async function saveButtonClick(saveButton) {
   switch(saveButton.dataset.groupId) {
     case "details-company-size":
       console.log(document.getElementById('details-company-size-input').value);
       await postToServer({company_size: document.getElementById('details-company-size-input').value});
       break;
-    case "details-salary-range": 
-      await postToServer({salary_min: document.getElementById('details-salary-range-1-input').value,
-        salary_max: document.getElementById('details-salary-range-2-input').value});
+    case "details-salary-range":
+      const salary_min_int = usLocaleStrToInt(document.getElementById('details-salary-range-1-input').value);
+      const salary_max_int = usLocaleStrToInt(document.getElementById('details-salary-range-2-input').value);
+      await postToServer({salary_min: salary_min_int, salary_max: salary_max_int});
       break;
     case "details-job-type": 
       await postToServer({job_type: document.getElementById('details-job-type-input').value});
+      break;
+    case "details-experience-level":
+      await postToServer({experience_level: document.getElementById('details-experience-level-input').value})
       break;
     case "details-federal-contractor": 
       await postToServer({federal_contractor: document.getElementById('details-federal-contractor-input').value});
@@ -72,3 +79,14 @@ function cancelButtonClick(cancelButton) {
   document.getElementById(`${detailsRowId}-input-group`).classList.add('display-none');
   document.getElementById(`${detailsRowId}-add`).classList.remove('display-none');
 }
+
+function updateSalaryNums() {
+  if (salaryMin.textContent !== 'None' && salaryMax.textContent !== 'None') {
+    salaryMin.textContent = (+salaryMin.textContent).toLocaleString("en-US", {style:"currency", currency:"USD", maximumFractionDigits: 0});
+    salaryMax.textContent = (+salaryMax.textContent).toLocaleString("en-US", {style:"currency", currency:"USD", maximumFractionDigits: 0});
+    document.getElementById('details-salary-range-display').classList.remove('display-none');
+  }
+}
+
+// On Page Load:
+updateSalaryNums();

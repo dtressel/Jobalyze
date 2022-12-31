@@ -192,6 +192,16 @@ def add_job():
 
     return render_template('job_add.html', form=form)
 
+@app.route('/saved-jobs/<saved_job_id>')
+@login_required
+def show_saved_job(saved_job_id):
+    """Shows details of a particular saved job"""
+
+    saved_job = SavedJob.query.get(saved_job_id)
+    saved_job = SavedJob.translate_values(saved_job)
+
+    return render_template('job_details_saved.html', saved_job=saved_job)
+
 @app.route('/saved-jobs/edit/json', methods=['POST'])
 @login_required
 def edit_saved_job():
@@ -260,15 +270,6 @@ def dashboard_page_load_hunt(hunt_id):
         new_job_postings=new_job_postings,
         goals=goals,
         form=form)
-
-@app.route('/saved-jobs/<saved_job_id>')
-@login_required
-def show_saved_job(saved_job_id):
-    """Shows details of a particular saved job"""
-
-    saved_job = SavedJob.query.get(saved_job_id)
-
-    return render_template('job_details_saved.html', saved_job=saved_job)
 
 @app.route('/job-hunts/add', methods=['POST'])
 @login_required

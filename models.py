@@ -130,9 +130,9 @@ class SavedJob(db.Model):
     #     2: 11-50 employees.
     #     3: 51-200 employees.
     #     4: 201-500 employees.
-    #     5: 501-1000 employees.
-    #     6: 1001-5000 employees.
-    #     7: 5001-10,000 employees.
+    #     5: 501-1,000 employees.
+    #     6: 1,001-5,000 employees.
+    #     7: 5,001-10,000 employees.
     #     8: 10,001+ employees.
 
     job_type = db.Column(
@@ -196,25 +196,31 @@ class SavedJob(db.Model):
     def __repr__(self):
         return f"<Job #{self.id}: {self.company}, {self.title}>"
 
-    @classmethod
-    def edit_saved_job(cls, user_id, details_obj):
-        """Edits a saved job. Returns an object to be converted into a response object in app.py."""
+    def translate_values(self):
+        """Changes values from database abreviations to actual values for display."""
 
-        saved_job = cls.query.get(details_obj['saved_job_id'])
-        if saved_job.user_id == user_id:
-            print ('************** User Ids matched! *******************')
-            try:
-                job_to_edit = cls.query.get(details_obj['saved_job_id'])
-                for key in details_obj['data']:
-                    setattr(job_to_edit, key, details_obj['data'][key])
-                db.session.add(job_to_edit)
-                db.session.commit()
-            except: 
-                return {'body': {'message': 'Sorry, we were unable to process your request. Please try again later!'}, 'status': 500}
-            return {'body': {'message': 'Update Successful!'}, 'status': 200}
-        else:
-            return {'body': {'message': 'Unauthorized: This saved job is associated with another user.'}, 'status': 403}
-    
+        if self.company_size:
+            cs_translator = [None, '1-10 employees', '11-50 employees', '51-200 employees', '201-500 employees',
+            '501-1,000 employees', '1,001-5,000 employees', '5,001-10,000 employees', '10,001+ employees']
+            self.company_size = cs_translator[self.company_size]
+
+        # Salary range locale string translation done in job-details-saved.js
+
+        if self.job_type:
+            jt_translator = {'f': 'Full-time', 'p': 'Part-time', 'c': 'Contract', 'i': 'Internship', 'v': 'Volunteer'}
+            self.job_type = jt_translator[self.job_type]
+
+        if self.federal_contractor != None:
+            fc_translator = {True: 'Yes', False: 'No'}
+            self.federal_contractor = fc_translator[self.federal_contractor]
+
+        if self.experience_level:
+            el_translator = {'i': 'Internship', 'e': 'Entry level', 'a': 'Associate',
+            'm': 'Mid-Senior level', 'd': 'Director', 'x': 'Executive'}
+            self.experience_level = el_translator[self.experience_level]
+
+        return self
+
     @classmethod
     def save_job(cls, user_id, details_obj):
         """Saves a job."""
@@ -228,21 +234,51 @@ class SavedJob(db.Model):
                 return "already saved"
 
         if details_obj.get('federal_contractor'):
-            if details_obj['federal_contractor'] == "True":
-                details_obj['federal_contractor'] = True
-            if details_obj['federal_contractor'] == "False":
-                details_obj['federal_contractor'] = False
+            cls.normalize_fc_value(details_obj)
 
         job_to_save = cls(user_id = user_id)
 
         for key in details_obj:
             setattr(job_to_save, key, details_obj[key])
-
-        import pdb; pdb.set_trace()
+            
         # **********************need some error handling if not saved**********************
         db.session.add(job_to_save)
         db.session.commit()
-        return job_to_save  
+        return job_to_save
+
+    @classmethod
+    def edit_saved_job(cls, user_id, details_obj):
+        """Edits a saved job. Returns an object to be converted into a response object in app.py."""
+
+        saved_job = cls.query.get(details_obj['saved_job_id'])
+        if saved_job.user_id == user_id:
+            print ('************** User Ids matched! *******************')
+
+            if details_obj.get('federal_contractor'):
+                cls.normalize_fc_value(details_obj)
+
+            try:
+                job_to_edit = cls.query.get(details_obj['saved_job_id'])
+                for key in details_obj['data']:
+                    setattr(job_to_edit, key, details_obj['data'][key])
+                db.session.add(job_to_edit)
+                db.session.commit()
+            except: 
+                return {'body': {'message': 'Sorry, we were unable to process your request. Please try again later!'}, 'status': 500}
+            return {'body': {'message': 'Update Successful!'}, 'status': 200}
+        else:
+            return {'body': {'message': 'Unauthorized: This saved job is associated with another user.'}, 'status': 403}
+
+    @classmethod
+    def normalize_fc_value(cls, obj):
+        """Replaces string value for federal contractor column with boolean value."""
+
+        if obj['federal_contractor'] == "True":
+            obj['federal_contractor'] = True
+        if obj['federal_contractor'] == "False":
+            obj['federal_contractor'] = False
+
+        return obj
 
     @classmethod
     def already_saved(cls, user_id, cos_id):

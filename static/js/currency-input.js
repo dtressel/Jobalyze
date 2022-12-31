@@ -13,3 +13,8 @@ function replaceValue(evt) {
   evt.target.value = currencyString;
   // Replaces old value with new in currency format
 }
+
+function usLocaleStrToInt(str) {
+  const strFiltered = [...str].filter((char) => !isNaN(char)).join('');
+  return +strFiltered;
+}

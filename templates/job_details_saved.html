@@ -27,8 +27,8 @@
   <hr>
   <div id="additional-details">
     <h3>Additional Details</h3>
-    <div id="details-company-size">
-      <span>Company size: </span>
+    <div id="details-company-size" class="additional-details-row">
+      <span><b>Company size:</b> </span>
       {% if saved_job.company_size != None %}
       <span>{{saved_job.company_size}}</span>
       {% else %}
@@ -49,11 +49,14 @@
         <button data-group-id="details-company-size">Cancel</button>
       </span>
     </div>
-    <div id="details-salary-range">
-      <span>Salary range: </span>
-      {% if saved_job.salary_min != None %}
-      <span>${{saved_job.salary_min}}-${{saved_job.salary_max}}</span>
-      {% else %}
+    <div id="details-salary-range" class="additional-details-row">
+      <span><b>Salary range:</b> </span>
+      <span class="display-none" id="details-salary-range-display">
+        <span id="salary-min">{{saved_job.salary_min}}</span>
+        <span> &ndash; </span>
+        <span id="salary-max">{{saved_job.salary_max}}</span>
+      </span>
+      {% if saved_job.salary_min == None %}
       <button data-group-id="details-salary-range" id="details-salary-range-add">Add</button>
       {% endif %}
       <span class="display-none" id="details-salary-range-input-group">
@@ -64,34 +67,63 @@
         <button data-group-id="details-salary-range">Cancel</button>
       </span>
     </div>
-    <div id="details-job-type">
-      <span>Job type: </span>
+    <div id="details-job-type" class="additional-details-row">
+      <span><b>Job type:</b> </span>
       {% if saved_job.job_type != None %}
       <span>{{saved_job.job_type}}</span>
       {% else %}
       <button data-group-id="details-job-type" id="details-job-type-add">Add</button>
       {% endif %}
       <span class="display-none" id="details-job-type-input-group">
-        <input type="text" id="details-job-type-input">
+        <select id="details-job-type-input">
+          <option value="f">Full-time</option>
+          <option value="p">Part-time</option>
+          <option value="c">Contract</option>
+          <option value="i">Internship</option>
+          <option value="v">Volunteer</option>
+        </select>
         <button data-group-id="details-job-type">Save</button>
         <button data-group-id="details-job-type">Cancel</button>
       </span>
     </div>
-    <div id="details-federal-contractor">
-      <span>Federal contractor: </span>
+    <div id="details-experience-level" class="additional-details-row">
+      <span><b>Experience level:</b> </span>
+      {% if saved_job.experience_level != None %}
+      <span>{{saved_job.experience_level}}</span>
+      {% else %}
+      <button data-group-id="details-experience-level" id="details-experience-level-add">Add</button>
+      {% endif %}
+      <span class="display-none" id="details-experience-level-input-group">
+        <select id="details-experience-level-input">
+          <option value="i">Internship</option>
+          <option value="e">Entry Level</option>
+          <option value="a">Associate</option>
+          <option value="m">Mid-Senior level</option>
+          <option value="d">Director</option>
+          <option value="x">Executive</option>
+        </select>
+        <button data-group-id="details-experience-level">Save</button>
+        <button data-group-id="details-experience-level">Cancel</button>
+      </span>
+    </div>
+    <div id="details-federal-contractor" class="additional-details-row">
+      <span><b>Federal contractor:</b> </span>
       {% if saved_job.federal_contractor != None %}
       <span>{{saved_job.federal_contractor}}</span>
       {% else %}
       <button data-group-id="details-federal-contractor" id="details-federal-contractor-add">Add</button>
       {% endif %}
       <span class="display-none" id="details-federal-contractor-input-group">
-        <input type="text" id="details-federal-contractor-input">
+        <select id="details-federal-contractor-input">
+          <option value="True">Yes</option>
+          <option value="False">No</option>
+        </select>
         <button data-group-id="details-federal-contractor">Save</button>
         <button data-group-id="details-federal-contractor">Cancel</button>
       </span>
     </div>
-    <div id="details-user-notes">
-      <span>User notes: </span>
+    <div id="details-user-notes" class="additional-details-row">
+      <span><b>User notes:</b> </span>
       {% if saved_job.user_notes != None %}
       <span>{{saved_job.user_notes}}</span>
       {% else %}
