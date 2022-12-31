@@ -1,6 +1,13 @@
 const additionalDetailsDiv = document.getElementById('additional-details');
-const salaryMin = document.getElementById('salary-min');
-const salaryMax = document.getElementById('salary-max');
+const salaryMin = document.getElementById('details-salary-min-value-display');
+const salaryMax = document.getElementById('details-salary-max-value-display');
+
+const companySizeTranslator = [null, '1-10 employees', '11-50 employees', '51-200 employees', '201-500 employees',
+  '501-1,000 employees', '1,001-5,000 employees', '5,001-10,000 employees', '10,001+ employees'];
+const jobTypeTranslator = {f: 'Full-time', p: 'Part-time', c: 'Contract', i: 'Internship', v: 'Volunteer'};
+const federalContractorTranslator = {True: 'Yes', False: 'No'};
+const experienceLevelTransloator = {i: 'Internship', e: 'Entry level', a: 'Associate',
+  m: 'Mid-Senior level', d: 'Director', x: 'Executive'}
 
 const savedJobId = document.getElementById('details-wrapper').dataset.savedJobId;
 
@@ -34,29 +41,59 @@ function addButtonClick(addButton) {
 
 // ************************** add error handling and hide form when done *********************************
 async function saveButtonClick(saveButton) {
-  switch(saveButton.dataset.groupId) {
+  let resp;
+  const detailsRowId = saveButton.dataset.groupId;
+  switch(detailsRowId) {
     case "details-company-size":
-      console.log(document.getElementById('details-company-size-input').value);
-      await postToServer({company_size: document.getElementById('details-company-size-input').value});
+      resp = await postToServer({company_size: document.getElementById('details-company-size-input').value});
+      if (resp.status === 200) {
+        const csValue = companySizeTranslator[document.getElementById('details-company-size-input').value];
+        document.getElementById('details-company-size-value-display').textContent = csValue;
+      }
       break;
     case "details-salary-range":
       const salary_min_int = usLocaleStrToInt(document.getElementById('details-salary-range-1-input').value);
       const salary_max_int = usLocaleStrToInt(document.getElementById('details-salary-range-2-input').value);
-      await postToServer({salary_min: salary_min_int, salary_max: salary_max_int});
+      resp = await postToServer({salary_min: salary_min_int, salary_max: salary_max_int});
+      if (resp.status === 200) {
+        document.getElementById('details-salary-min-value-display').textContent = document.getElementById('details-salary-range-1-input').value;
+        document.getElementById('details-salary-max-value-display').textContent = document.getElementById('details-salary-range-2-input').value;
+        document.getElementById('details-salary-range-display').classList.remove('display-none');
+      }
       break;
     case "details-job-type": 
-      await postToServer({job_type: document.getElementById('details-job-type-input').value});
+      resp = await postToServer({job_type: document.getElementById('details-job-type-input').value});
+      if (resp.status === 200) {
+        const jtValue = jobTypeTranslator[document.getElementById('details-job-type-input').value];
+        document.getElementById('details-job-type-value-display').textContent = jtValue;
+      }
       break;
     case "details-experience-level":
-      await postToServer({experience_level: document.getElementById('details-experience-level-input').value})
+      resp = await postToServer({experience_level: document.getElementById('details-experience-level-input').value});
+      if (resp.status === 200) {
+        const elValue = experienceLevelTransloator[document.getElementById('details-experience-level-input').value];
+        document.getElementById('details-experience-level-value-display').textContent = elValue;
+      }
       break;
     case "details-federal-contractor": 
-      await postToServer({federal_contractor: document.getElementById('details-federal-contractor-input').value});
+      resp = await postToServer({federal_contractor: document.getElementById('details-federal-contractor-input').value});
+      if (resp.status === 200) {
+        const fcValue = federalContractorTranslator[document.getElementById('details-federal-contractor-input').value];
+        document.getElementById('details-federal-contractor-value-display').textContent = fcValue;
+      }
       break;
     case "details-user-notes": 
-      await postToServer({user_notes: document.getElementById('details-user-notes-input').value});
+      resp = await postToServer({user_notes: document.getElementById('details-user-notes-input').value});
+      if (resp.status === 200) {
+        document.getElementById('details-user-notes-value-display').textContent = document.getElementById('details-user-notes-input').value;
+      }
       break;
   }
+  document.getElementById(`${detailsRowId}-input-group`).classList.add('display-none');
+  if (resp.status !== 200) {
+    document.getElementById(`${detailsRowId}-add`).classList.remove('display-none');
+    alert(resp.body.message);
+  } 
 }
 
 async function postToServer(dataObj) {
@@ -66,16 +103,12 @@ async function postToServer(dataObj) {
     headers: {'Content-Type': 'application/json'},
     body: JSON.stringify(details)
   })
+
+  return resp;
 }
 
 function cancelButtonClick(cancelButton) {
   const detailsRowId = cancelButton.dataset.groupId;
-  if (detailsRowId === "details-salary-range") {
-    document.getElementById('details-salary-range-1-input').value = '';
-    document.getElementById('details-salary-range-2-input').value = '';
-  } else {
-    document.getElementById(`${detailsRowId}-input`).value = '';
-  }
   document.getElementById(`${detailsRowId}-input-group`).classList.add('display-none');
   document.getElementById(`${detailsRowId}-add`).classList.remove('display-none');
 }

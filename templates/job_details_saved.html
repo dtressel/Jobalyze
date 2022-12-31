@@ -27,11 +27,13 @@
   <hr>
   <div id="additional-details">
     <h3>Additional Details</h3>
+
     <div id="details-company-size" class="additional-details-row">
       <span><b>Company size:</b> </span>
       {% if saved_job.company_size != None %}
-      <span>{{saved_job.company_size}}</span>
+      <span id="details-company-size-value-display">{{saved_job.company_size}}</span>
       {% else %}
+      <span id="details-company-size-value-display"></span>
       <button data-group-id="details-company-size" id="details-company-size-add">Add</button>
       {% endif %}
       <span class="display-none" id="details-company-size-input-group">
@@ -49,12 +51,13 @@
         <button data-group-id="details-company-size">Cancel</button>
       </span>
     </div>
+
     <div id="details-salary-range" class="additional-details-row">
       <span><b>Salary range:</b> </span>
       <span class="display-none" id="details-salary-range-display">
-        <span id="salary-min">{{saved_job.salary_min}}</span>
+        <span id="details-salary-min-value-display">{{saved_job.salary_min}}</span>
         <span> &ndash; </span>
-        <span id="salary-max">{{saved_job.salary_max}}</span>
+        <span id="details-salary-max-value-display">{{saved_job.salary_max}}</span>
       </span>
       {% if saved_job.salary_min == None %}
       <button data-group-id="details-salary-range" id="details-salary-range-add">Add</button>
@@ -67,11 +70,13 @@
         <button data-group-id="details-salary-range">Cancel</button>
       </span>
     </div>
+
     <div id="details-job-type" class="additional-details-row">
       <span><b>Job type:</b> </span>
       {% if saved_job.job_type != None %}
-      <span>{{saved_job.job_type}}</span>
+      <span id="details-job-type-value-display">{{saved_job.job_type}}</span>
       {% else %}
+      <span id="details-job-type-value-display"></span>
       <button data-group-id="details-job-type" id="details-job-type-add">Add</button>
       {% endif %}
       <span class="display-none" id="details-job-type-input-group">
@@ -86,11 +91,13 @@
         <button data-group-id="details-job-type">Cancel</button>
       </span>
     </div>
+
     <div id="details-experience-level" class="additional-details-row">
       <span><b>Experience level:</b> </span>
       {% if saved_job.experience_level != None %}
-      <span>{{saved_job.experience_level}}</span>
+      <span id="details-experience-level-value-display">{{saved_job.experience_level}}</span>
       {% else %}
+      <span id="details-experience-level-value-display"></span>
       <button data-group-id="details-experience-level" id="details-experience-level-add">Add</button>
       {% endif %}
       <span class="display-none" id="details-experience-level-input-group">
@@ -106,11 +113,13 @@
         <button data-group-id="details-experience-level">Cancel</button>
       </span>
     </div>
+
     <div id="details-federal-contractor" class="additional-details-row">
       <span><b>Federal contractor:</b> </span>
       {% if saved_job.federal_contractor != None %}
-      <span>{{saved_job.federal_contractor}}</span>
+      <span id="details-federal-contractor-value-display">{{saved_job.federal_contractor}}</span>
       {% else %}
+      <span id="details-federal-contractor-value-display"></span>
       <button data-group-id="details-federal-contractor" id="details-federal-contractor-add">Add</button>
       {% endif %}
       <span class="display-none" id="details-federal-contractor-input-group">
@@ -122,11 +131,13 @@
         <button data-group-id="details-federal-contractor">Cancel</button>
       </span>
     </div>
+
     <div id="details-user-notes" class="additional-details-row">
       <span><b>User notes:</b> </span>
       {% if saved_job.user_notes != None %}
-      <span>{{saved_job.user_notes}}</span>
+      <span id="details-user-notes-value-display">{{saved_job.user_notes}}</span>
       {% else %}
+      <span id="details-user-notes-value-display"></span>
       <button data-group-id="details-user-notes" id="details-user-notes-add">Add</button>
       {% endif %}
       <div class="display-none" id="details-user-notes-input-group">
