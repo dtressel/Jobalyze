@@ -234,7 +234,19 @@ class SavedJob(db.Model):
                 return "already saved"
 
         if details_obj.get('federal_contractor'):
-            cls.normalize_fc_value(details_obj)
+            cls.coerce_fc_value(details_obj)
+
+        if isinstance(details_obj.get('salary_min'), str):
+            if details_obj['salary_min'] == '':
+                details_obj['salary_min'] = None
+            else:
+                details_obj['salary_min'] = int(details_obj['salary_min'])
+
+        if isinstance(details_obj.get('salary_max'), str):
+            if details_obj['salary_max'] == '':
+                details_obj['salary_max'] = None
+            else:
+                details_obj['salary_max'] = int(details_obj['salary_max'])
 
         job_to_save = cls(user_id = user_id)
 
@@ -255,7 +267,7 @@ class SavedJob(db.Model):
             print ('************** User Ids matched! *******************')
 
             if details_obj['data'].get('federal_contractor'):
-                cls.normalize_fc_value(details_obj['data'])
+                cls.coerce_fc_value(details_obj['data'])
 
             try:
                 job_to_edit = cls.query.get(details_obj['saved_job_id'])
@@ -270,9 +282,11 @@ class SavedJob(db.Model):
             return {'body': {'message': 'Unauthorized: This saved job is associated with another user.'}, 'status': 403}
 
     @classmethod
-    def normalize_fc_value(cls, obj):
+    def coerce_fc_value(cls, obj):
         """Replaces string value for federal contractor column with boolean value."""
 
+        if obj['federal_contractor'] == "-":
+            obj['federal_contractor'] = None       
         if obj['federal_contractor'] == "True":
             obj['federal_contractor'] = True
         if obj['federal_contractor'] == "False":

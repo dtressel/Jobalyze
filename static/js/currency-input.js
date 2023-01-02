@@ -18,3 +18,7 @@ function usLocaleStrToInt(str) {
   const strFiltered = [...str].filter((char) => !isNaN(char)).join('');
   return +strFiltered;
 }
+
+function fromUsLocaleStr(str) {
+  return [...str].filter((char) => !isNaN(char)).join('');
+}

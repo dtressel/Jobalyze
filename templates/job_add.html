@@ -4,21 +4,138 @@
 
 {% block content %}
 <h2>Manually Add a Job to Saved Jobs</h2>
-<!-- ********************* fix below  ****************************** -->
 <form method="POST" id="saved-job-add-form">
   {{form.hidden_tag()}}
-  {% for field in form if field.widget.input_type != 'hidden' %}
-    <div class="form-row">
-      {{field.label}}
-      {{field}}
-    </div>
-    {% for err in field.errors %}
-    <div class="error-row">
-      <div class="error-div">{{err}}</div>
-    </div>
-    {% endfor %}
+
+  <div class="form-row">
+    {{form.title.label}}
+    {{form.title}}
+  </div>
+  {% for err in form.title.errors %}
+  <div class="error-row">
+    <div class="error-div">{{err}}</div>
+  </div>
   {% endfor %}
+
+  <div class="form-row">
+    {{form.company.label}}
+    {{form.company}}
+  </div>
+  {% for err in form.company.errors %}
+  <div class="error-row">
+    <div class="error-div">{{err}}</div>
+  </div>
+  {% endfor %}
+
+  <div class="form-row">
+    {{form.location.label}}
+    {{form.location}}
+  </div>
+  {% for err in form.location.errors %}
+  <div class="error-row">
+    <div class="error-div">{{err}}</div>
+  </div>
+  {% endfor %}
+
+  <div class="form-row">
+    {{form.date_posted.label}}
+    {{form.date_posted}}
+  </div>
+  {% for err in form.date_posted.errors %}
+  <div class="error-row">
+    <div class="error-div">{{err}}</div>
+  </div>
+  {% endfor %}
+
+  <div class="form-row">
+    {{form.application_link.label}}
+    {{form.application_link}}
+  </div>
+  {% for err in form.application_link.errors %}
+  <div class="error-row">
+    <div class="error-div">{{err}}</div>
+  </div>
+  {% endfor %}
+
+  <div class="form-row">
+    {{form.job_description.label}}
+    {{form.job_description}}
+  </div>
+  {% for err in form.job_description.errors %}
+  <div class="error-row">
+    <div class="error-div">{{err}}</div>
+  </div>
+  {% endfor %}
+
+  <div class="form-row">
+    {{form.job_type.label}}
+    {{form.job_type}}
+  </div>
+  {% for err in form.job_type.errors %}
+  <div class="error-row">
+    <div class="error-div">{{err}}</div>
+  </div>
+  {% endfor %}
+
+  <div class="form-row">
+    {{form.experience_level.label}}
+    {{form.experience_level}}
+  </div>
+  {% for err in form.experience_level.errors %}
+  <div class="error-row">
+    <div class="error-div">{{err}}</div>
+  </div>
+  {% endfor %}
+
+  <div class="form-row">
+    {{form.salary_min.label}}
+    {{form.salary_min}}
+    <span> &ndash; </span>
+    {{form.salary_max}}
+  </div>
+  {% for err in form.salary_min.errors %}
+  <div class="error-row">
+    <div class="error-div">{{err}}</div>
+  </div>
+  {% endfor %}
+  {% for err in form.salary_max.errors %}
+  <div class="error-row">
+    <div class="error-div">{{err}}</div>
+  </div>
+  {% endfor %}
+
+<div class="form-row">
+  {{form.company_size.label}}
+  {{form.company_size}}
+</div>
+{% for err in form.company_size.errors %}
+<div class="error-row">
+  <div class="error-div">{{err}}</div>
+</div>
+{% endfor %}
+
+<div class="form-row">
+  {{form.federal_contractor.label}}
+  {{form.federal_contractor}}
+</div>
+{% for err in form.federal_contractor.errors %}
+<div class="error-row">
+  <div class="error-div">{{err}}</div>
+</div>
+{% endfor %}
+
+<div class="form-row">
+  {{form.user_notes.label}}
+  {{form.user_notes}}
+</div>
+{% for err in form.user_notes.errors %}
+<div class="error-row">
+  <div class="error-div">{{err}}</div>
+</div>
+{% endfor %}
+
 </form>
+
 <div class="form-row">
   <div class="button-div">
     <button id="save-button">Save</button>
@@ -27,5 +144,6 @@
 {% endblock %}
 
 {% block scripts %}
+<script src="/static/js/currency-input.js"></script>
 <script src="/static/js/job-add.js"></script>
 {% endblock %}

@@ -99,15 +99,14 @@ class ApiJobSearchForm(FlaskForm):
 class ManualJobAddForm(FlaskForm):
     """Form to manually add a job."""
 
-    company = StringField("Company")
     title = StringField("Job Title")
+    company = StringField("Company")
     location = StringField("Location",  validators=[
         Length(max=100, message="Must be less than 100 characters.")    
     ])
+    date_posted = DateField("Date Posted", validators=[Optional()])
     application_link = URLField("Link")
     job_description = TextAreaField("Description")
-    user_notes = TextAreaField("User Notes")
-    date_posted = DateField("Date Posted", validators=[Optional()])
     job_type = SelectField("Job Type", choices=[
         ('-', ''),
         ('f', 'Full-time'),
@@ -116,6 +115,7 @@ class ManualJobAddForm(FlaskForm):
         ('i', 'Internship'),
         ('v', 'Volunteer')
     ], validators=[Optional()])
+        # '-' changed to Null in JS file
     experience_level = SelectField("Experience Level", choices=[
         ('-', ''),
         ('i', 'Internship'),
@@ -125,6 +125,11 @@ class ManualJobAddForm(FlaskForm):
         ('d', 'Director'),
         ('x', 'Executive'),
     ], validators=[Optional()])
+        # '-' changed to Null in JS file
+    salary_min = StringField("Salary range")
+    salary_max = StringField()
+        # ******************* write custom validator that requires both or none of below ************************
+        # https://stackoverflow.com/questions/42614091/wtforms-create-form-with-both-or-no-fields-that-validates-but-not-just-one-fie
     company_size = SelectField("Company Size", choices=[
         ('-', ''),
         (1, '1-10 employees'),
@@ -136,8 +141,14 @@ class ManualJobAddForm(FlaskForm):
         (7, '5,001-10,000 employees'),
         (8, '10,001+ employees')
     ], validators=[Optional()])
-    salary_min = IntegerField("Salary Min", validators=[Optional()])
-    salary_max = IntegerField("Salary Max", validators=[Optional()])
+        # '-' changed to Null in JS file
+    federal_contractor = SelectField("Federal contractor", choices=[
+        ('-', ''),
+        ('True', 'Yes'),
+        ('False', 'No')
+    ])
+        # coerced to True, False, or None in models.SavedJob.save_job
+    user_notes = TextAreaField("User Notes")
 
 class NewJobHuntForm(FlaskForm):
     """Form to manually add a job."""
@@ -153,3 +164,5 @@ class NewJobHuntForm(FlaskForm):
     app_goal_number = IntegerField()
     hired_by_goal_date = DateField()
     description = StringField()
+
+    # https://stackoverflow.com/questions/33429510/wtforms-selectfield-not-properly-coercing-for-booleans
