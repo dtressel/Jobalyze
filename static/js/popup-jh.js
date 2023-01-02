@@ -1,44 +1,44 @@
-const popup = document.getElementById('popup');
-const popupContinueButton = document.getElementById('popup-continue-button');
-const popupCancelButton = document.getElementById('popup-cancel-button');
-const popupFinishButton = document.getElementById('popup-finish-button');
-const popupScreens = document.getElementsByClassName('popup-jh');
+const popupJh = document.getElementById('popup-jh');
+const popupJhContinueButton = document.getElementById('popup-jh-continue-button');
+const popupJhCancelButton = document.getElementById('popup-jh-cancel-button');
+const popupJhFinishButton = document.getElementById('popup-jh-finish-button');
+const popupJhScreens = document.getElementsByClassName('popup-jh-screen');
 
-popupContinueButton.addEventListener('click', continueWizard);
-popupCancelButton.addEventListener('click', cancelWizard);
+popupJhContinueButton.addEventListener('click', continueWizard);
+popupJhCancelButton.addEventListener('click', cancelWizard);
 
-let popupWindowNum = 1;
+let popupJhWindowNum = 1;
 let newJobHuntObj = {};
 
 function newJobHuntClick() {
-  popup.classList.remove('display-none');
+  popupJh.classList.remove('display-none');
 }
 
 function continueWizard() {
-  switch(popupWindowNum) {
+  switch(popupJhWindowNum) {
     case 1: 
-      popup1();
+      popupJh1();
       break;
     case 2: 
-      popup2();
+      popupJh2();
       break;
     case 3: 
-      popup3();
+      popupJh3();
       break;
     case 4: 
-      popup4();
+      popupJh4();
       break;
     case 5: 
-      popup5();
+      popupJh5();
       break;
     case 6: 
-      popup6();
+      popupJh6();
       break;
     case 7: 
-      popup7();
+      popupJh7();
       break;
     case 8: 
-      popup8();
+      popupJh8();
       break;
     case 9: 
       finishJhAdd();
@@ -46,88 +46,88 @@ function continueWizard() {
   }
 }
 
-function popup1() {
+function popupJh1() {
   hideAllScreens();
-  popupContinueButton.textContent = 'Continue';
-  popupScreens[1].classList.remove('display-none');
-  popupWindowNum++;
+  popupJhContinueButton.textContent = 'Continue';
+  popupJhScreens[1].classList.remove('display-none');
+  popupJhWindowNum++;
 }
 
-function popup2() {
+function popupJh2() {
   hideAllScreens();
   // get data from screen 1:
   newJobHuntObj.job_title_desired = document.getElementById('job-title-desired').value;
   newJobHuntObj.o_net_code = document.getElementById('o-net-code').value;
-  popupScreens[2].classList.remove('display-none');
-  popupWindowNum++;
+  popupJhScreens[2].classList.remove('display-none');
+  popupJhWindowNum++;
 }
 
-function popup3() {
+function popupJh3() {
   hideAllScreens();
   // get data from screen 2:
   inUs = +document.querySelector('input[name="us-job"]:checked').value;
   if (!inUs) {
     console.log('evaulated as false');
     newJobHuntObj.non_us = true;
-    popupScreens[6].classList.remove('display-none');
-    popupWindowNum += 4;
+    popupJhScreens[6].classList.remove('display-none');
+    popupJhWindowNum += 4;
   } else {
     console.log('evaulated as true');
-    popupScreens[3].classList.remove('display-none');
-    popupWindowNum++;
+    popupJhScreens[3].classList.remove('display-none');
+    popupJhWindowNum++;
   }
 }
 
-function popup4() {
+function popupJh4() {
   hideAllScreens();
   // get data from screen 3:
   remote = +document.querySelector('input[name="remote"]:checked').value;
   if (remote) {
     newJobHuntObj.remote = true;
   }
-  popupScreens[4].classList.remove('display-none');
-  popupWindowNum++;
+  popupJhScreens[4].classList.remove('display-none');
+  popupJhWindowNum++;
 }
 
-function popup5() {
+function popupJh5() {
   hideAllScreens();
   // get data from screen 4:
   where = document.querySelector('input[name="where"]:checked').value;
   if (where === 'anywhere') {
     newJobHuntObj.location = 'US'
-    popupScreens[6].classList.remove('display-none');
-    popupWindowNum += 2;
+    popupJhScreens[6].classList.remove('display-none');
+    popupJhWindowNum += 2;
   } else {
-    popupScreens[5].classList.remove('display-none');
-    popupWindowNum++;
+    popupJhScreens[5].classList.remove('display-none');
+    popupJhWindowNum++;
   }
 }
 
-function popup6() {
+function popupJh6() {
   hideAllScreens();
   // get data from screen 5:
   newJobHuntObj.radius = document.getElementById('radius').value;
   newJobHuntObj.location = document.getElementById('location').value;
-  popupScreens[6].classList.remove('display-none');
-  popupWindowNum++;
+  popupJhScreens[6].classList.remove('display-none');
+  popupJhWindowNum++;
 }
 
-function popup7() {
+function popupJh7() {
   hideAllScreens();
   // get data from screen 6:
   newJobHuntObj.app_goal_number = document.getElementById('app-goal-number').value;
   newJobHuntObj.app_goal_time_frame = document.getElementById('app-goal-time-frame').value;
-  popupScreens[7].classList.remove('display-none');
-  popupWindowNum++;
+  popupJhScreens[7].classList.remove('display-none');
+  popupJhWindowNum++;
 }
 
-function popup8() {
+function popupJh8() {
   hideAllScreens();
   // get data from screen 7:
   newJobHuntObj.hired_by_goal_date = document.getElementById('hired-by-date').value;
-  popupContinueButton.textContent = 'Finish';
-  popupScreens[8].classList.remove('display-none');
-  popupWindowNum++;
+  popupJhContinueButton.textContent = 'Finish';
+  popupJhScreens[8].classList.remove('display-none');
+  popupJhWindowNum++;
 }
 
 function finishJhAdd() {
@@ -140,18 +140,18 @@ function finishJhAdd() {
 }
 
 function cancelWizard() {
-  popup.classList.add('display-none');
+  popupJh.classList.add('display-none');
   newJobHuntObj = {};
-  popupWindowNum = 1;
+  popupJhWindowNum = 1;
   hideAllScreens();
-  popupScreens[0].classList.remove('display-none');
-  popupContinueButton.textContent = 'Start';
-  popupCancelButton.textContent = 'Cancel';
-  popupContinueButton.classList.remove('display-none');
+  popupJhScreens[0].classList.remove('display-none');
+  popupJhContinueButton.textContent = 'Start';
+  popupJhCancelButton.textContent = 'Cancel';
+  popupJhContinueButton.classList.remove('display-none');
 }
 
 function hideAllScreens() {
-  for (const screen of popupScreens) {
+  for (const screen of popupJhScreens) {
     screen.classList.add('display-none');
   }
 }
@@ -173,7 +173,7 @@ function fillHiddenForm() {
 // Old submission function when submitting from front end
 
 // async function sendJhToBackend() {
-//     // called by popup9()
+//     // called by popupJh9()
 //     const resp = await fetch('/job-hunts/add', {
 //       method: 'POST',
 //       headers: {'Content-Type': 'application/json'},

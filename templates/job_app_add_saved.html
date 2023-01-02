@@ -8,7 +8,23 @@
 
 {% block content %}
 <h2>Add a Job Application</h2>
-
+<form>
+  <div class="display-none">
+    <input type="number" value="{{job.id}}" name="id">
+  </div>
+  <div class="form-row">
+    <label>This application is for</label>
+    <select>
+      {% for hunt in active_hunts %}
+      <option value="{{hunt.id}}">{{hunt.name}}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="form-row">
+    <label>I applied</label>
+    <input type="date">
+  </div>
+</form>
 {% endblock %}
 
 

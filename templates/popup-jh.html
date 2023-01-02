@@ -1,0 +1,120 @@
+<div id="popup-jh" class="popup display-none">
+  <h2 id="popup-jh-header">Create a New Job Hunt</h2>
+  <div id="popup-jh-0" class="popup-jh-screen">
+    <p>Creating a job hunt allows users to take advantage of the full set of Jobalyze's features.</p> 
+    <p>Set your job hunt goals, define strategies, and save your job application data.</p>
+    <p>With a defined job hunt Jobalyze will suggest job postings and allow you to track and 
+      analyze your job applications and overall progress.
+    </p>
+  </div>
+  <div id="popup-jh-1" class="popup-jh-screen display-none">
+    <p>What kind of job are you looking for?</p>
+    <div class="input-group">
+      <label for="job-title-desired">Job Title Desired</label>
+      <input type="text" id="job-title-desired">
+    </div>
+    <div class="input-group">
+      <label for="o-net-code">O*NET Code</label>
+      <input type="text" id="o-net-code">
+      <span><i>optional</i></span>
+    </div>
+    <div>For most accurate results find the <a href="https://www.onetonline.org/find/result">O*NET Code</a> for your job title</div>
+    <div>Example: 15-1252.00</div>
+  </div>
+  <div id="popup-jh-2" class="popup-jh-screen display-none">
+    <p>Are you looking for a job in the United States?</p>
+    <div class="radio-group">
+      <input type="radio" id="yes-2" name="us-job" value="1" checked>
+      <label for="yes-2">Yes</label>
+    </div>
+    <div class="radio-group">
+      <input type="radio" id="no-2" name="us-job" value="0">
+      <label for="no-2">No</label>
+    </div>
+    <p>Note that job suggestions are only available for U.S. jobs.</p>
+  </div>
+  <div id="popup-jh-3" class="popup-jh-screen display-none">
+    <p>Are you looking for remote work?</p>
+    <div class="radio-group">
+      <input type="radio" id="yes-3" name="remote" value="1">
+      <label for="yes-3">Yes</label>
+    </div>
+    <div class="radio-group">
+      <input type="radio" id="no-3" name="remote" value="0" checked>
+      <label for="no-3">No</label>
+    </div>
+    <div class="radio-group">
+      <input type="radio" id="either-3" name="remote" value="0">
+      <label for="either-3">Either remote or in-person</label>
+    </div>
+  </div>
+  <div id="popup-jh-4" class="popup-jh-screen display-none">
+    <p>Where are you hoping to work?</p>
+    <div class="radio-group">
+      <input type="radio" id="anywhere" name="where" value="anywhere">
+      <label for="anywhere">Anywhere in the U.S.</label>
+    </div>
+    <div class="radio-group">
+      <input type="radio" id="particular" name="where" value="particular" checked>
+      <label for="particular">Within a particular U.S. location</label>
+    </div>
+  </div>
+  <div id="popup-jh-5" class="popup-jh-screen display-none">
+    <p>Where in the U.S. are you hoping to work?</p>
+    <div class="input-group">
+      <label for="radius">Within</label>
+      <input type="text" id="radius" placeholder="# of miles">
+    </div>
+    <div class="input-group">
+      <label for="job-location">Of</label>
+      <input type="text" id="location" placeholder="Zip Code or City, State">
+    </div>
+  </div>
+  <div id="popup-jh-6" class="popup-jh-screen display-none">
+    <h3>Job Search Goals</h3>
+    <div class="input-group">
+      <label for="app-goal-number">I want to complete</label>
+      <input type="number" id="app-goal-number">
+      <span>applications</span>
+    </div>
+    <div class="input-group">
+      <label for="app-goal-time-frame">every</label>
+      <select type="text" id="app-goal-time-frame">
+        <option value="d">day</option>
+        <option value="w" selected>week</option>
+        <option value="m">month</option>
+      </select>
+    </div>
+  </div>
+  <div id="popup-jh-7" class="popup-jh-screen display-none">
+    <h3>Job Search Goals</h3>
+    <div class="input-group">
+      <label for="hired-by-date">I hope to be hired by</label>
+      <input type="date" id="hired-by-date">
+    </div>
+  </div>
+  <div id="popup-jh-8" class="popup-jh-screen display-none">
+    <p>For you to easily identify this job hunt, please provide a job hunt name and description (optional).</p>
+    <div class="input-group">
+      <label for="jh-name">Name</label>
+      <input type="text" id="jh-name">
+    </div>
+    <div class="input-group">
+      <label for="jh-description">Description</label>
+      <textarea id="jh-description"></textarea>
+    </div>
+  </div>
+  <div id="popup-jh-9" class="popup-jh-screen display-none">
+    <p>You successfully created a new job hunt!</p>
+  </div>
+  <div class="popup-button-div">
+    <button id="popup-jh-continue-button">Start</button>
+    <button id="popup-jh-cancel-button">Cancel</button>
+  </div>
+</div>
+<form method="POST" class="display-none" id="new-job-hunt-form">
+  {{form.hidden_tag()}}
+  {% for field in form if field.widget.input_type != 'hidden' %}
+  {{field}}
+  {% endfor %}
+</form>
