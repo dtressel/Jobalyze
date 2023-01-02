@@ -2,6 +2,7 @@
 // regarding Save click
 const saveButton = document.getElementById('save-button');
 const savedIcon = document.getElementById('saved-icon');
+const iAppliedButton = document.getElementById('i-applied-button');
 
 // Regarding show job details
 const detailsWrapper = document.getElementById('details-wrapper');
@@ -13,12 +14,17 @@ const datePosted = document.getElementById('details-date-posted');
 const description = document.getElementById('details-description');
 
 // Variable to store job details to avoid second API request when saving
+// variable populated in getJobDetails()
 let cachedJobDetails;
+
 // Other variables
 const cosId = detailsWrapper.dataset.cosId;
 const fc = detailsWrapper.dataset.fc;
 
 saveButton.addEventListener('click', saveButtonClick);
+if (iAppliedButton) {
+  iAppliedButton.addEventListener('click', iAppliedButtonClick);
+}
 
 async function showJobDetails() {
   const jobDetails = await getJobDetails(cosId);
@@ -47,12 +53,13 @@ function updateDom(jobDetails) {
 async function saveButtonClick() {
   details = getDetailsFromCached();
   const resp = await saveJob(details);
-  console.log(resp);
+  const savedJobId = await resp.json();
   if (resp.status === 200) {
     saveButton.classList.toggle('display-none');
     savedIcon.classList.toggle('display-none');
   }
   // ************************ADD ERROR HANDLING***********************************
+  return savedJobId;
 }
 
 function getDetailsFromCached() {
@@ -78,6 +85,11 @@ async function saveJob(details) {
   })
 
   return resp
+}
+
+async function iAppliedButtonClick() {
+  const savedJobId = await saveButtonClick();
+  window.location.href = `/job-apps/add/${savedJobId}`;
 }
 
 // On load:

@@ -12,8 +12,8 @@
     <h3 id="details-job-title"></h3>
     <div class="hor-buttons-div">
       {% if current_user.is_authenticated %}
-      <button id="save-button" {% if saved %}class="display-none"{% endif %}>Save</button>
-      <div id="saved-icon" {% if not saved %}class="display-none"{% endif %}>Saved</div>
+      <button id="save-button" {% if saved_id %}class="display-none"{% endif %}>Save</button>
+      <div id="saved-icon" {% if not saved_id %}class="display-none"{% endif %}>Saved</div>
       {% endif %}
       <a id="details-url" target="_blank"><button>Apply</button></a>
     </div>
@@ -24,7 +24,11 @@
       <div id="details-location"></div>
       <div id="details-date-posted"></div>
     </div>
-    <a href="/job-apps/add/cos/{{cos_id}}"><button>I applied</button></a>
+    {% if saved_id %}
+    <a href="/job-apps/add/{{saved_id}}"><button>I applied</button></a>
+    {% else %}
+    <button id="i-applied-button">I applied</button>
+    {% endif %}
   </div>
   <div id="details-description"></div>
 </div>

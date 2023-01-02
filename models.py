@@ -230,8 +230,9 @@ class SavedJob(db.Model):
         # can allow the user to click Save twice. This is why we need to check.
 
         if details_obj.get('cos_id'):
-            if cls.query.filter_by(user_id = user_id, cos_id = details_obj['cos_id']).first():
-                return "already saved"
+            already_saved_id = db.session.query(cls.id).filter(cls.user_id == user_id, cls.cos_id == details_obj['cos_id']).first()
+            if already_saved_id:
+                return already_saved_id[0]
 
         if details_obj.get('federal_contractor'):
             cls.coerce_fc_value(details_obj)
@@ -256,7 +257,7 @@ class SavedJob(db.Model):
         # **********************need some error handling if not saved**********************
         db.session.add(job_to_save)
         db.session.commit()
-        return job_to_save
+        return job_to_save.id
 
     @classmethod
     def edit_saved_job(cls, user_id, details_obj):

@@ -161,21 +161,21 @@ def show_job_details_page(cos_id):
 
     # Check to see if job is already saved:
     if current_user.is_authenticated:
-        saved = SavedJob.already_saved(current_user.id, cos_id)
+        saved_id = SavedJob.already_saved_id(current_user.id, cos_id)
 
     # Job details API request are sent from front end after page loads
 
-    return render_template('job_details_api.html', cos_id=cos_id, fc=request.args['fc'], saved=saved)  
+    return render_template('job_details_api.html', cos_id=cos_id, fc=request.args['fc'], saved_id=saved_id)  
 
 @app.route('/saved-jobs/add/cos', methods=['POST'])
 @login_required
 def save_job():
     """Saves a job to the database"""
 
-    saved_job = SavedJob.save_job(current_user.id, request.get_json())
+    saved_job_id = SavedJob.save_job(current_user.id, request.get_json())
 
     # *******************return proper response object**********************
-    return "success"
+    return str(saved_job_id)
 
 @app.route('/saved-jobs/add', methods=['Get', 'POST'])
 @login_required
@@ -281,25 +281,7 @@ def save_job_hunt():
     # fix this return
     return "success"  
 
-@app.route('/job-apps/add')
-@login_required
-def save_job_app():
-    """Saves a job application for a job that has not already been saved."""
-
-    return render_template('job_app_add_unsaved.html')
-
-@app.route('/job-apps/add/cos/<cos_id>')
-@login_required
-def save_job_app_cos(cos_id):
-    """Saves a job application for a job from the COS API that has not already been saved."""
-
-    saved_job_id = SavedJob.already_saved_id(current_user.id, cos_id)
-    if saved_job_id:
-        return redirect(f'/job-apps/add/saved/{saved_job_id}')
-
-    return render_template('job_app_add_cos.html')
-
-@app.route('/job-apps/add/saved/<saved_id>')
+@app.route('/job-apps/add/<saved_id>')
 @login_required
 def save_job_app_saved(saved_id):
     """Saves a job application for a job that has been saved."""
