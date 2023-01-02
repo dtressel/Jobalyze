@@ -5,7 +5,7 @@
 {% block content %}
 <h2>Manually Add a Job to Saved Jobs</h2>
 <!-- ********************* fix below  ****************************** -->
-<form method="POST">
+<form method="POST" id="saved-job-add-form">
   {{form.hidden_tag()}}
   {% for field in form if field.widget.input_type != 'hidden' %}
     <div class="form-row">
@@ -18,10 +18,14 @@
     </div>
     {% endfor %}
   {% endfor %}
-  <div class="form-row">
-    <div class="button-div">
-      <button type="submit" class="btn btn-success mt-2">Save</button>
-    </div>
-  </div>
 </form>
+<div class="form-row">
+  <div class="button-div">
+    <button id="save-button">Save</button>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/job-add.js"></script>
 {% endblock %}

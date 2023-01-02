@@ -107,23 +107,26 @@ class ManualJobAddForm(FlaskForm):
     application_link = URLField("Link")
     job_description = TextAreaField("Description")
     user_notes = TextAreaField("User Notes")
-    date_posted = DateField("Date Posted")
+    date_posted = DateField("Date Posted", validators=[Optional()])
     job_type = SelectField("Job Type", choices=[
+        ('-', ''),
         ('f', 'Full-time'),
         ('p', 'Part-time'),
         ('c', 'Contract'),
         ('i', 'Internship'),
         ('v', 'Volunteer')
-    ])
+    ], validators=[Optional()])
     experience_level = SelectField("Experience Level", choices=[
+        ('-', ''),
         ('i', 'Internship'),
         ('e', 'Entry level'),
         ('a', 'Associate'),
         ('m', 'Mid-Senior level'),
         ('d', 'Director'),
         ('x', 'Executive'),
-    ])
+    ], validators=[Optional()])
     company_size = SelectField("Company Size", choices=[
+        ('-', ''),
         (1, '1-10 employees'),
         (2, '11-50 employees'),
         (3, '51-200 employees'),
@@ -132,9 +135,9 @@ class ManualJobAddForm(FlaskForm):
         (6, '1,001-5,000 employees'),
         (7, '5,001-10,000 employees'),
         (8, '10,001+ employees')
-    ])
-    salary_min = IntegerField("Salary Min")
-    salary_max = IntegerField("Salary Max")
+    ], validators=[Optional()])
+    salary_min = IntegerField("Salary Min", validators=[Optional()])
+    salary_max = IntegerField("Salary Max", validators=[Optional()])
 
 class NewJobHuntForm(FlaskForm):
     """Form to manually add a job."""
