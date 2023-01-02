@@ -1,6 +1,8 @@
 const additionalDetailsDiv = document.getElementById('additional-details');
 const salaryMin = document.getElementById('details-salary-min-value-display');
 const salaryMax = document.getElementById('details-salary-max-value-display');
+const applyButtonNoUrl = document.getElementById('apply-button-no-url');
+console.log(applyButtonNoUrl);
 
 const companySizeTranslator = [null, '1-10 employees', '11-50 employees', '51-200 employees', '201-500 employees',
   '501-1,000 employees', '1,001-5,000 employees', '5,001-10,000 employees', '10,001+ employees'];
@@ -12,6 +14,9 @@ const experienceLevelTransloator = {i: 'Internship', e: 'Entry level', a: 'Assoc
 const savedJobId = document.getElementById('details-wrapper').dataset.savedJobId;
 
 additionalDetailsDiv.addEventListener('click', detailsDivClick);
+if (applyButtonNoUrl) {
+  applyButtonNoUrl.addEventListener('click', applyButtonNoUrlClick);
+}
 
 function detailsDivClick(evt) {
   if (evt.target.localName === "button") {
@@ -76,9 +81,12 @@ async function saveButtonClick(saveButton) {
       }
       break;
     case "details-federal-contractor": 
+      console.log(document.getElementById('details-federal-contractor-input').value);
       resp = await postToServer({federal_contractor: document.getElementById('details-federal-contractor-input').value});
+      console.log(resp);
       if (resp.status === 200) {
         const fcValue = federalContractorTranslator[document.getElementById('details-federal-contractor-input').value];
+        console.log(fcValue);
         document.getElementById('details-federal-contractor-value-display').textContent = fcValue;
       }
       break;
@@ -92,6 +100,8 @@ async function saveButtonClick(saveButton) {
   document.getElementById(`${detailsRowId}-input-group`).classList.add('display-none');
   if (resp.status !== 200) {
     document.getElementById(`${detailsRowId}-add`).classList.remove('display-none');
+    // ************************************ This ends up as undefined *******************************************
+    
     alert(resp.body.message);
   } 
 }
@@ -119,6 +129,10 @@ function updateSalaryNums() {
     salaryMax.textContent = (+salaryMax.textContent).toLocaleString("en-US", {style:"currency", currency:"USD", maximumFractionDigits: 0});
     document.getElementById('details-salary-range-display').classList.remove('display-none');
   }
+}
+
+function applyButtonNoUrlClick() {
+  alert('No application link URL was provided. Please edit this saved job and add an application link.')
 }
 
 // On Page Load:

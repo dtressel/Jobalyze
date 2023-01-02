@@ -254,8 +254,8 @@ class SavedJob(db.Model):
         if saved_job.user_id == user_id:
             print ('************** User Ids matched! *******************')
 
-            if details_obj.get('federal_contractor'):
-                cls.normalize_fc_value(details_obj)
+            if details_obj['data'].get('federal_contractor'):
+                cls.normalize_fc_value(details_obj['data'])
 
             try:
                 job_to_edit = cls.query.get(details_obj['saved_job_id'])
@@ -391,6 +391,11 @@ class JobHunt(db.Model):
         db.session.commit()
         return hunt_to_save
 
+    @classmethod
+    def get_active_job_hunts(cls, user_id):
+        """Returns a list of active job hunts for a user."""
+
+        return db.session.query(cls).filter(cls.user_id == user_id, cls.status == 'a').order_by(cls.id.desc()).all()
 
 app_factor = db.Table('app_factor',
     db.Column('job_app_id',

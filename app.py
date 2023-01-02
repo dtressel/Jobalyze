@@ -156,7 +156,6 @@ def send_job_details_json(cos_id):
     return results_json
 
 @app.route('/cos-jobs/details/<cos_id>')
-# *****************not fully implemented************************
 def show_job_details_page(cos_id):
     """Shows a job details page for an api job"""
 
@@ -188,7 +187,7 @@ def add_job():
     if form.validate_on_submit():
         saved_job = SavedJob.save_job(current_user.id, form.data)
         # ******************** Add failed API error handling ******************
-        return redirect('/')
+        return redirect(f'/saved-jobs/{saved_job.id}')
 
     return render_template('job_add.html', form=form)
 
@@ -209,7 +208,8 @@ def edit_saved_job():
 
     resp = SavedJob.edit_saved_job(current_user.id, request.get_json())
 
-    return make_response(resp['body'], resp['status'])
+    # ********************** JS can't see the body of response **************************
+    return make_response(resp['body']['message'], resp['status'])
 
 @app.route('/dashboard', methods=['GET', 'POST'])
 @login_required
@@ -304,6 +304,7 @@ def save_job_app_cos(cos_id):
 def save_job_app_saved(saved_id):
     """Saves a job application for a job that has been saved."""
 
-    saved_job = SavedJob.query.get(saved_id)
+    job = SavedJob.query.get(saved_id)
+    active_hunts = JobHunt.get_active_job_hunts
 
-    return render_template('job_app_add_saved.html', saved_job=saved_job)
+    return render_template('job_app_add_saved.html', job=job, active_hunts=active_hunts)

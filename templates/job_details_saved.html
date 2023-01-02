@@ -15,7 +15,11 @@
   <div class="title-apply">
     <h3 id="details-job-title">{{saved_job.title}}</h3>
     <div class="hor-buttons-div">
+      {% if saved_job.application_link != None and saved_job.application_link != '' %}
       <a id="details-url" href="{{saved_job.application_link}}" target="_blank"><button>Apply</button></a>
+      {% else %}
+      <button id="apply-button-no-url">Apply</button>
+      {% endif %}
     </div>
   </div>
   <div class="details-i-applied">
