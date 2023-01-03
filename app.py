@@ -238,7 +238,7 @@ def dashboard_page_no_hunt():
         goals = None,
         form = form)
 
-@app.route('/dashboard/<hunt_id>')
+@app.route('/dashboard/<hunt_id>', methods=['GET', 'POST'])
 @login_required
 def dashboard_page_load_hunt(hunt_id):
     """Shows dashboard page with information displayed pertaining to chosen hunt"""

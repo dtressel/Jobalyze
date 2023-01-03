@@ -160,7 +160,7 @@ class NewJobHuntForm(FlaskForm):
     radius = IntegerField()
     non_us = BooleanField()
     remote = BooleanField()
-    app_goal_time_frame = IntegerField()
+    app_goal_time_frame = StringField()
     app_goal_number = IntegerField()
     hired_by_goal_date = DateField()
     description = StringField()
