@@ -318,7 +318,7 @@ class SavedJob(db.Model):
     def get_dashboard_saved_jobs_list(cls, user_id):
         """creates shortened and prioritized saved_jobs list for dashboard"""
 
-        return cls.query.filter_by(user_id = user_id).order_by(cls.date_posted.desc()).limit(8)
+        return cls.query.filter_by(user_id = user_id).order_by(cls.id.desc()).limit(10)
 
 class JobHunt(db.Model):
 
