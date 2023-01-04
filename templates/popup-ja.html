@@ -1,13 +1,60 @@
-<div id="popup" class="popup display-none">
-  <h2 id="popup-header">Create a New Job Hunt</h2>
-  <div id="popup-0" class="popup-jh">
-    <p>Creating a job hunt allows users to take advantage of the full set of Jobalyze's features.</p> 
-    <p>Set your job hunt goals, define strategies, and save your job application data.</p>
-    <p>With a defined job hunt Jobalyze will suggest job postings and allow you to track and 
-      analyze your job applications and overall progress.
+<div id="popup-ja" class="popup display-none">
+  <h2 id="popup-ja-header">Report a Job Application</h2>
+  <div id="popup-ja-0" class="popup-ja-screen">
+    <p>Every job application reported here will appear in your Job Apps list. 
+      From there you can keep track of it's status and use Jobalyze's analysis 
+      tools to draw conclusions from your application strategies.
     </p>
+    <p>Reporting an application for: </p>
+    <span id="job-title-span"></span>
+    <span> at </span>
+    <span id="company-span"></span>
+    <form method="POST" id="saved-job-add-form">
+      {{form.hidden_tag()}}
+    
+      <div class="form-row">
+        <label>This application report is for the</label>
+        <!-- select field with active job hunts -->
+        <span>job hunt.</span>
+      </div>
+      {% for err in form.title.errors %}
+      <div class="error-row">
+        <div class="error-div">{{err}}</div>
+      </div>
+      {% endfor %}
+
+      <div class="form-row">
+        <label>I applied on</label>
+        {{form.date_applied}}
+      </div>
+      {% for err in form.title.errors %}
+      <div class="error-row">
+        <div class="error-div">{{err}}</div>
+      </div>
+      {% endfor %}
+
+      <div class="display-none">
+        {{form.job_hunt_id}}
+        {{form.id}}
+        {{form.user_id(value=current_user.id)}}
+      </div>
+      <div class="popup-button-div">
+        <button type="submit">Submit</button>
+        <button type="button" id="popup-ja-cancel-button">Cancel</button>
+      </div>
+    </form>
   </div>
-  <div id="popup-1" class="popup-jh display-none">
+
+
+
+
+
+
+
+
+
+
+  <div id="popup-jh-1" class="popup-jh-screen display-none">
     <p>What kind of job are you looking for?</p>
     <div class="input-group">
       <label for="job-title-desired">Job Title Desired</label>
@@ -21,7 +68,7 @@
     <div>For most accurate results find the <a href="https://www.onetonline.org/find/result">O*NET Code</a> for your job title</div>
     <div>Example: 15-1252.00</div>
   </div>
-  <div id="popup-2" class="popup-jh display-none">
+  <div id="popup-jh-2" class="popup-jh-screen display-none">
     <p>Are you looking for a job in the United States?</p>
     <div class="radio-group">
       <input type="radio" id="yes-2" name="us-job" value="1" checked>
@@ -33,7 +80,7 @@
     </div>
     <p>Note that job suggestions are only available for U.S. jobs.</p>
   </div>
-  <div id="popup-3" class="popup-jh display-none">
+  <div id="popup-jh-3" class="popup-jh-screen display-none">
     <p>Are you looking for remote work?</p>
     <div class="radio-group">
       <input type="radio" id="yes-3" name="remote" value="1">
@@ -48,7 +95,7 @@
       <label for="either-3">Either remote or in-person</label>
     </div>
   </div>
-  <div id="popup-4" class="popup-jh display-none">
+  <div id="popup-jh-4" class="popup-jh-screen display-none">
     <p>Where are you hoping to work?</p>
     <div class="radio-group">
       <input type="radio" id="anywhere" name="where" value="anywhere">
@@ -59,7 +106,7 @@
       <label for="particular">Within a particular U.S. location</label>
     </div>
   </div>
-  <div id="popup-5" class="popup-jh display-none">
+  <div id="popup-jh-5" class="popup-jh-screen display-none">
     <p>Where in the U.S. are you hoping to work?</p>
     <div class="input-group">
       <label for="radius">Within</label>
@@ -70,7 +117,7 @@
       <input type="text" id="location" placeholder="Zip Code or City, State">
     </div>
   </div>
-  <div id="popup-6" class="popup-jh display-none">
+  <div id="popup-jh-6" class="popup-jh-screen display-none">
     <h3>Job Search Goals</h3>
     <div class="input-group">
       <label for="app-goal-number">I want to complete</label>
@@ -86,14 +133,14 @@
       </select>
     </div>
   </div>
-  <div id="popup-7" class="popup-jh display-none">
+  <div id="popup-jh-7" class="popup-jh-screen display-none">
     <h3>Job Search Goals</h3>
     <div class="input-group">
       <label for="hired-by-date">I hope to be hired by</label>
       <input type="date" id="hired-by-date">
     </div>
   </div>
-  <div id="popup-8" class="popup-jh display-none">
+  <div id="popup-jh-8" class="popup-jh-screen display-none">
     <p>For you to easily identify this job hunt, please provide a job hunt name and description (optional).</p>
     <div class="input-group">
       <label for="jh-name">Name</label>
@@ -104,12 +151,12 @@
       <textarea id="jh-description"></textarea>
     </div>
   </div>
-  <div id="popup-9" class="popup-jh display-none">
+  <div id="popup-jh-9" class="popup-jh-screen display-none">
     <p>You successfully created a new job hunt!</p>
   </div>
   <div class="popup-button-div">
-    <button id="popup-continue-button">Start</button>
-    <button id="popup-cancel-button">Cancel</button>
+    <button id="popup-jh-continue-button">Start</button>
+    <button id="popup-jh-cancel-button">Cancel</button>
   </div>
 </div>
 <form method="POST" class="display-none" id="new-job-hunt-form">

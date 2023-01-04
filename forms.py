@@ -151,7 +151,7 @@ class ManualJobAddForm(FlaskForm):
     user_notes = TextAreaField("User Notes")
 
 class NewJobHuntForm(FlaskForm):
-    """Form to manually add a job."""
+    """Form to create a new Job Hunt from dialog. Form is not displayed."""
 
     name = StringField()
     job_title_desired = StringField()
@@ -166,3 +166,12 @@ class NewJobHuntForm(FlaskForm):
     description = StringField()
 
     # https://stackoverflow.com/questions/33429510/wtforms-selectfield-not-properly-coercing-for-booleans
+
+class JobAppCreateForm(FlaskForm):
+    """Form to create a new job app from dialog. Form is not displayed."""
+
+    job_hunt_id = IntegerField()
+    date_applied = DateField()
+    id = IntegerField()
+        # saved job id
+    user_id = IntegerField()

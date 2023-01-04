@@ -21,7 +21,9 @@ let cachedJobDetails;
 const cosId = detailsWrapper.dataset.cosId;
 const fc = detailsWrapper.dataset.fc;
 
-saveButton.addEventListener('click', saveButtonClick);
+if (saveButton) {
+  saveButton.addEventListener('click', saveButtonClick);
+}
 if (iAppliedButton) {
   iAppliedButton.addEventListener('click', iAppliedButtonClick);
 }
@@ -84,12 +86,18 @@ async function saveJob(details) {
     body: JSON.stringify(details)
   })
 
-  return resp
+  return resp;
 }
 
 async function iAppliedButtonClick() {
-  const savedJobId = await saveButtonClick();
-  window.location.href = `/job-apps/add/${savedJobId}`;
+  const savedJob = await saveButtonClick();
+  addDetailsToJaPopup();
+  document.getElementById('popup-ja').classList.remove('display-none');
+}
+
+function addDetailsToJaPopup() {
+  document.getElementById('job-title-span').textContent = cachedJobDetails.JobTitle;
+  document.getElementById('company-span').textContent = cachedJobDetails.Company;
 }
 
 // On load:

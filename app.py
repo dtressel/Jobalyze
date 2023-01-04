@@ -1,12 +1,13 @@
 import os
 
-from flask import Flask, render_template, redirect, flash, request, abort, make_response, session
+from flask import Flask, render_template, redirect, flash, request, abort, make_response, jsonify, session
 # For auth:
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
+from markupsafe import Markup
 
 from utilities import is_safe_url
 from models import db, connect_db, User, SavedJob, JobHunt, JobApp
-from forms import RegistrationForm, LoginForm, ApiJobSearchForm, ManualJobAddForm, NewJobHuntForm, UserEditForm
+from forms import RegistrationForm, LoginForm, ApiJobSearchForm, ManualJobAddForm, NewJobHuntForm, JobAppCreateForm, UserEditForm
 from api_requests import get_jobs, get_job_details, get_page_navigation_values, get_postings_for_dashboard
 
 app = Flask(__name__)
@@ -155,17 +156,25 @@ def send_job_details_json(cos_id):
 
     return results_json
 
-@app.route('/cos-jobs/details/<cos_id>')
+@app.route('/cos-jobs/details/<cos_id>', methods=["GET", "POST"])
 def show_job_details_page(cos_id):
     """Shows a job details page for an api job"""
 
     # Check to see if job is already saved:
     if current_user.is_authenticated:
+        form = JobAppCreateForm()
+        if form.validate_on_submit():
+            print('form validated')
         saved_id = SavedJob.already_saved_id(current_user.id, cos_id)
+        active_hunts = JobHunt.get_active_job_hunts
+    else:
+        saved_id = None
+        form = None
+        active_hunts = None
 
     # Job details API request are sent from front end after page loads
 
-    return render_template('job_details_api.html', cos_id=cos_id, fc=request.args['fc'], saved_id=saved_id)  
+    return render_template('job_details_api.html', cos_id=cos_id, fc=request.args['fc'], saved_id=saved_id, form=form, active_hunts=active_hunts)  
 
 @app.route('/saved-jobs/add/cos', methods=['POST'])
 @login_required
@@ -191,15 +200,21 @@ def add_job():
 
     return render_template('job_add.html', form=form)
 
-@app.route('/saved-jobs/<saved_job_id>')
+@app.route('/saved-jobs/<saved_job_id>', methods=["GET", "POST"])
 @login_required
 def show_saved_job(saved_job_id):
     """Shows details of a particular saved job"""
 
+    form = JobAppCreateForm()
+    if form.validate_on_submit():
+        print('form validated')
+
     saved_job = SavedJob.query.get(saved_job_id)
     saved_job = SavedJob.translate_values(saved_job)
+    description = Markup(saved_job.job_description)
+    active_hunts = JobHunt.get_active_job_hunts
 
-    return render_template('job_details_saved.html', saved_job=saved_job)
+    return render_template('job_details_saved.html', saved_job=saved_job, description=description, form=form, active_hunts=active_hunts)
 
 @app.route('/saved-jobs/edit/json', methods=['POST'])
 @login_required
