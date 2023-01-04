@@ -24,10 +24,12 @@
       <div id="details-location"></div>
       <div id="details-date-posted"></div>
     </div>
-    {% if saved_id %}
-    <a href="/job-apps/add/{{saved_id}}"><button>I applied</button></a>
-    {% else %}
-    <button id="i-applied-button">I applied</button>
+    {% if current_user.is_authenticated %}
+      {% if saved_id %}
+      <a href="/job-apps/add/{{saved_id}}"><button>I applied</button></a>
+      {% else %}
+      <button id="i-applied-button">I applied</button>
+      {% endif %}
     {% endif %}
   </div>
   <div id="details-description"></div>
