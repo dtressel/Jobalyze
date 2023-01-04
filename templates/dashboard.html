@@ -15,17 +15,23 @@
     <h2>Dashboard</h2>
   </div>
   <div id="top-center" class="top-grid-section">
-    <label for="job-hunt-select">Job Hunt</label>
-    {% if current_hunt %}
-    <select name="job_hunt" id="job-hunt-select">
-      {% for hunt in current_user.job_hunts|reverse %}
-      <option value="{{hunt.id}}">{{hunt.name}}</option>
-      {% endfor %}
-    </select>
-    {% else %}
-    <div>No Job Hunts Created</div>
-    {% endif %}
-    <button id="new-job-hunt-button">Start New Job Hunt</button>
+    <div class="top-grid-inner-wrapper">
+      <div class="top-center-row-1">
+        <h3 class="job-hunt-h3">Job Hunt:</h3>
+        {% if current_hunt %}
+        <select name="job_hunt" id="job-hunt-select">
+          {% for hunt in current_user.job_hunts|reverse %}
+          <option value="{{hunt.id}}" {% if hunt.id == current_hunt.id %}selected{% endif %}>{{hunt.name}}</option>
+          {% endfor %}
+        </select>
+        {% else %}
+        <div>No Job Hunts Created</div>
+        {% endif %}
+      </div>
+      <div class="new-job-hunt-container">
+        <button id="new-job-hunt-button">New Job Hunt</button>
+      </div>
+    </div>
   </div>
   <div id="top-right" class="top-grid-section">
     <div id="hired-button" class="hired-button">Hired!</div>

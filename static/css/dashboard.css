@@ -45,6 +45,15 @@ main {
   grid-row: 2 / 3;
 }
 
+.job-hunt-h3 {
+  margin: 6px 4px 6px;
+}
+
+.new-job-hunt-container {
+  display: flex;
+  justify-content: center;
+}
+
 .heading-expand {
   display: flex;
   justify-content: space-between;
@@ -64,6 +73,11 @@ main {
 }
 
 .top-grid-section {
+  display: flex;
+  align-items: center;
+}
+
+.top-center-row-1 {
   display: flex;
   align-items: center;
 }
