@@ -90,14 +90,25 @@ async function saveJob(details) {
 }
 
 async function iAppliedButtonClick() {
-  const savedJob = await saveButtonClick();
-  addDetailsToJaPopup();
-  document.getElementById('popup-ja').classList.remove('display-none');
+  let savedJobId;
+  if (iAppliedButton.dataset.dataSaved === 'none') {
+    savedJobId = await saveButtonClick();
+    // backend checks (in models.py) if the job is already saved and avoids duplicate saves.
+  } else {
+    savedJobId = iAppliedButton.dataset.dataSaved;
+  }
+  if (iAppliedButton.dataset.jobHunt === 'none') {
+    iAppliedToJhPopup();
+  } else {
+    addDetailsToJaPopup(savedJobId);
+    document.getElementById('popup-ja').classList.remove('display-none');
+  }
 }
 
-function addDetailsToJaPopup() {
+function addDetailsToJaPopup(savedJobId) {
   document.getElementById('job-title-span').textContent = cachedJobDetails.JobTitle;
   document.getElementById('company-span').textContent = cachedJobDetails.Company;
+  document.getElementById('id').value = savedJobId;
 }
 
 // On load:

@@ -1,12 +1,19 @@
 <div id="popup-jh" class="popup display-none">
   <h2 id="popup-jh-header">Create a New Job Hunt</h2>
-  <div id="popup-jh-0" class="popup-jh-screen">
+
+  <div id="popup-jh-prescreen-ja" class="popup-jh-screen display-none">
+    <p>To report a job app, you must first create a job hunt.</p>
+    <p>Create a job hunt now?</p>
+  </div>
+
+  <div id="popup-jh-0" class="popup-jh-screen display-none">
     <p>Creating a job hunt allows users to take advantage of the full set of Jobalyze's features.</p> 
     <p>Set your job hunt goals, define strategies, and save your job application data.</p>
     <p>With a defined job hunt Jobalyze will suggest job postings and allow you to track and 
       analyze your job applications and overall progress.
     </p>
   </div>
+
   <div id="popup-jh-1" class="popup-jh-screen display-none">
     <p>What kind of job are you looking for?</p>
     <div class="input-group">
@@ -21,6 +28,7 @@
     <div>For most accurate results find the <a href="https://www.onetonline.org/find/result">O*NET Code</a> for your job title</div>
     <div>Example: 15-1252.00</div>
   </div>
+
   <div id="popup-jh-2" class="popup-jh-screen display-none">
     <p>Are you looking for a job in the United States?</p>
     <div class="radio-group">
@@ -33,6 +41,7 @@
     </div>
     <p>Note that job suggestions are only available for U.S. jobs.</p>
   </div>
+
   <div id="popup-jh-3" class="popup-jh-screen display-none">
     <p>Are you looking for remote work?</p>
     <div class="radio-group">
@@ -48,6 +57,7 @@
       <label for="either-3">Either remote or in-person</label>
     </div>
   </div>
+
   <div id="popup-jh-4" class="popup-jh-screen display-none">
     <p>Where are you hoping to work?</p>
     <div class="radio-group">
@@ -59,6 +69,7 @@
       <label for="particular">Within a particular U.S. location</label>
     </div>
   </div>
+
   <div id="popup-jh-5" class="popup-jh-screen display-none">
     <p>Where in the U.S. are you hoping to work?</p>
     <div class="input-group">
@@ -70,6 +81,7 @@
       <input type="text" id="location" placeholder="Zip Code or City, State">
     </div>
   </div>
+
   <div id="popup-jh-6" class="popup-jh-screen display-none">
     <h3>Job Search Goals</h3>
     <div class="input-group">
@@ -86,6 +98,7 @@
       </select>
     </div>
   </div>
+
   <div id="popup-jh-7" class="popup-jh-screen display-none">
     <h3>Job Search Goals</h3>
     <div class="input-group">
@@ -93,6 +106,7 @@
       <input type="date" id="hired-by-date">
     </div>
   </div>
+
   <div id="popup-jh-8" class="popup-jh-screen display-none">
     <p>For you to easily identify this job hunt, please provide a job hunt name and description (optional).</p>
     <div class="input-group">
@@ -104,11 +118,13 @@
       <textarea id="jh-description"></textarea>
     </div>
   </div>
+
   <div id="popup-jh-9" class="popup-jh-screen display-none">
     <p>You successfully created a new job hunt!</p>
   </div>
+
   <div class="popup-button-div">
-    <button id="popup-jh-continue-button">Start</button>
+    <button id="popup-jh-continue-button">Yes</button>
     <button id="popup-jh-cancel-button">Cancel</button>
   </div>
 </div>

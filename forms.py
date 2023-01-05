@@ -157,7 +157,7 @@ class NewJobHuntForm(FlaskForm):
     job_title_desired = StringField()
     o_net_code = StringField()
     location = StringField()
-    radius = IntegerField()
+    radius = IntegerField(validators=[Optional()])
     non_us = BooleanField()
     remote = BooleanField()
     app_goal_time_frame = StringField()
@@ -170,8 +170,9 @@ class NewJobHuntForm(FlaskForm):
 class JobAppCreateForm(FlaskForm):
     """Form to create a new job app from dialog. Form is not displayed."""
 
-    job_hunt_id = IntegerField()
     date_applied = DateField()
+    # In popup-ja.html I add a custom select field here from which the value is transferred to the job_hunt_id field
     id = IntegerField()
         # saved job id
     user_id = IntegerField()
+    job_hunt_id = IntegerField()

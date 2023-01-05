@@ -162,19 +162,41 @@ def show_job_details_page(cos_id):
 
     # Check to see if job is already saved:
     if current_user.is_authenticated:
-        form = JobAppCreateForm()
-        if form.validate_on_submit():
-            print('form validated')
         saved_id = SavedJob.already_saved_id(current_user.id, cos_id)
-        active_hunts = JobHunt.get_active_job_hunts
+        active_hunts = JobHunt.get_active_job_hunts(current_user.id)
+        if not active_hunts:
+            form = NewJobHuntForm()
+            if form.validate_on_submit():
+                new_hunt = JobHunt.save_job_hunt(current_user.id, form.data)
+                # ******************** Add failed API error handling ******************
+                active_hunts.append(new_hunt)
+                popup_ja = 'open'
+                popup_jh = None
+            else:
+                popup_ja = None
+                popup_jh = 'ready'
+        else:
+            form = None
+            popup_ja = 'ready'
+            popup_jh = None
     else:
         saved_id = None
         form = None
         active_hunts = None
+        popup_ja = None
+        popup_jh = None
 
     # Job details API request are sent from front end after page loads
+    import pdb; pdb.set_trace()
 
-    return render_template('job_details_api.html', cos_id=cos_id, fc=request.args['fc'], saved_id=saved_id, form=form, active_hunts=active_hunts)  
+    return render_template('job_details_api.html',
+                            cos_id=cos_id,
+                            fc=request.args['fc'],
+                            saved_id=saved_id,
+                            form=form,
+                            active_hunts=active_hunts,
+                            popup_ja=popup_ja,
+                            popup_jh=popup_jh)  
 
 @app.route('/saved-jobs/add/cos', methods=['POST'])
 @login_required
@@ -205,16 +227,33 @@ def add_job():
 def show_saved_job(saved_job_id):
     """Shows details of a particular saved job"""
 
-    form = JobAppCreateForm()
-    if form.validate_on_submit():
-        print('form validated')
-
-    saved_job = SavedJob.query.get(saved_job_id)
-    saved_job = SavedJob.translate_values(saved_job)
+    active_hunts = JobHunt.get_active_job_hunts(current_user.id)
+    if not active_hunts:
+        form = NewJobHuntForm()
+        if form.validate_on_submit():
+            new_hunt = JobHunt.save_job_hunt(current_user.id, form.data)
+            # ******************** Add failed API error handling ******************
+            active_hunts.append(new_hunt)
+            popup_ja = 'open'
+            popup_jh = None
+        else:
+            popup_ja = None
+            popup_jh = 'ready'
+    else:
+        form = None
+        popup_ja = False
+        popup_jh = None
+    saved_job_raw = SavedJob.query.get(saved_job_id)
+    saved_job = SavedJob.translate_values(saved_job_raw)
     description = Markup(saved_job.job_description)
-    active_hunts = JobHunt.get_active_job_hunts
 
-    return render_template('job_details_saved.html', saved_job=saved_job, description=description, form=form, active_hunts=active_hunts)
+    return render_template('job_details_saved.html',
+                            saved_job=saved_job,
+                            description=description,
+                            form=form,
+                            active_hunts=active_hunts,
+                            popup_ja=popup_ja,
+                            popup_jh=popup_jh)
 
 @app.route('/saved-jobs/edit/json', methods=['POST'])
 @login_required
@@ -258,14 +297,14 @@ def dashboard_page_no_hunt():
 def dashboard_page_load_hunt(hunt_id):
     """Shows dashboard page with information displayed pertaining to chosen hunt"""
 
-    # job_hunts (available from current_user)
+    # job_hunts (retrieved in template from current_user object)
     # saved_jobs (available from current_user)
     # current job_hunt (queried below)
     # job_apps (available from current job_hunt)
     # recent job postings (get from front end)
 
     form = NewJobHuntForm()
-
+    import pdb; pdb.set_trace()
     if form.validate_on_submit():
         print('Job Hunt form validated')
         new_hunt = JobHunt.save_job_hunt(current_user.id, form.data)
@@ -302,6 +341,6 @@ def save_job_app_saved(saved_id):
     """Saves a job application for a job that has been saved."""
 
     job = SavedJob.query.get(saved_id)
-    active_hunts = JobHunt.get_active_job_hunts
+    active_hunts = JobHunt.get_active_job_hunts(current_user.id)
 
     return render_template('job_app_add_saved.html', job=job, active_hunts=active_hunts)

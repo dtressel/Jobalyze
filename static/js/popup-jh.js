@@ -7,15 +7,27 @@ const popupJhScreens = document.getElementsByClassName('popup-jh-screen');
 popupJhContinueButton.addEventListener('click', continueWizard);
 popupJhCancelButton.addEventListener('click', cancelWizard);
 
-let popupJhWindowNum = 1;
+let popupJhWindowNum = 0;
 let newJobHuntObj = {};
 
-function newJobHuntClick() {
+function iAppliedToJhPopup() {
   popupJh.classList.remove('display-none');
+  popupJhScreens[0].classList.remove('display-none');
+}
+
+function newJobHuntClick() {
+  popupJhWindowNum = 1;
+  popupJh.classList.remove('display-none');
+  hideAllScreens();
+  popupJhContinueButton.textContent = 'Start';
+  popupJhScreens[1].classList.remove('display-none');
 }
 
 function continueWizard() {
   switch(popupJhWindowNum) {
+    case 0:
+      newJobHuntClick();
+      break;
     case 1: 
       popupJh1();
       break;
@@ -49,7 +61,7 @@ function continueWizard() {
 function popupJh1() {
   hideAllScreens();
   popupJhContinueButton.textContent = 'Continue';
-  popupJhScreens[1].classList.remove('display-none');
+  popupJhScreens[2].classList.remove('display-none');
   popupJhWindowNum++;
 }
 
@@ -58,7 +70,7 @@ function popupJh2() {
   // get data from screen 1:
   newJobHuntObj.job_title_desired = document.getElementById('job-title-desired').value;
   newJobHuntObj.o_net_code = document.getElementById('o-net-code').value;
-  popupJhScreens[2].classList.remove('display-none');
+  popupJhScreens[3].classList.remove('display-none');
   popupJhWindowNum++;
 }
 
@@ -69,11 +81,11 @@ function popupJh3() {
   if (!inUs) {
     console.log('evaulated as false');
     newJobHuntObj.non_us = true;
-    popupJhScreens[6].classList.remove('display-none');
+    popupJhScreens[7].classList.remove('display-none');
     popupJhWindowNum += 4;
   } else {
     console.log('evaulated as true');
-    popupJhScreens[3].classList.remove('display-none');
+    popupJhScreens[4].classList.remove('display-none');
     popupJhWindowNum++;
   }
 }
@@ -85,7 +97,7 @@ function popupJh4() {
   if (remote) {
     newJobHuntObj.remote = true;
   }
-  popupJhScreens[4].classList.remove('display-none');
+  popupJhScreens[5].classList.remove('display-none');
   popupJhWindowNum++;
 }
 
@@ -95,10 +107,10 @@ function popupJh5() {
   where = document.querySelector('input[name="where"]:checked').value;
   if (where === 'anywhere') {
     newJobHuntObj.location = 'US'
-    popupJhScreens[6].classList.remove('display-none');
+    popupJhScreens[7].classList.remove('display-none');
     popupJhWindowNum += 2;
   } else {
-    popupJhScreens[5].classList.remove('display-none');
+    popupJhScreens[6].classList.remove('display-none');
     popupJhWindowNum++;
   }
 }
@@ -108,7 +120,7 @@ function popupJh6() {
   // get data from screen 5:
   newJobHuntObj.radius = document.getElementById('radius').value;
   newJobHuntObj.location = document.getElementById('location').value;
-  popupJhScreens[6].classList.remove('display-none');
+  popupJhScreens[7].classList.remove('display-none');
   popupJhWindowNum++;
 }
 
@@ -117,7 +129,7 @@ function popupJh7() {
   // get data from screen 6:
   newJobHuntObj.app_goal_number = document.getElementById('app-goal-number').value;
   newJobHuntObj.app_goal_time_frame = document.getElementById('app-goal-time-frame').value;
-  popupJhScreens[7].classList.remove('display-none');
+  popupJhScreens[8].classList.remove('display-none');
   popupJhWindowNum++;
 }
 
@@ -126,7 +138,7 @@ function popupJh8() {
   // get data from screen 7:
   newJobHuntObj.hired_by_goal_date = document.getElementById('hired-by-date').value;
   popupJhContinueButton.textContent = 'Finish';
-  popupJhScreens[8].classList.remove('display-none');
+  popupJhScreens[9].classList.remove('display-none');
   popupJhWindowNum++;
 }
 
@@ -144,7 +156,6 @@ function cancelWizard() {
   newJobHuntObj = {};
   popupJhWindowNum = 1;
   hideAllScreens();
-  popupJhScreens[0].classList.remove('display-none');
   popupJhContinueButton.textContent = 'Start';
   popupJhCancelButton.textContent = 'Cancel';
   popupJhContinueButton.classList.remove('display-none');

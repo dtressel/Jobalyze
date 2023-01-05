@@ -342,7 +342,9 @@ class JobHunt(db.Model):
     location = db.Column(db.String(100),
         nullable=False,
         default='US')
-    radius = db.Column(db.Integer)
+    radius = db.Column(db.Integer,
+        nullable=False,
+        default=25)
     non_us = db.Column(db.Boolean,
         nullable=False,
         default=False)

@@ -2,6 +2,9 @@
 
 {% block stylesheets %}
 <link rel="stylesheet" href="/static/css/job_details.css">
+  {% if popup_jh or popup_ja %}
+  <link rel="stylesheet" href="/static/css/popup.css">
+  {% endif %}
 {% endblock %}
 
 {% block title %}Job Details{% endblock %}
@@ -25,17 +28,31 @@
       <div id="details-date-posted"></div>
     </div>
     {% if current_user.is_authenticated %}
-      {% if saved_id %}
-      <a href="/job-apps/add/{{saved_id}}"><button>I applied</button></a>
-      {% else %}
-      <button id="i-applied-button">I applied</button>
-      {% endif %}
+      <button id="i-applied-button" 
+        {% if saved_id %}data-saved={{saved_id}}{% else %}data-saved="none"{% endif %} 
+        {% if popup_jh == 'ready' %}data-job-hunt="none"{% else %}data-job-hunt="yes"{% endif %}
+      >
+      I applied</button>
     {% endif %}
   </div>
   <div id="details-description"></div>
 </div>
 {% endblock %}
 
+{% if popup_jh %}
+  {% include "popup-jh.html" %}
+{% endif %}
+
+{% if popup_ja %}
+  {% include "popup-ja.html" %}
+{% endif %}
+
 {% block scripts %}
+  {% if popup_jh %}
+  <script src="/static/js/popup-jh.js"></script>
+  {% endif %}
+  {% if popup_ja %}
+  <script src="/static/js/popup-ja.js"></script>
+  {% endif %}
 <script src="/static/js/job_details_api.js"></script>
 {% endblock %}
