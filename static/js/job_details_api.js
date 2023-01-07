@@ -3,6 +3,7 @@
 const saveButton = document.getElementById('save-button');
 const savedIcon = document.getElementById('saved-icon');
 const iAppliedButton = document.getElementById('i-applied-button');
+const youAppliedIcon = document.getElementById('you-applied-icon');
 
 // Regarding show job details
 const detailsWrapper = document.getElementById('details-wrapper');
@@ -14,7 +15,7 @@ const datePosted = document.getElementById('details-date-posted');
 const description = document.getElementById('details-description');
 
 // Variable to store job details to avoid second API request when saving
-// variable populated in getJobDetails()
+// variable populated on page load in getJobDetails()
 let cachedJobDetails;
 
 // Other variables
@@ -27,6 +28,9 @@ if (saveButton) {
 if (iAppliedButton) {
   iAppliedButton.addEventListener('click', iAppliedButtonClick);
 }
+
+
+// #1: Functionality that loads job details on page load
 
 async function showJobDetails() {
   const jobDetails = await getJobDetails(cosId);
@@ -51,6 +55,10 @@ function updateDom(jobDetails) {
   datePosted.textContent = `Date Posted: ${jobDetails.DatePosted}`;
   description.innerHTML = jobDetails.Description;
 }
+
+
+// #2: Functionality that saves a job on Save Button Click
+//     (also sometimes called when clicking iApplied)
 
 async function saveButtonClick() {
   details = getDetailsFromCached();
@@ -90,12 +98,16 @@ async function saveJob(details) {
 }
 
 async function iAppliedButtonClick() {
+  console.log('in iAppliedButtonClick')
+  console.log('savedJobId:', iAppliedButton.dataset.savedJobId);
+  console.log('jobHunt', iAppliedButton.dataset.jobHunt);
   let savedJobId;
-  if (iAppliedButton.dataset.dataSaved === 'none') {
+  if (iAppliedButton.dataset.savedJobId === 'none') {
     savedJobId = await saveButtonClick();
+    console.log('savedJobId:', savedJobId);
     // backend checks (in models.py) if the job is already saved and avoids duplicate saves.
   } else {
-    savedJobId = iAppliedButton.dataset.dataSaved;
+    savedJobId = iAppliedButton.dataset.savedJobId;
   }
   if (iAppliedButton.dataset.jobHunt === 'none') {
     iAppliedToJhPopup();
@@ -106,9 +118,15 @@ async function iAppliedButtonClick() {
 }
 
 function addDetailsToJaPopup(savedJobId) {
-  document.getElementById('job-title-span').textContent = cachedJobDetails.JobTitle;
-  document.getElementById('company-span').textContent = cachedJobDetails.Company;
-  document.getElementById('id').value = savedJobId;
+  const jobTitleSpans = document.getElementsByClassName('job-title-spans');
+  const companySpans = document.getElementsByClassName('company-spans');
+  for (const span of jobTitleSpans) {
+    span.textContent = cachedJobDetails.JobTitle;
+  }
+  for (const span of companySpans) {
+    span.textContent = cachedJobDetails.Company;
+  }
+  document.getElementById('job-app-report-form').setAttribute('data-saved-job-id', savedJobId);
 }
 
 // On load:

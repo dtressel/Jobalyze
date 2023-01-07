@@ -6,7 +6,7 @@ from flask_login import LoginManager, login_user, login_required, logout_user, c
 from markupsafe import Markup
 
 from utilities import is_safe_url
-from models import db, connect_db, User, SavedJob, JobHunt, JobApp
+from models import db, connect_db, User, SavedJob, JobHunt, JobApp, Factor
 from forms import RegistrationForm, LoginForm, ApiJobSearchForm, ManualJobAddForm, NewJobHuntForm, JobAppCreateForm, UserEditForm
 from api_requests import get_jobs, get_job_details, get_page_navigation_values, get_postings_for_dashboard
 
@@ -160,9 +160,18 @@ def send_job_details_json(cos_id):
 def show_job_details_page(cos_id):
     """Shows a job details page for an api job"""
 
+    # Create "mock" saved job object to avoid errors on popup-ja.html render since real saved job object
+        # is used in '/saved-jobs/<saved_job_id>' (which also uses poup-ja.html) and in which saved job
+        # object values are used to populate parts of popup-ja.html.
+    # In this view function, 'id' in some cases will be filled when job is already saved.
+    # 'id' is used to decide whether to display saved icon and to avoid backend call in iAppliedButtonClick() in job_details_api.js.
+    # 'id' (sometimes), 'title', and 'company' will be populated by job_details_api.js.
+
+    saved_job = {'id': None, 'title': None, 'company': None}
+
     # Check to see if job is already saved:
     if current_user.is_authenticated:
-        saved_id = SavedJob.already_saved_id(current_user.id, cos_id)
+        saved_job['id'] = SavedJob.already_saved_id(current_user.id, cos_id)
         active_hunts = JobHunt.get_active_job_hunts(current_user.id)
         if not active_hunts:
             form = NewJobHuntForm()
@@ -180,19 +189,17 @@ def show_job_details_page(cos_id):
             popup_ja = 'ready'
             popup_jh = None
     else:
-        saved_id = None
         form = None
         active_hunts = None
         popup_ja = None
         popup_jh = None
 
     # Job details API request are sent from front end after page loads
-    import pdb; pdb.set_trace()
 
     return render_template('job_details_api.html',
                             cos_id=cos_id,
                             fc=request.args['fc'],
-                            saved_id=saved_id,
+                            saved_job=saved_job,
                             form=form,
                             active_hunts=active_hunts,
                             popup_ja=popup_ja,
@@ -304,7 +311,7 @@ def dashboard_page_load_hunt(hunt_id):
     # recent job postings (get from front end)
 
     form = NewJobHuntForm()
-    import pdb; pdb.set_trace()
+
     if form.validate_on_submit():
         print('Job Hunt form validated')
         new_hunt = JobHunt.save_job_hunt(current_user.id, form.data)
@@ -335,12 +342,48 @@ def save_job_hunt():
     # fix this return
     return "success"  
 
-@app.route('/job-apps/add/<saved_id>')
+@app.route('/job-apps/add/json', methods=['POST'])
 @login_required
-def save_job_app_saved(saved_id):
-    """Saves a job application for a job that has been saved."""
+def save_job_app():
+    """Endpoint for frontend to add (report) a job app."""
 
-    job = SavedJob.query.get(saved_id)
-    active_hunts = JobHunt.get_active_job_hunts(current_user.id)
+    app_details = request.get_json()
+    resp = JobApp.add_job_app(app_details)
 
-    return render_template('job_app_add_saved.html', job=job, active_hunts=active_hunts)
+    if resp['status'] == 200:
+        factors_list = JobHunt.getFactors(app_details['job_hunt_id'])
+
+        return factors_list
+
+    # ********************** JS can't see the body of response **************************
+    return make_response(resp['body']['message'], resp['status'])
+
+
+@app.route('/factors/add/json', methods=['POST'])
+@login_required
+def save_factor():
+    """Endpoint that Accepts a list of new factors to add to the database"""
+
+    factors_to_add = request.get_json()
+    resp = Factor.add_factors(factors_to_add, current_user.id)
+
+    if resp['status'] == 200:
+        return resp['body']
+
+    # ********************** JS can't see the body of response **************************
+    return make_response(resp['body']['message'], resp['status'])
+
+@app.route('/factors/associate/json', methods=['POST'])
+@login_required
+def associate_factor():
+    """Endpoint that Accepts a list of new factors' ids to associate them with a job app by adding to the app_factor table in the database."""
+
+    associate_factors_dict = request.get_json()
+    resp = Factor.associate_factors(associate_factors_dict, current_user.id)
+    import pdb; pdb.set_trace()
+
+    if resp['status'] == 200:
+        return resp['body']
+
+    # ********************** JS can't see the body of response **************************
+    return make_response(resp['body'], resp['status'])

@@ -414,6 +414,15 @@ class JobHunt(db.Model):
 
         return db.session.query(cls).filter(cls.user_id == user_id, cls.status == 'a').order_by(cls.id.desc()).all()
 
+    @classmethod
+    def getFactors(cls, job_hunt_id):
+        """Returns factors for a given job hunt id"""
+
+        job_hunt = cls.query.get(job_hunt_id)
+        factors_list = [{'id': x.id, 'name': x.name} for x in job_hunt.factors]
+
+        return factors_list
+
 app_factor = db.Table('app_factor',
     db.Column('job_app_id',
         db.Integer,
@@ -486,6 +495,24 @@ class JobApp(db.Model):
         return f"<Job App #{self.id}: {self.saved_job.company}, {self.current_status}>"
 
     @classmethod
+    def add_job_app(cls, app_obj):
+        """adds (reports) a job app to the database"""
+
+        # check if job app already created for saved job
+        if cls.query.get(app_obj['id']):
+            return {'body': {'message': 'A job app associated with this job has already been created.'}, 'status': 409}
+
+        app_to_add = cls()
+
+        for key in app_obj:
+            setattr(app_to_add, key, app_obj[key])
+
+        # **********************need some error handling if not addd**********************
+        db.session.add(app_to_add)
+        db.session.commit()
+        return {'body': {'message': 'Job App Report Successful!'}, 'status': 200}
+    
+    @classmethod
     def get_dashboard_job_apps_list(cls, user_id):
         """creates shortened and prioritized saved_jobs list for dashboard"""
 
@@ -500,7 +527,7 @@ class Factor(db.Model):
         primary_key=True
     )
     name = db.Column(
-        db.String(100),
+        db.String(50),
         nullable=False
     )
     job_hunt_id = db.Column(
@@ -514,6 +541,44 @@ class Factor(db.Model):
     def __repr__(self):
         return f"<Factor #{self.id}: {self.name}>"
 
+    @classmethod
+    def add_factors(cls, factors_to_add, current_user_id):
+        """Accepts a list of factors to add to the database."""
+
+        new_factor_id_list = []
+
+        if (factors_to_add):
+            user_id_associated_with_job_hunt = db.session.query(JobHunt.user_id).filter_by(id = factors_to_add[0]['job_hunt_id']).first()[0]
+            if (current_user_id != user_id_associated_with_job_hunt):
+                return {'body': {'message': 'You are not authorized to do this.'}, 'status': 401}
+
+            new_factor_list = []
+
+            for factor in factors_to_add:
+                new_factor = cls(job_hunt_id = factor['job_hunt_id'], name = factor['name'])
+                new_factor_list.append(new_factor)
+                db.session.add(new_factor)
+            db.session.commit()
+            new_factor_id_list = [x.id for x in new_factor_list]
+
+        return {'body': new_factor_id_list, 'status': 200}
+
+    @classmethod
+    def associate_factors(cls, associate_factors_dict, current_user_id):
+        """Accepts a list of factors to add to the database."""
+
+        user_id_associated_with_job_app = db.session.query(SavedJob.user_id).filter_by(id = associate_factors_dict['savedJobId']).first()[0]
+        if (current_user_id != user_id_associated_with_job_app):
+            return {'body': 'You are not authorized to do this.', 'status': 401}
+
+        factors_list = [cls.query.get(factorId) for factorId in associate_factors_dict['allFactorsIdArray']]
+        app_to_associate_factors_with = JobApp.query.get(associate_factors_dict['savedJobId'])
+        import pdb; pdb.set_trace()
+        app_to_associate_factors_with.factors.extend(factors_list)
+        db.session.commit()
+        import pdb; pdb.set_trace()
+
+        return {'body': 'success!', 'status': 200}
 
 def connect_db(app):
     """Connect this database to provided Flask app.

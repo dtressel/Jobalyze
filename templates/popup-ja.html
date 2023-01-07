@@ -1,19 +1,18 @@
 <div id="popup-ja" class="popup display-none">
   <h2 id="popup-ja-header">Report a Job Application</h2>
+
   <div id="popup-ja-0" class="popup-ja-screen">
-    <p>Every job application reported here will appear in your Job Apps list. 
-      From there you can keep track of it's status and use Jobalyze's analysis 
+    <p>Every job application reported will appear in your Job Apps list. 
+      From there you can keep track of its status and use Jobalyze's analysis 
       tools to draw conclusions from your application strategies.
     </p>
     <p>Reporting an application for: </p>
-    <span id="job-title-span"></span>
+    <span class="job-title-spans">{{saved_job['title']}}</span>
     <span> at </span>
-    <span id="company-span"></span>
-    <form method="POST" id="saved-job-add-form">
-    
+    <span class="company-spans">{{saved_job['company']}}</span>
+    <form id="job-app-report-form" data-saved-job-id="{{saved_job['id']}}" data-user-id="{{current_user.id}}">
       <div class="form-row">
         <label for="job-hunt-select">This application report is for the</label>
-        <!-- select field with active job hunts -->
         <select id="job-hunt-select">
           {% for hunt in active_hunts %}
           <option value="{{hunt.id}}">{{hunt.name}}</option>
@@ -21,20 +20,47 @@
         </select>
         <span>job hunt.</span>
       </div>
-
       <div class="form-row">
-        <label>I applied on</label>
-
+        <label for="applied-date-input">I applied on</label>
+        <input type="date" id="applied-date-input">
       </div>
-
-      <div class="display-none">
-
-      </div>
-
     </form>
+  </div>
 
-    <div class="popup-button-div">
-      <button type="button" id="popup-ja-submit-button">Submit</button>
-      <button type="button" id="popup-ja-cancel-button">Cancel</button>
-    </div>
+  <div id="popup-ja-1" class="popup-ja-screen display-none">
+    <p>For every job application report, you can add "factors," which are characteristics of the job application
+      that may affect the success of the application. Factors can be used to analyze
+      the success of job applications where you implemented particular strategies.
+    </p>
+    <p>Add factors now for</p>
+    <span class="job-title-spans">{{saved_job['title']}}</span>
+    <span> at </span>
+    <span class="company-spans">{{saved_job['company']}}</span>
+    <span>?</span>
+  </div>
+
+  <div id="popup-ja-2" class="popup-ja-screen display-none">
+    <p>Add factors for</p>
+    <span class="job-title-spans">{{saved_job['title']}}</span>
+    <span> at </span>
+    <span class="company-spans">{{saved_job['company']}}</span>
+    <span>:</span>
+    <p>Check all boxes for any factors that correspond with this job report.</p>
+    <form>
+      <input type="text" id="add-factor-input">
+      <button type="button" id="add-factor-button">Add New Factor</button>
+    </form>
+    <form id="factor-checkbox-form"></form>
+  </div>
+      
+  <div id="popup-ja-3" class="popup-ja-screen display-none">
+    <p>Success! Job app reported with factors! 
+    </p>
+    <p>View Job application details <a id="new-job-app-link">here</a>!</p>
+  </div>
+
+  <div class="popup-button-div">
+    <button type="button" id="popup-ja-submit-button">Submit</button>
+    <button type="button" id="popup-ja-cancel-button">Cancel</button>
+  </div>
   </div>
