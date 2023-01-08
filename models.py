@@ -518,6 +518,13 @@ class JobApp(db.Model):
 
         return cls.query.filter_by(user_id = user_id).order_by(cls.date_applied.desc()).limit(8)
 
+    @classmethod
+    def check_if_applied(cls, saved_job_id):
+        """Checks by save_job_id if there is an job app reported for this saved job. 
+        Returns True if there is; returns False if there isn't."""
+
+        return cls.query.get(saved_job_id) is not None
+
 class Factor(db.Model):
 
     __tablename__ = 'factors'

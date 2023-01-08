@@ -32,10 +32,11 @@
       <div id="details-date-posted">{{saved_job.date_posted}}</div>
     </div>
     <button id="i-applied-button" data-saved-job-id={{saved_job['id']}}
-    {% if popup_jh == 'ready' %}data-job-hunt="none"{% else %}data-job-hunt="yes"{% endif %}
-  >
-  I applied</button>
-  <div id="you-applied-icon" class="display-none">You applied!</div>
+      {% if popup_jh == 'ready' %}data-job-hunt="none"{% else %}data-job-hunt="yes"{% endif %}
+      {% if applied %}class="display-none"{% endif %}>
+      I applied
+    </button>
+    <div id="you-applied-icon" {% if not applied %}class="display-none"{% endif %}>You applied!</div>
   </div>
   <div id="details-description">{{description}}</div>
 

@@ -168,10 +168,13 @@ def show_job_details_page(cos_id):
     # 'id' (sometimes), 'title', and 'company' will be populated by job_details_api.js.
 
     saved_job = {'id': None, 'title': None, 'company': None}
+    applied = False
 
     # Check to see if job is already saved:
     if current_user.is_authenticated:
         saved_job['id'] = SavedJob.already_saved_id(current_user.id, cos_id)
+        if saved_job['id'] is not None:
+            applied = JobApp.check_if_applied(saved_job['id'])
         active_hunts = JobHunt.get_active_job_hunts(current_user.id)
         if not active_hunts:
             form = NewJobHuntForm()
@@ -203,7 +206,8 @@ def show_job_details_page(cos_id):
                             form=form,
                             active_hunts=active_hunts,
                             popup_ja=popup_ja,
-                            popup_jh=popup_jh)  
+                            popup_jh=popup_jh,
+                            applied=applied)  
 
 @app.route('/saved-jobs/add/cos', methods=['POST'])
 @login_required
@@ -234,6 +238,7 @@ def add_job():
 def show_saved_job(saved_job_id):
     """Shows details of a particular saved job"""
 
+    applied = JobApp.check_if_applied(saved_job_id)
     active_hunts = JobHunt.get_active_job_hunts(current_user.id)
     if not active_hunts:
         form = NewJobHuntForm()
@@ -260,7 +265,8 @@ def show_saved_job(saved_job_id):
                             form=form,
                             active_hunts=active_hunts,
                             popup_ja=popup_ja,
-                            popup_jh=popup_jh)
+                            popup_jh=popup_jh,
+                            applied=applied)
 
 @app.route('/saved-jobs/edit/json', methods=['POST'])
 @login_required

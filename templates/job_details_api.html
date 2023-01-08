@@ -28,12 +28,13 @@
       <div id="details-date-posted"></div>
     </div>
     {% if current_user.is_authenticated %}
-      <button id="i-applied-button" 
-        {% if saved_job['id'] %}data-saved-job-id={{saved_job['id']}}{% else %}data-saved-job-id="none"{% endif %} 
-        {% if popup_jh == 'ready' %}data-job-hunt="none"{% else %}data-job-hunt="yes"{% endif %}
-      >
-      I applied</button>
-      <div id="you-applied-icon" class="display-none">You applied!</div>
+    <button id="i-applied-button" 
+      {% if saved_job['id'] %}data-saved-job-id={{saved_job['id']}}{% else %}data-saved-job-id="none"{% endif %} 
+      {% if popup_jh == 'ready' %}data-job-hunt="none"{% else %}data-job-hunt="yes"{% endif %} 
+      {% if applied %}class="display-none"{% endif %}>
+      I applied
+    </button>
+    <div id="you-applied-icon" {% if not applied %}class="display-none"{% endif %}>You applied!</div>
     {% endif %}
   </div>
   <div id="details-description"></div>
