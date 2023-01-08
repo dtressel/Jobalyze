@@ -14,7 +14,7 @@ let popupJaWindowNum = 0;
 let currentJhFactors;
   // Defined in submitJobApp()
 let chosenJhId;
-let savedJobId;
+
   // Both defined in retrieveDetails()
 
 function submitButtonClick() {
@@ -57,7 +57,6 @@ async function submitJobApp() {
 
 function retrieveDetails() {
   const jobAppReportForm = document.getElementById('job-app-report-form');
-  savedJobId = jobAppReportForm.dataset.savedJobId;
   const user_id = jobAppReportForm.dataset.userId;
   const date_applied = document.getElementById('applied-date-input').value;
   chosenJhId = document.getElementById('job-hunt-select').value;
@@ -181,16 +180,3 @@ function hideAllScreens() {
     screen.classList.add('display-none');
   }
 }
-
-
-
-
-
-// const jobHuntSelect = document.getElementById('job-hunt-select');
-// const jobHuntHiddenInput = document.getElementById('job_hunt_id');
-
-// jobHuntSelect.addEventListener('change', jobHuntSelectChange);
-
-// function jobHuntSelectChange() {
-//   jobHuntSelect.value = jobHuntHiddenInput.value;
-// }

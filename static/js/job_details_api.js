@@ -2,6 +2,8 @@
 // regarding Save click
 const saveButton = document.getElementById('save-button');
 const savedIcon = document.getElementById('saved-icon');
+
+// Regarding I applied button
 const iAppliedButton = document.getElementById('i-applied-button');
 const youAppliedIcon = document.getElementById('you-applied-icon');
 
@@ -21,6 +23,7 @@ let cachedJobDetails;
 // Other variables
 const cosId = detailsWrapper.dataset.cosId;
 const fc = detailsWrapper.dataset.fc;
+let savedJobId;
 
 if (saveButton) {
   saveButton.addEventListener('click', saveButtonClick);
@@ -63,13 +66,12 @@ function updateDom(jobDetails) {
 async function saveButtonClick() {
   details = getDetailsFromCached();
   const resp = await saveJob(details);
-  const savedJobId = await resp.json();
+  savedJobId = await resp.json();
   if (resp.status === 200) {
     saveButton.classList.toggle('display-none');
     savedIcon.classList.toggle('display-none');
   }
   // ************************ADD ERROR HANDLING***********************************
-  return savedJobId;
 }
 
 function getDetailsFromCached() {
@@ -101,9 +103,8 @@ async function iAppliedButtonClick() {
   console.log('in iAppliedButtonClick')
   console.log('savedJobId:', iAppliedButton.dataset.savedJobId);
   console.log('jobHunt', iAppliedButton.dataset.jobHunt);
-  let savedJobId;
   if (iAppliedButton.dataset.savedJobId === 'none') {
-    savedJobId = await saveButtonClick();
+    await saveButtonClick();
     console.log('savedJobId:', savedJobId);
     // backend checks (in models.py) if the job is already saved and avoids duplicate saves.
   } else {

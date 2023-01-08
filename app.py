@@ -248,7 +248,7 @@ def show_saved_job(saved_job_id):
             popup_jh = 'ready'
     else:
         form = None
-        popup_ja = False
+        popup_ja = 'ready'
         popup_jh = None
     saved_job_raw = SavedJob.query.get(saved_job_id)
     saved_job = SavedJob.translate_values(saved_job_raw)

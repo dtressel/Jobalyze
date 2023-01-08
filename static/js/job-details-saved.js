@@ -1,3 +1,8 @@
+// DOM elements to modify
+// Regarding I applied button
+const iAppliedButton = document.getElementById('i-applied-button');
+const youAppliedIcon = document.getElementById('you-applied-icon');
+
 const additionalDetailsDiv = document.getElementById('additional-details');
 const salaryMin = document.getElementById('details-salary-min-value-display');
 const salaryMax = document.getElementById('details-salary-max-value-display');
@@ -16,6 +21,9 @@ const savedJobId = document.getElementById('details-wrapper').dataset.savedJobId
 additionalDetailsDiv.addEventListener('click', detailsDivClick);
 if (applyButtonNoUrl) {
   applyButtonNoUrl.addEventListener('click', applyButtonNoUrlClick);
+}
+if (iAppliedButton) {
+  iAppliedButton.addEventListener('click', iAppliedButtonClick);
 }
 
 function detailsDivClick(evt) {
@@ -129,6 +137,29 @@ function updateSalaryNums() {
     salaryMax.textContent = (+salaryMax.textContent).toLocaleString("en-US", {style:"currency", currency:"USD", maximumFractionDigits: 0});
     document.getElementById('details-salary-range-display').classList.remove('display-none');
   }
+}
+
+async function iAppliedButtonClick() {
+  console.log('in iAppliedButtonClick')
+  console.log('jobHunt', iAppliedButton.dataset.jobHunt);
+  if (iAppliedButton.dataset.jobHunt === 'none') {
+    iAppliedToJhPopup();
+  } else {
+    addDetailsToJaPopup(savedJobId);
+    document.getElementById('popup-ja').classList.remove('display-none');
+  }
+}
+
+function addDetailsToJaPopup(savedJobId) {
+  const jobTitleSpans = document.getElementsByClassName('job-title-spans');
+  const companySpans = document.getElementsByClassName('company-spans');
+  for (const span of jobTitleSpans) {
+    span.textContent = document.getElementById('details-job-title').innerText;
+  }
+  for (const span of companySpans) {
+    span.textContent = document.getElementById('details-company-name').innerText;
+  }
+  document.getElementById('job-app-report-form').setAttribute('data-saved-job-id', savedJobId);
 }
 
 function applyButtonNoUrlClick() {
