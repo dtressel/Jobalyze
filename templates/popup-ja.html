@@ -1,4 +1,4 @@
-<div id="popup-ja" class="popup display-none">
+<div id="popup-ja" class="popup display-none" data-popup-ja-status="{{popup_ja}}">
   <h2 id="popup-ja-header">Report a Job Application</h2>
 
   <div id="popup-ja-0" class="popup-ja-screen">
@@ -47,8 +47,11 @@
     <span>:</span>
     <p>Check all boxes for any factors that correspond with this job report.</p>
     <form>
-      <input type="text" id="add-factor-input">
-      <button type="button" id="add-factor-button">Add New Factor</button>
+      <div class="form-row">
+        <input type="text" id="add-factor-input">
+        <button type="button" id="add-factor-button">Add New Factor</button>
+      </div>
+      <div class="error-row" id="new-factor-error-row"></div>
     </form>
     <form id="factor-checkbox-form"></form>
   </div>

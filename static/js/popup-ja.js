@@ -14,8 +14,11 @@ let popupJaWindowNum = 0;
 let currentJhFactors;
   // Defined in submitJobApp()
 let chosenJhId;
+  // Defined in retrieveDetails()
+// savedJobId variable defined in job-details-saved.js and job_details_api.js
 
-  // Both defined in retrieveDetails()
+
+// #1: When Popup submit/add now is clicked:
 
 function submitButtonClick() {
   switch(popupJaWindowNum) {
@@ -122,6 +125,9 @@ function addFactorToForm(factor) {
 
 async function submitFactors() {
   const factorsToAdd = collectFactors();
+  if (noFactorsChecked(factorsToAdd)) {
+    return;
+  }
   const newFactorPostResp = await postNewFactorsToFactorTable(factorsToAdd);
   if (newFactorPostResp.status !== 200) {
     alert('Attempt to add factors failed. Please try again later');
@@ -139,6 +145,15 @@ async function submitFactors() {
   popupJaCancelButton.textContent = 'Close';
   document.getElementById('new-job-app-link').setAttribute('href', `/job-apps/${savedJobId}`)
   popupJaScreens[popupJaWindowNum].classList.remove('display-none');
+}
+
+function noFactorsChecked(factorsToAdd) {
+  if (factorsToAdd.chosenOldFactorsIdArr.length === 0 && factorsToAdd.chosenNewFactorsObjArr.length === 0) {
+    document.getElementById('new-factor-error-row').textContent = 
+      'No factors selected. Choose factors or click "Cancel" to add later.'
+      return true;
+  }
+  return false;
 }
 
 function collectFactors() {

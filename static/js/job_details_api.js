@@ -24,6 +24,7 @@ let cachedJobDetails;
 const cosId = detailsWrapper.dataset.cosId;
 const fc = detailsWrapper.dataset.fc;
 let savedJobId;
+  // defined in saveButtonClick() or iAppliedButtonClick() if already saved
 
 if (saveButton) {
   saveButton.addEventListener('click', saveButtonClick);
@@ -113,12 +114,12 @@ async function iAppliedButtonClick() {
   if (iAppliedButton.dataset.jobHunt === 'none') {
     iAppliedToJhPopup();
   } else {
-    addDetailsToJaPopup(savedJobId);
+    addDetailsToJaPopup();
     document.getElementById('popup-ja').classList.remove('display-none');
   }
 }
 
-function addDetailsToJaPopup(savedJobId) {
+function addDetailsToJaPopup() {
   const jobTitleSpans = document.getElementsByClassName('job-title-spans');
   const companySpans = document.getElementsByClassName('company-spans');
   for (const span of jobTitleSpans) {
@@ -127,8 +128,15 @@ function addDetailsToJaPopup(savedJobId) {
   for (const span of companySpans) {
     span.textContent = cachedJobDetails.Company;
   }
-  document.getElementById('job-app-report-form').setAttribute('data-saved-job-id', savedJobId);
+  document.getElementById('applied-date-input').valueAsDate = new Date();
 }
 
-// On load:
+function checkIfPopupJaShouldOpenOnStart() {
+  if (popupJa && popupJa.dataset.popupJaStatus === 'open') {
+    iAppliedButtonClick();
+  }
+}
+
+// On Page load:
 showJobDetails();
+checkIfPopupJaShouldOpenOnStart();

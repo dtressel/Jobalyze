@@ -145,12 +145,12 @@ async function iAppliedButtonClick() {
   if (iAppliedButton.dataset.jobHunt === 'none') {
     iAppliedToJhPopup();
   } else {
-    addDetailsToJaPopup(savedJobId);
+    addDetailsToJaPopup();
     document.getElementById('popup-ja').classList.remove('display-none');
   }
 }
 
-function addDetailsToJaPopup(savedJobId) {
+function addDetailsToJaPopup() {
   const jobTitleSpans = document.getElementsByClassName('job-title-spans');
   const companySpans = document.getElementsByClassName('company-spans');
   for (const span of jobTitleSpans) {
@@ -159,12 +159,19 @@ function addDetailsToJaPopup(savedJobId) {
   for (const span of companySpans) {
     span.textContent = document.getElementById('details-company-name').innerText;
   }
-  document.getElementById('job-app-report-form').setAttribute('data-saved-job-id', savedJobId);
+  document.getElementById('applied-date-input').valueAsDate = new Date();
 }
 
 function applyButtonNoUrlClick() {
   alert('No application link URL was provided. Please edit this saved job and add an application link.')
 }
 
+function checkIfPopupJaShouldOpenOnStart() {
+  if (popupJa && popupJa.dataset.popupJaStatus === 'open') {
+    iAppliedButtonClick();
+  }
+}
+
 // On Page Load:
 updateSalaryNums();
+checkIfPopupJaShouldOpenOnStart();
