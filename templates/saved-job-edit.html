@@ -1,0 +1,182 @@
+{% extends 'base.html' %}
+
+{% block stylesheets %}{% endblock %}
+
+
+{% block title %}Edit Job{% endblock %}
+
+
+{% block content %}
+<div class="header">
+  <h2>Edit Saved Job</h2>
+</div>
+{% if saved_job['cos_id'] %}
+<div class="details-wrapper" id="details-wrapper" data-saved-job-id="{{saved_job.id}}">
+  <h3 id="details-job-title">{{saved_job.title}}</h3>
+  <div id="details-company-name">{{saved_job.company}}</div>
+  <div id="details-location">{{saved_job.location}}</div>
+  <div id="details-date-posted">{{saved_job.date_posted}}</div>
+  <div id="details-description">{{description}}</div>
+</div>
+{% endif %}
+<form method="POST" id="saved-job-add-form">
+  {{form.hidden_tag()}}
+
+{% if not saved_job['cos_id'] %}
+
+  <!-- Text Field: -->
+  <div class="form-row">
+    {{form.title.label}}
+    {{form.title(value=saved_job.title)}}
+  </div>
+  {% for err in form.title.errors %}
+  <div class="error-row">
+    <div class="error-div">{{err}}</div>
+  </div>
+  {% endfor %}
+
+  <!-- Text Field: -->
+  <div class="form-row">
+    {{form.company.label}}
+    {{form.company(value=saved_job.company)}}
+  </div>
+  {% for err in form.company.errors %}
+  <div class="error-row">
+    <div class="error-div">{{err}}</div>
+  </div>
+  {% endfor %}
+
+  <!-- Text Field: -->
+  <div class="form-row">
+    {{form.location.label}}
+    {{form.location(value=saved_job.location)}}
+  </div>
+  {% for err in form.location.errors %}
+  <div class="error-row">
+    <div class="error-div">{{err}}</div>
+  </div>
+  {% endfor %}
+
+  <!-- Date Field: -->
+  <div class="form-row">
+    {{form.date_posted.label}}
+    {{form.date_posted(valueasdate=saved_job.date_posted)}}
+  </div>
+  {% for err in form.date_posted.errors %}
+  <div class="error-row">
+    <div class="error-div">{{err}}</div>
+  </div>
+  {% endfor %}
+
+  <!-- Text Field: -->
+  <div class="form-row">
+    {{form.application_link.label}}
+    {{form.application_link(value=saved_job.application_link)}}
+  </div>
+  {% for err in form.application_link.errors %}
+  <div class="error-row">
+    <div class="error-div">{{err}}</div>
+  </div>
+  {% endfor %}
+
+  <!-- Text Area Field: -->
+  <!-- Use contenteditable div instead of textarea -->
+  <div class="form-row">
+    {{form.job_description.label}}
+    <div id="details-description-editable" contenteditable="true" class="contenteditable-field">{{description}}</div>
+    {{form.job_description(class="display-none")}}
+  </div>
+  {% for err in form.job_description.errors %}
+  <div class="error-row">
+    <div class="error-div">{{err}}</div>
+  </div>
+  {% endfor %}
+
+{% endif %}
+
+  <!-- Select Field: -->
+  <div class="form-row">
+    {{form.job_type.label}}
+    {{form.job_type(data_value=saved_job.job_type)}}
+  </div>
+  {% for err in form.job_type.errors %}
+  <div class="error-row">
+    <div class="error-div">{{err}}</div>
+  </div>
+  {% endfor %}
+
+  <!-- Select Field: -->
+  <div class="form-row">
+    {{form.experience_level.label}}
+    {{form.experience_level(data_value=saved_job.experience_level)}}
+  </div>
+  {% for err in form.experience_level.errors %}
+  <div class="error-row">
+    <div class="error-div">{{err}}</div>
+  </div>
+  {% endfor %}
+
+  <!-- Text Field: -->
+  <!-- JS manipulates field to add $ and , -->
+  <div class="form-row">
+    {{form.salary_min.label}}
+    {{form.salary_min(value=saved_job.salary_min)}}
+    <span> &ndash; </span>
+    {{form.salary_max(value=saved_job.salary_max)}}
+  </div>
+  {% for err in form.salary_min.errors %}
+  <div class="error-row">
+    <div class="error-div">{{err}}</div>
+  </div>
+  {% endfor %}
+  {% for err in form.salary_max.errors %}
+  <div class="error-row">
+    <div class="error-div">{{err}}</div>
+  </div>
+  {% endfor %}
+
+  <!-- Select Field: -->
+  <div class="form-row">
+  {{form.company_size.label}}
+  {{form.company_size(data_value=saved_job.company_size)}}
+  </div>
+  {% for err in form.company_size.errors %}
+  <div class="error-row">
+  <div class="error-div">{{err}}</div>
+  </div>
+  {% endfor %}
+
+  <!-- Select Field: -->
+  <div class="form-row">
+  {{form.federal_contractor.label}}
+  {{form.federal_contractor(data_value=saved_job.federal_contractor|string)}}
+  </div>
+  {% for err in form.federal_contractor.errors %}
+  <div class="error-row">
+  <div class="error-div">{{err}}</div>
+  </div>
+  {% endfor %}
+
+  <!-- Text Area Field: -->
+  <!-- Use contenteditable div instead of textarea -->
+  <div class="form-row">
+  {{form.user_notes.label}}
+  <div id="details-user-notes-editable" contenteditable="true" class="contenteditable-field">{{saved_job.user_notes}}</div>
+  {{form.user_notes(class="display-none")}}
+  </div>
+  {% for err in form.user_notes.errors %}
+  <div class="error-row">
+  <div class="error-div">{{err}}</div>
+  </div>
+  {% endfor %}
+</form>
+
+
+
+{% endblock %}
+
+
+{% block scripts %}
+<script src="/static/js/currency-input.js"></script>
+<script src="/static/js/saved-job-edit.js"></script>
+{% endblock %}

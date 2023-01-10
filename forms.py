@@ -150,6 +150,100 @@ class ManualJobAddForm(FlaskForm):
         # coerced to True, False, or None in models.SavedJob.save_job
     user_notes = TextAreaField("User Notes")
 
+class SavedJobRegularEditForm(FlaskForm):
+    """Form to edit a saved job"""
+
+    title = StringField("Job Title")
+    company = StringField("Company")
+    location = StringField("Location",  validators=[
+        Length(max=100, message="Must be less than 100 characters.")    
+    ])
+    date_posted = DateField("Date Posted", validators=[Optional()])
+    application_link = URLField("Link")
+    job_description = TextAreaField("Description")
+    job_type = SelectField("Job Type", choices=[
+        ('-', ''),
+        ('f', 'Full-time'),
+        ('p', 'Part-time'),
+        ('c', 'Contract'),
+        ('i', 'Internship'),
+        ('v', 'Volunteer')
+    ], validators=[Optional()])
+        # '-' changed to Null in JS file
+    experience_level = SelectField("Experience Level", choices=[
+        ('-', ''),
+        ('i', 'Internship'),
+        ('e', 'Entry level'),
+        ('a', 'Associate'),
+        ('m', 'Mid-Senior level'),
+        ('d', 'Director'),
+        ('x', 'Executive'),
+    ], validators=[Optional()])
+        # '-' changed to Null in JS file
+    salary_min = StringField("Salary range")
+    salary_max = StringField()
+        # ******************* write custom validator that requires both or none of below ************************
+        # https://stackoverflow.com/questions/42614091/wtforms-create-form-with-both-or-no-fields-that-validates-but-not-just-one-fie
+    company_size = SelectField("Company Size", choices=[
+        ('-', ''),
+        (1, '1-10 employees'),
+        (2, '11-50 employees'),
+        (3, '51-200 employees'),
+        (4, '201-500 employees'),
+        (5, '501-1,000 employees'),
+        (6, '1,001-5,000 employees'),
+        (7, '5,001-10,000 employees'),
+        (8, '10,001+ employees')
+    ], validators=[Optional()])
+        # '-' changed to Null in JS file
+    federal_contractor = SelectField("Federal contractor", choices=[
+        ('-', ''),
+        ('True', 'Yes'),
+        ('False', 'No')
+    ])
+        # coerced to True, False, or None in models.SavedJob.save_job
+    user_notes = TextAreaField("User Notes")
+
+class SavedJobCosEditForm(FlaskForm):
+    """Form to edit a saved job"""
+
+    job_type = SelectField("Job Type", choices=[
+        ('-', ''),
+        ('f', 'Full-time'),
+        ('p', 'Part-time'),
+        ('c', 'Contract'),
+        ('i', 'Internship'),
+        ('v', 'Volunteer')
+    ], validators=[Optional()])
+        # '-' changed to Null in JS file
+    experience_level = SelectField("Experience Level", choices=[
+        ('-', ''),
+        ('i', 'Internship'),
+        ('e', 'Entry level'),
+        ('a', 'Associate'),
+        ('m', 'Mid-Senior level'),
+        ('d', 'Director'),
+        ('x', 'Executive'),
+    ], validators=[Optional()])
+        # '-' changed to Null in JS file
+    salary_min = StringField("Salary range")
+    salary_max = StringField()
+        # ******************* write custom validator that requires both or none of below ************************
+        # https://stackoverflow.com/questions/42614091/wtforms-create-form-with-both-or-no-fields-that-validates-but-not-just-one-fie
+    company_size = SelectField("Company Size", choices=[
+        ('-', ''),
+        (1, '1-10 employees'),
+        (2, '11-50 employees'),
+        (3, '51-200 employees'),
+        (4, '201-500 employees'),
+        (5, '501-1,000 employees'),
+        (6, '1,001-5,000 employees'),
+        (7, '5,001-10,000 employees'),
+        (8, '10,001+ employees')
+    ], validators=[Optional()])
+        # '-' changed to Null in JS file
+    user_notes = TextAreaField("User Notes")
+
 class NewJobHuntForm(FlaskForm):
     """Form to create a new Job Hunt from dialog. Form is not displayed."""
 
@@ -167,12 +261,12 @@ class NewJobHuntForm(FlaskForm):
 
     # https://stackoverflow.com/questions/33429510/wtforms-selectfield-not-properly-coercing-for-booleans
 
-class JobAppCreateForm(FlaskForm):
-    """Form to create a new job app from dialog. Form is not displayed."""
+# class JobAppCreateForm(FlaskForm):
+#     """Form to create a new job app from dialog. Form is not displayed."""
 
-    date_applied = DateField()
-    # In popup-ja.html I add a custom select field here from which the value is transferred to the job_hunt_id field
-    id = IntegerField()
-        # saved job id
-    user_id = IntegerField()
-    job_hunt_id = IntegerField()
+#     date_applied = DateField()
+#     # In popup-ja.html I add a custom select field here from which the value is transferred to the job_hunt_id field
+#     id = IntegerField()
+#         # saved job id
+#     user_id = IntegerField()
+#     job_hunt_id = IntegerField()

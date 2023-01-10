@@ -7,7 +7,7 @@ from markupsafe import Markup
 
 from utilities import is_safe_url
 from models import db, connect_db, User, SavedJob, JobHunt, JobApp, Factor
-from forms import RegistrationForm, LoginForm, ApiJobSearchForm, ManualJobAddForm, NewJobHuntForm, JobAppCreateForm, UserEditForm
+from forms import RegistrationForm, LoginForm, ApiJobSearchForm, ManualJobAddForm, NewJobHuntForm, SavedJobRegularEditForm, SavedJobCosEditForm, UserEditForm
 from api_requests import get_jobs, get_job_details, get_page_navigation_values, get_postings_for_dashboard
 
 app = Flask(__name__)
@@ -227,9 +227,9 @@ def add_job():
     form = ManualJobAddForm()
 
     if form.validate_on_submit():
-        saved_job = SavedJob.save_job(current_user.id, form.data)
+        saved_job_id = SavedJob.save_job(current_user.id, form.data)
         # ******************** Add failed API error handling ******************
-        return redirect(f'/saved-jobs/{saved_job.id}')
+        return redirect(f'/saved-jobs/{saved_job_id}')
 
     return render_template('job_add.html', form=form)
 
@@ -268,12 +268,37 @@ def show_saved_job(saved_job_id):
                             popup_jh=popup_jh,
                             applied=applied)
 
-@app.route('/saved-jobs/edit/json', methods=['POST'])
+@app.route('/saved-jobs/<saved_job_id>/edit', methods=["GET", "POST"])
 @login_required
-def edit_saved_job():
-    """Endpoint for frontend to post an edit to a saved job."""
+def edit_saved_job(saved_job_id):
+    """Edits details of a particular saved job."""
 
-    resp = SavedJob.edit_saved_job(current_user.id, request.get_json())
+    # saved_job values do not need to be translated since select fields need database value
+    # This save_job object is equivalent to save_job_raw in '/saved-jobs/<saved_job_id>'
+    saved_job = SavedJob.query.get(saved_job_id)
+    if saved_job.cos_id:
+        print('Yes COS ID')
+        form = SavedJobCosEditForm()
+    else:
+        print('No COS ID')
+        form = SavedJobRegularEditForm()
+
+    if form.validate_on_submit():
+        saved_job_id = SavedJob.save_job(current_user.id, form.data)
+
+    description = Markup(saved_job.job_description)
+
+    return render_template('saved-job-edit.html',
+                            saved_job=saved_job,
+                            description=description,
+                            form=form)
+
+@app.route('/saved-jobs/<saved_job_id>/edit/json', methods=['POST'])
+@login_required
+def edit_saved_job_json(saved_job_id):
+    """Endpoint for frontend to post an edit to a saved job. Used for the Add buttons on incomplete saved jobs."""
+
+    resp = SavedJob.edit_saved_job(current_user.id, saved_job_id, request.get_json())
 
     # ********************** JS can't see the body of response **************************
     return make_response(resp['body']['message'], resp['status'])
