@@ -11,8 +11,12 @@
 {% block title %}Job Details{% endblock %}
 
 {% block content %}
-<div class="header">
+<div class="header flex-space-between">
   <h2>Saved Job</h2>
+  <div class="edit-delete-buttons-div">
+    <button id="edit-non-cos-saved-job-button">Edit</button>
+    <button id="delete-saved-job-button">Delete</button>
+  </div>
 </div>
 <div class="details-wrapper" id="details-wrapper" data-saved-job-id="{{saved_job.id}}">
   <div class="title-apply">
@@ -151,7 +155,7 @@
 
     <div id="details-user-notes" class="additional-details-row">
       <span><b>User notes:</b> </span>
-      {% if saved_job.user_notes != None %}
+      {% if saved_job.user_notes != None and saved_job.user_notes != '' %}
       <span id="details-user-notes-value-display">{{saved_job.user_notes}}</span>
       {% else %}
       <span id="details-user-notes-value-display"></span>
