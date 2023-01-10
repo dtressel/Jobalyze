@@ -115,11 +115,10 @@ async function saveButtonClick(saveButton) {
 }
 
 async function postToServer(dataObj) {
-  const details = {saved_job_id: savedJobId, data: dataObj};
-  const resp = await fetch('/saved-jobs/edit/json', {
+  const resp = await fetch(`/saved-jobs/${savedJobId}/edit/json`, {
     method: 'POST',
     headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify(details)
+    body: JSON.stringify(dataObj)
   })
 
   return resp;
