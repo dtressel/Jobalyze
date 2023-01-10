@@ -260,20 +260,20 @@ class SavedJob(db.Model):
         return job_to_save.id
 
     @classmethod
-    def edit_saved_job(cls, user_id, details_obj):
+    def edit_saved_job(cls, user_id, saved_job_id, details_obj):
         """Edits a saved job. Returns an object to be converted into a response object in app.py."""
 
-        saved_job = cls.query.get(details_obj['saved_job_id'])
+        saved_job = cls.query.get(saved_job_id)
         if saved_job.user_id == user_id:
             print ('************** User Ids matched! *******************')
 
-            if details_obj['data'].get('federal_contractor'):
-                cls.coerce_fc_value(details_obj['data'])
+            if details_obj.get('federal_contractor'):
+                cls.coerce_fc_value(details_obj)
 
             try:
-                job_to_edit = cls.query.get(details_obj['saved_job_id'])
-                for key in details_obj['data']:
-                    setattr(job_to_edit, key, details_obj['data'][key])
+                job_to_edit = cls.query.get(saved_job_id)
+                for key in details_obj:
+                    setattr(job_to_edit, key, details_obj[key])
                 db.session.add(job_to_edit)
                 db.session.commit()
             except: 
