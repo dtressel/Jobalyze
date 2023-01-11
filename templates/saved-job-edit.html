@@ -19,6 +19,7 @@
   <div id="details-description">{{description}}</div>
 </div>
 {% endif %}
+
 <form method="POST" id="saved-job-add-form">
   {{form.hidden_tag()}}
 
@@ -60,7 +61,7 @@
   <!-- Date Field: -->
   <div class="form-row">
     {{form.date_posted.label}}
-    {{form.date_posted(valueasdate=saved_job.date_posted)}}
+    {{form.date_posted(value=saved_job.date_posted)}}
   </div>
   {% for err in form.date_posted.errors %}
   <div class="error-row">
@@ -83,7 +84,7 @@
   <!-- Use contenteditable div instead of textarea -->
   <div class="form-row">
     {{form.job_description.label}}
-    <div id="details-description-editable" contenteditable="true" class="contenteditable-field">{{description}}</div>
+    <div id="description-editable-div" contenteditable="true" class="contenteditable-field">{{description}}</div>
     {{form.job_description(class="display-none")}}
   </div>
   {% for err in form.job_description.errors %}
@@ -146,6 +147,13 @@
   </div>
   {% endfor %}
 
+  {% if saved_job['cos_id'] %}
+  <div id="details-federal-contractor" class="additional-details-row">
+    <span>Federal contractor:</span>
+    <span id="details-federal-contractor-value-display">{{saved_job.federal_contractor}}</span>
+  </div>
+
+  {% else %}
   <!-- Select Field: -->
   <div class="form-row">
   {{form.federal_contractor.label}}
@@ -156,12 +164,17 @@
   <div class="error-div">{{err}}</div>
   </div>
   {% endfor %}
+  {% endif %}
 
   <!-- Text Area Field: -->
   <!-- Use contenteditable div instead of textarea -->
   <div class="form-row">
   {{form.user_notes.label}}
-  <div id="details-user-notes-editable" contenteditable="true" class="contenteditable-field">{{saved_job.user_notes}}</div>
+  <div id="user-notes-editable-div" contenteditable="true" class="contenteditable-field">
+    {% if saved_job.user_notes != None %}
+    {{saved_job.user_notes}}
+    {% endif %}
+  </div>
   {{form.user_notes(class="display-none")}}
   </div>
   {% for err in form.user_notes.errors %}
@@ -169,6 +182,9 @@
   <div class="error-div">{{err}}</div>
   </div>
   {% endfor %}
+
+  <button type="button" id="save-button">Save</button>
+  <a href="/saved-jobs/{{saved_job.id}}"><button type="button">Cancel</button></a>
 </form>
 
 

@@ -1,10 +1,23 @@
+const savedJobAddForm = document.getElementById('saved-job-add-form');
+const saveButton = document.getElementById('save-button');
+const editableDivs = document.getElementsByClassName('contenteditable-field');
+
+saveButton.addEventListener('click', saveButtonClick);
+
+function saveButtonClick() {
+  for (const div of editableDivs) {
+    const value = div.textContent;
+    div.nextElementSibling.value = value;
+  }
+  savedJobAddForm.submit();
+}
 
 function markSelectedOptionsForSelectInputs() {
   const selectInputs = document.getElementsByTagName('select');
-  for (input of selectInputs) {
+  for (const input of selectInputs) {
     const value = input.dataset.value;
     const optionList = input.childNodes;
-    for (option of optionList) {
+    for (const option of optionList) {
       if (option.value === value) {
         option.selected = true;
       }

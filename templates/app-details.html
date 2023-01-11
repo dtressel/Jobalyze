@@ -11,12 +11,8 @@
 {% block title %}Job Details{% endblock %}
 
 {% block content %}
-<div class="header flex-space-between">
+<div class="header">
   <h2>Saved Job</h2>
-  <div class="edit-delete-buttons-div">
-    <a href="/saved-jobs/{{saved_job.id}}/edit"><button>Edit</button></a>
-    <a href="/saved-jobs/{{saved_job.id}}/delete"><button>Delete</button></a>
-  </div>
 </div>
 <div class="details-wrapper" id="details-wrapper" data-saved-job-id="{{saved_job.id}}">
   <div class="title-apply">
@@ -155,7 +151,7 @@
 
     <div id="details-user-notes" class="additional-details-row">
       <span><b>User notes:</b> </span>
-      {% if saved_job.user_notes != None and saved_job.user_notes != '' %}
+      {% if saved_job.user_notes != None %}
       <span id="details-user-notes-value-display">{{saved_job.user_notes}}</span>
       {% else %}
       <span id="details-user-notes-value-display"></span>
@@ -170,24 +166,10 @@
   </div>
 </div>
 
-{% if popup_jh %}
-  {% include "popup-jh.html" %}
-{% endif %}
-
-{% if popup_ja %}
-  {% include "popup-ja.html" %}
-{% endif %}
-
 {% endblock %}
 
 
 {% block scripts %}
-  {% if popup_jh %}
-  <script src="/static/js/popup-jh.js"></script>
-  {% endif %}
-  {% if popup_ja %}
-  <script src="/static/js/popup-ja.js"></script>
-  {% endif %}
 <script src="/static/js/currency-input.js"></script>
 <script src="/static/js/job-details-saved.js"></script>
 {% endblock %}

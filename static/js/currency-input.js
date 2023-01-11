@@ -1,8 +1,10 @@
 function textInputToCurrency(textInput) {
-  textInput.addEventListener('input', (evt) => replaceValue(evt.target));
-  if (textInput.value) {
+  if (textInput.value && textInput.value !== 'None') {
     replaceValue(textInput);
+  } else {
+    textInput.value = '';
   }
+  textInput.addEventListener('input', (evt) => replaceValue(evt.target));
 }
 
 function replaceValue(input) {

@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, date
 
 from flask_bcrypt import Bcrypt
 from flask_sqlalchemy import SQLAlchemy
@@ -273,6 +273,8 @@ class SavedJob(db.Model):
             try:
                 job_to_edit = cls.query.get(saved_job_id)
                 for key in details_obj:
+                    if not details_obj[key] or details_obj[key] == '-':
+                        details_obj[key] = None
                     setattr(job_to_edit, key, details_obj[key])
                 db.session.add(job_to_edit)
                 db.session.commit()
@@ -285,15 +287,24 @@ class SavedJob(db.Model):
     @classmethod
     def coerce_fc_value(cls, obj):
         """Replaces string value for federal contractor column with boolean value."""
-
-        if obj['federal_contractor'] == "-":
-            obj['federal_contractor'] = None       
+   
         if obj['federal_contractor'] == "True":
             obj['federal_contractor'] = True
         if obj['federal_contractor'] == "False":
             obj['federal_contractor'] = False
 
         return obj
+
+    @classmethod
+    def delete_saved_job(cls, saved_job_id):
+        """Deletes a saved job."""
+
+        saved_job_to_delete = cls.query.get(saved_job_id)
+        if saved_job_to_delete:
+            db.session.delete(saved_job_to_delete)
+            db.session.commit()
+
+        return {'body': 'success!', 'status': 200}
 
     @classmethod
     def already_saved(cls, user_id, cos_id):
@@ -319,6 +330,44 @@ class SavedJob(db.Model):
         """creates shortened and prioritized saved_jobs list for dashboard"""
 
         return cls.query.filter_by(user_id = user_id).order_by(cls.id.desc()).limit(10)
+
+    @classmethod
+    def get_saved_job_by_id(cls, saved_job_id, translate_values):
+        """Returns SavedJob object. Set translate_values to true to change shortened select input values to full values.
+        Strips time from date posted datetime value."""
+
+        saved_job = cls.query.get(saved_job_id)
+
+        if translate_values:
+            saved_job = cls.translate_values(saved_job)
+
+        saved_job.date_posted = date(saved_job.date_posted.year, saved_job.date_posted.month, saved_job.date_posted.day)
+        # date_obj_no_time = date(saved_job.date_posted.year, saved_job.date_posted.month, saved_job.date_posted.day)
+        # saved_job.date_posted = date_obj_no_time.isoformat()
+
+        return saved_job
+
+    @classmethod
+    def get_saved_job_obj_for_edit_form(cls, saved_job_id):
+        """Returns SavedJob object. Strips time from date_posted."""
+
+        saved_job = cls.query.get(saved_job_id)
+        saved_job.date_posted = date(saved_job.date_posted.year, saved_job.date_posted.month, saved_job.date_posted.day)
+
+        return saved_job
+
+    @classmethod
+    def get_saved_job_obj_for_details_page(cls, saved_job_id):
+        """Returns SavedJob object. Translates values from database values to human consumable values.
+        Strips time from date_posted if not originating from COS API."""
+
+        saved_job = cls.query.get(saved_job_id)
+        saved_job_translated = cls.translate_values(saved_job)
+        if not saved_job_translated.cos_id:
+            saved_job_translated.date_posted = date(saved_job.date_posted.year, saved_job.date_posted.month, saved_job.date_posted.day)
+
+        return saved_job_translated
+
 
 class JobHunt(db.Model):
 

@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, render_template, redirect, flash, request, abort, make_response, jsonify, session
+from flask import Flask, render_template, redirect, flash, request, abort, make_response, url_for, jsonify, session
 # For auth:
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from markupsafe import Markup
@@ -255,8 +255,7 @@ def show_saved_job(saved_job_id):
         form = None
         popup_ja = 'ready'
         popup_jh = None
-    saved_job_raw = SavedJob.query.get(saved_job_id)
-    saved_job = SavedJob.translate_values(saved_job_raw)
+    saved_job = SavedJob.get_saved_job_obj_for_details_page(saved_job_id)
     description = Markup(saved_job.job_description)
 
     return render_template('job_details_saved.html',
@@ -275,7 +274,7 @@ def edit_saved_job(saved_job_id):
 
     # saved_job values do not need to be translated since select fields need database value
     # This save_job object is equivalent to save_job_raw in '/saved-jobs/<saved_job_id>'
-    saved_job = SavedJob.query.get(saved_job_id)
+    saved_job = SavedJob.get_saved_job_obj_for_edit_form(saved_job_id)
     if saved_job.cos_id:
         print('Yes COS ID')
         form = SavedJobCosEditForm()
@@ -284,7 +283,9 @@ def edit_saved_job(saved_job_id):
         form = SavedJobRegularEditForm()
 
     if form.validate_on_submit():
-        saved_job_id = SavedJob.save_job(current_user.id, form.data)
+        resp = SavedJob.edit_saved_job(current_user.id, saved_job_id, form.data)
+        # ************************** error handling *******************************
+        return redirect(url_for('show_saved_job', saved_job_id = saved_job_id))
 
     description = Markup(saved_job.job_description)
 
@@ -292,6 +293,15 @@ def edit_saved_job(saved_job_id):
                             saved_job=saved_job,
                             description=description,
                             form=form)
+
+@app.route('/saved-jobs/<saved_job_id>/delete', methods=["POST"])
+@login_required
+def delete_saved_job(saved_job_id):
+    """Deletes a saved job."""
+
+    resp = SavedJob.delete_saved_job(saved_job_id)
+
+    return redirect('/dashboard')
 
 @app.route('/saved-jobs/<saved_job_id>/edit/json', methods=['POST'])
 @login_required
