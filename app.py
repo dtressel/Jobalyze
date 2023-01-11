@@ -256,11 +256,11 @@ def show_saved_job(saved_job_id):
         popup_ja = 'ready'
         popup_jh = None
     saved_job = SavedJob.get_saved_job_obj_for_details_page(saved_job_id)
-    description = Markup(saved_job.job_description)
+    saved_job.job_description = Markup(saved_job.job_description)
+    saved_job.user_notes = Markup(saved_job.user_notes)
 
     return render_template('job_details_saved.html',
                             saved_job=saved_job,
-                            description=description,
                             form=form,
                             active_hunts=active_hunts,
                             popup_ja=popup_ja,
@@ -287,11 +287,11 @@ def edit_saved_job(saved_job_id):
         # ************************** error handling *******************************
         return redirect(url_for('show_saved_job', saved_job_id = saved_job_id))
 
-    description = Markup(saved_job.job_description)
+    saved_job.job_description = Markup(saved_job.job_description)
+    saved_job.user_notes = Markup(saved_job.user_notes)
 
     return render_template('saved-job-edit.html',
                             saved_job=saved_job,
-                            description=description,
                             form=form)
 
 @app.route('/saved-jobs/<saved_job_id>/delete', methods=['POST'])

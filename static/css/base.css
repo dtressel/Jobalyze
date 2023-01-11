@@ -129,7 +129,10 @@ body {
 
 .contenteditable-field {
   outline: 1px solid black;
-  min-width: 10rem;
   min-height: 3rem;
   background-color: white;
+}
+
+.display-flex {
+  display: flex;
 }

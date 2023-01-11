@@ -1,4 +1,5 @@
 const saveButton = document.getElementById('save-button');
+const editableDivs = document.getElementsByClassName('contenteditable-field');
 
 saveButton.addEventListener('click', saveButtonClick);
 
@@ -12,11 +13,18 @@ function saveButtonClick() {
   if (document.getElementById('company_size').value === '-') {
     document.getElementById('company_size').value = null;
   }
+  if (document.getElementById('federal_contractor').value === '-') {
+    document.getElementById('federal_contractor').value = null;
+  }
   if (document.getElementById('salary_min').value != '') {
     document.getElementById('salary_min').value = fromUsLocaleStr(document.getElementById('salary_min').value);
   }
   if (document.getElementById('salary_max').value != '') {
     document.getElementById('salary_max').value = fromUsLocaleStr(document.getElementById('salary_max').value);
+  }
+  for (const div of editableDivs) {
+    const value = div.textContent;
+    div.nextElementSibling.value = value;
   }
   document.getElementById('saved-job-add-form').submit();
 }

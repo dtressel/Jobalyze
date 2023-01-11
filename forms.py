@@ -146,7 +146,7 @@ class ManualJobAddForm(FlaskForm):
         ('-', ''),
         ('True', 'Yes'),
         ('False', 'No')
-    ])
+    ], validators=[Optional()])
         # coerced to True, False, or None in models.SavedJob.save_job
     user_notes = StringField("User Notes")
 

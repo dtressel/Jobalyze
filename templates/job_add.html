@@ -57,9 +57,12 @@
   </div>
   {% endfor %}
 
+  <!-- Text Field: -->
+  <!-- Use contenteditable div instead of textarea -->
   <div class="form-row">
     {{form.job_description.label}}
-    {{form.job_description}}
+    <div id="description-editable-div" contenteditable="true" class="contenteditable-field"></div>
+    {{form.job_description(class="display-none")}}
   </div>
   {% for err in form.job_description.errors %}
   <div class="error-row">
@@ -124,15 +127,18 @@
 </div>
 {% endfor %}
 
+<!-- Text Field: -->
+<!-- Use contenteditable div instead of textarea -->
 <div class="form-row">
   {{form.user_notes.label}}
-  {{form.user_notes}}
-</div>
-{% for err in form.user_notes.errors %}
-<div class="error-row">
+  <div id="user-notes-editable-div" contenteditable="true" class="contenteditable-field"></div>
+  {{form.user_notes(class="display-none")}}
+  </div>
+  {% for err in form.user_notes.errors %}
+  <div class="error-row">
   <div class="error-div">{{err}}</div>
-</div>
-{% endfor %}
+  </div>
+  {% endfor %}
 
 </form>
 

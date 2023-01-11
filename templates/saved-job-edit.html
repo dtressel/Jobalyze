@@ -16,7 +16,7 @@
   <div id="details-company-name">{{saved_job.company}}</div>
   <div id="details-location">{{saved_job.location}}</div>
   <div id="details-date-posted">{{saved_job.date_posted}}</div>
-  <div id="details-description">{{description}}</div>
+  <div id="details-description">{{saved_job.job_description}}</div>
 </div>
 {% endif %}
 
@@ -80,7 +80,7 @@
   </div>
   {% endfor %}
 
-  <!-- Text Area Field: -->
+  <!-- Text Field: -->
   <!-- Use contenteditable div instead of textarea -->
   <div class="form-row">
     {{form.job_description.label}}
@@ -166,7 +166,7 @@
   {% endfor %}
   {% endif %}
 
-  <!-- Text Area Field: -->
+  <!-- Text Field: -->
   <!-- Use contenteditable div instead of textarea -->
   <div class="form-row">
   {{form.user_notes.label}}
