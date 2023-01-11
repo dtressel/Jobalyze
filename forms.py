@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SelectField, IntegerField, BooleanField, HiddenField, TextAreaField, DateField, URLField
+from wtforms import StringField, PasswordField, SelectField, IntegerField, BooleanField, HiddenField, DateField, URLField
 from wtforms.validators import DataRequired, InputRequired, Email, Length, EqualTo, Optional
 
 class RegistrationForm(FlaskForm):
@@ -106,7 +106,7 @@ class ManualJobAddForm(FlaskForm):
     ])
     date_posted = DateField("Date Posted", validators=[Optional()])
     application_link = URLField("Link")
-    job_description = TextAreaField("Description")
+    job_description = StringField("Description")
     job_type = SelectField("Job Type", choices=[
         ('-', ''),
         ('f', 'Full-time'),
@@ -148,7 +148,7 @@ class ManualJobAddForm(FlaskForm):
         ('False', 'No')
     ])
         # coerced to True, False, or None in models.SavedJob.save_job
-    user_notes = TextAreaField("User Notes")
+    user_notes = StringField("User Notes")
 
 class SavedJobRegularEditForm(FlaskForm):
     """Form to edit a saved job"""
@@ -160,7 +160,7 @@ class SavedJobRegularEditForm(FlaskForm):
     ])
     date_posted = DateField("Date Posted", validators=[Optional()])
     application_link = URLField("Link")
-    job_description = TextAreaField("Description")
+    job_description = StringField("Description")
     job_type = SelectField("Job Type", choices=[
         ('-', ''),
         ('f', 'Full-time'),
@@ -202,7 +202,7 @@ class SavedJobRegularEditForm(FlaskForm):
         ('False', 'No')
     ])
         # coerced to True, False, or None in models.SavedJob.save_job
-    user_notes = TextAreaField("User Notes")
+    user_notes = StringField("User Notes")
 
 class SavedJobCosEditForm(FlaskForm):
     """Form to edit a saved job"""
@@ -242,7 +242,7 @@ class SavedJobCosEditForm(FlaskForm):
         (8, '10,001+ employees')
     ], validators=[Optional()])
         # '-' changed to Null in JS file
-    user_notes = TextAreaField("User Notes")
+    user_notes = StringField("User Notes")
 
 class NewJobHuntForm(FlaskForm):
     """Form to create a new Job Hunt from dialog. Form is not displayed."""
