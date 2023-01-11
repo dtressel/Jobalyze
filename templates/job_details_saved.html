@@ -15,7 +15,9 @@
   <h2>Saved Job</h2>
   <div class="edit-delete-buttons-div">
     <a href="/saved-jobs/{{saved_job.id}}/edit"><button>Edit</button></a>
-    <a href="/saved-jobs/{{saved_job.id}}/delete"><button>Delete</button></a>
+    <form method="POST" action="/saved-jobs/{{saved_job.id}}/delete">
+      <button type="submit">Delete</button>
+    </form>
   </div>
 </div>
 <div class="details-wrapper" id="details-wrapper" data-saved-job-id="{{saved_job.id}}">

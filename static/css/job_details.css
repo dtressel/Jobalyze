@@ -22,3 +22,7 @@
 .additional-details-row {
   margin: 0.3em 0;
 }
+
+.edit-delete-buttons-div {
+  display: flex;
+}

@@ -294,7 +294,7 @@ def edit_saved_job(saved_job_id):
                             description=description,
                             form=form)
 
-@app.route('/saved-jobs/<saved_job_id>/delete', methods=["POST"])
+@app.route('/saved-jobs/<saved_job_id>/delete', methods=['POST'])
 @login_required
 def delete_saved_job(saved_job_id):
     """Deletes a saved job."""
