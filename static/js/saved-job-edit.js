@@ -6,7 +6,7 @@ saveButton.addEventListener('click', saveButtonClick);
 
 function saveButtonClick() {
   for (const div of editableDivs) {
-    const value = div.innerHTML;
+    const value = cleanHTML(div.innerHTML);
     div.nextElementSibling.value = value;
   }
   savedJobAddForm.submit();

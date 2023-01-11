@@ -62,6 +62,8 @@ async function getJobDetails(cosId, domId) {
   }
   const resp = await fetch(`/cos-jobs/details/${cosId}/json`);
   const jobDetails = await resp.json();
+  jobDetails.Description = cleanHTML(jobDetails.Description);
+    // clean description html before caching and displaying.
   cachedJobDetails[domId] = jobDetails;
   return jobDetails;
 }
