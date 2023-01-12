@@ -41,7 +41,7 @@
   <div id="main-upper-left" class="main-grid-quadrant">
     <div class="heading-expand">
       <h3>Saved Jobs</h3>
-      <a><img src="/static/icons/Expand-icon-30.png"></a>
+      <a href="/saved-jobs"><img class="expand-icon" src="/static/icons/Expand-icon-30.png"></a>
     </div>
     {% if saved_jobs_list %}
     <ul>
@@ -56,7 +56,7 @@
   <div id="main-upper-right" class="main-grid-quadrant">
     <div class="heading-expand">
       <h3>Job Apps</h3>
-      <a><img src="/static/icons/Expand-icon-30.png"></a>
+      <a><img class="expand-icon" src="/static/icons/Expand-icon-30.png"></a>
     </div>
     {% if job_apps_list %}
     <ul>
@@ -71,7 +71,7 @@
   <div id="main-lower-left" class="main-grid-quadrant">
     <div class="heading-expand">
       <h3>New Job Postings</h3>
-      <a><img src="/static/icons/Expand-icon-30.png"></a>
+      <span><img class="expand-icon" id="expand-job-search-icon" src="/static/icons/Expand-icon-30.png"></span>
     </div>
     {% if new_job_postings %}
     <ul>
@@ -86,7 +86,7 @@
   <div id="main-lower-right" class="main-grid-quadrant">
     <div class="heading-expand">
       <h3>Progress</h3>
-      <a><img src="/static/icons/Expand-icon-30.png"></a>
+      <a><img class="expand-icon" src="/static/icons/Expand-icon-30.png"></a>
     </div>
     {% if current_hunt.app_goal_number and current_hunt.app_goal_time_frame %}
       You have goals!
@@ -97,6 +97,22 @@
 </div>
 
 {% include "popup-jh.html" %}
+
+<form id="api-search-expand-form" class="display-none" method="GET" action="/cos-jobs/search">
+  <div class="form-row">
+    {% if current_hunt.o_net_code %}
+      {{api_search_form.keyword(value=current_hunt.o_net_code)}}
+    {% else %}
+      {{api_search_form.keyword(value=current_hunt.job_title_desired)}}
+    {% endif %}
+    {{api_search_form.location(value=current_hunt.location)}}
+    {{api_search_form.radius(value=current_hunt.radius)}}
+    {{api_search_form.days(value="7")}}
+    {{api_search_form.companyName}}
+    {{api_search_form.remote(value=current_hunt.remote)}}
+    {{api_search_form.startRecord(value="0")}}
+  </div>
+</form>
 
 {% endblock %}
 

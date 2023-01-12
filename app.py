@@ -136,7 +136,8 @@ def jobs_search_result():
 
     form = ApiJobSearchForm(request.args, meta={'csrf': False})
     if form.validate():
-        results_dict = get_jobs(form)
+        results_dict = get_jobs(form.data)
+        import pdb; pdb.set_trace()
         if results_dict.get('ErrorCode'):
             return render_template('api_error.html', results_dict=results_dict)
         page_data = get_page_navigation_values(form)
@@ -177,9 +178,9 @@ def show_job_details_page(cos_id):
             applied = JobApp.check_if_applied(saved_job['id'])
         active_hunts = JobHunt.get_active_job_hunts(current_user.id)
         if not active_hunts:
-            form = NewJobHuntForm()
-            if form.validate_on_submit():
-                new_hunt = JobHunt.save_job_hunt(current_user.id, form.data)
+            job_hunt_form = NewJobHuntForm()
+            if job_hunt_form.validate_on_submit():
+                new_hunt = JobHunt.save_job_hunt(current_user.id, job_hunt_form.data)
                 # ******************** Add failed API error handling ******************
                 active_hunts.append(new_hunt)
                 popup_ja = 'open'
@@ -188,11 +189,11 @@ def show_job_details_page(cos_id):
                 popup_ja = None
                 popup_jh = 'ready'
         else:
-            form = None
+            job_hunt_form = None
             popup_ja = 'ready'
             popup_jh = None
     else:
-        form = None
+        job_hunt_form = None
         active_hunts = None
         popup_ja = None
         popup_jh = None
@@ -203,11 +204,20 @@ def show_job_details_page(cos_id):
                             cos_id=cos_id,
                             fc=request.args['fc'],
                             saved_job=saved_job,
-                            form=form,
+                            job_hunt_form=job_hunt_form,
                             active_hunts=active_hunts,
                             popup_ja=popup_ja,
                             popup_jh=popup_jh,
                             applied=applied)  
+
+@app.route('/saved-jobs')
+@login_required
+def saved_job_list():
+    """Displays a list of saved jobs."""
+
+    saved_jobs = SavedJob.get_all_saved_jobs_for_user(current_user.id)
+
+    return render_template('saved-job-list.html', saved_jobs=saved_jobs)
 
 @app.route('/saved-jobs/add/cos', methods=['POST'])
 @login_required
@@ -241,9 +251,9 @@ def show_saved_job(saved_job_id):
     applied = JobApp.check_if_applied(saved_job_id)
     active_hunts = JobHunt.get_active_job_hunts(current_user.id)
     if not active_hunts:
-        form = NewJobHuntForm()
-        if form.validate_on_submit():
-            new_hunt = JobHunt.save_job_hunt(current_user.id, form.data)
+        job_hunt_form = NewJobHuntForm()
+        if job_hunt_form.validate_on_submit():
+            new_hunt = JobHunt.save_job_hunt(current_user.id, job_hunt_form.data)
             # ******************** Add failed API error handling ******************
             active_hunts.append(new_hunt)
             popup_ja = 'open'
@@ -252,7 +262,7 @@ def show_saved_job(saved_job_id):
             popup_ja = None
             popup_jh = 'ready'
     else:
-        form = None
+        job_hunt_form = None
         popup_ja = 'ready'
         popup_jh = None
     saved_job = SavedJob.get_saved_job_obj_for_details_page(saved_job_id)
@@ -261,7 +271,7 @@ def show_saved_job(saved_job_id):
 
     return render_template('job_details_saved.html',
                             saved_job=saved_job,
-                            form=form,
+                            job_hunt_form=job_hunt_form,
                             active_hunts=active_hunts,
                             popup_ja=popup_ja,
                             popup_jh=popup_jh,
@@ -318,11 +328,11 @@ def edit_saved_job_json(saved_job_id):
 def dashboard_page_no_hunt():
     """Shows generic dashboard page to user who has not created a hunt"""
 
-    form = NewJobHuntForm()
+    job_hunt_form = NewJobHuntForm()
 
-    if form.validate_on_submit():
+    if job_hunt_form.validate_on_submit():
         print('Job Hunt form validated')
-        new_hunt = JobHunt.save_job_hunt(current_user.id, form.data)
+        new_hunt = JobHunt.save_job_hunt(current_user.id, job_hunt_form.data)
         # ******************** Add failed API error handling ******************
         return redirect('/dashboard')
 
@@ -338,7 +348,7 @@ def dashboard_page_no_hunt():
         job_apps_list = None,
         new_job_postings = None,
         goals = None,
-        form = form)
+        job_hunt_form = job_hunt_form)
 
 @app.route('/dashboard/<hunt_id>', methods=['GET', 'POST'])
 @login_required
@@ -351,13 +361,22 @@ def dashboard_page_load_hunt(hunt_id):
     # job_apps (available from current job_hunt)
     # recent job postings (get from front end)
 
-    form = NewJobHuntForm()
+    job_hunt_form = NewJobHuntForm()
+    api_search_form = ApiJobSearchForm()
 
-    if form.validate_on_submit():
+    if job_hunt_form.validate_on_submit():
         print('Job Hunt form validated')
         new_hunt = JobHunt.save_job_hunt(current_user.id, form.data)
         # ******************** Add failed API error handling ******************
         return redirect('/dashboard')
+
+    if api_search_form.validate():
+        results_dict = get_jobs(api_search_form.data)
+        if results_dict.get('ErrorCode'):
+            return render_template('api_error.html', results_dict=results_dict)
+        page_data = get_page_navigation_values(api_search_form)
+
+        return render_template('job_search_results.html', api_search_form=api_search_form, results=results_dict, page_data=page_data)
 
     current_hunt = JobHunt.query.get(hunt_id)
     saved_jobs_list = SavedJob.get_dashboard_saved_jobs_list(current_user.id)
@@ -371,7 +390,8 @@ def dashboard_page_load_hunt(hunt_id):
         job_apps_list=job_apps_list,
         new_job_postings=new_job_postings,
         goals=goals,
-        form=form)
+        job_hunt_form=job_hunt_form,
+        api_search_form=api_search_form)
 
 @app.route('/job-hunts/add', methods=['POST'])
 @login_required

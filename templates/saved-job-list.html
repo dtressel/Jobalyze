@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block stylesheets %}{% endblock %}
+
+
+{% block title %}Saved Jobs{% endblock %}
+
+
+{% block content %}
+<h2>Saved Jobs</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Date Saved</th>
+      <th>Company</th>
+      <th>Job Title</th>
+      <th>Location</th>
+      <th>Date Posted</th>
+      <th>Applied</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for job in saved_jobs %}
+    <tr>
+      <td>{{job.date_saved}}</td>
+      <td>{{job.company}}</td>
+      <td><a href="/saved-jobs/{{job.id}}">{{job.title}}</a></td>
+      <td>{{job.location}}</td>
+      <td>{{job.date_posted}}</td>
+      <td class="text-center">{% if job.job_app %}&#10004;{% endif %}</td>
+      <td>
+        <form method="POST" action="/saved-jobs/{{job.id}}/delete">
+          <button type="submit">Delete</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
+
+
+{% block scripts %}{% endblock %}
