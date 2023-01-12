@@ -129,8 +129,8 @@
   </div>
 </div>
 <form method="POST" class="display-none" id="new-job-hunt-form">
-  {{form.hidden_tag()}}
-  {% for field in form if field.widget.input_type != 'hidden' %}
+  {{job_hunt_form.hidden_tag()}}
+  {% for field in job_hunt_form if field.widget.input_type != 'hidden' %}
   {{field}}
   {% endfor %}
 </form>
