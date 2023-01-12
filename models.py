@@ -47,9 +47,9 @@ class User(db.Model, UserMixin):
         db.String(150)
     )
     date_registered = db.Column(
-        db.DateTime,
+        db.Date,
         nullable=False,
-        default=datetime.utcnow()
+        default=date.today()
     )
     saved_jobs = db.relationship('SavedJob', back_populates='user', cascade="all, delete")
     job_hunts = db.relationship('JobHunt', back_populates='user', cascade="all, delete")
@@ -109,12 +109,12 @@ class SavedJob(db.Model):
         nullable=False
     )
     date_saved = db.Column(
-        db.DateTime,
+        db.Date,
         nullable=False,
-        default=datetime.utcnow()
+        default=date.today()
     )
     date_posted = db.Column(
-        db.DateTime
+        db.Date
     )
     # date posted from api is in "%Y-%M-%d %I:%M %p" format
 
@@ -178,8 +178,8 @@ class SavedJob(db.Model):
     user_notes = db.Column(
         db.Text
     )
-    last_cos_update = db.Column(db.DateTime,
-        default=datetime.utcnow())
+    last_cos_update = db.Column(db.Date,
+        default=date.today())
     user_id = db.Column(
         db.Integer,
         db.ForeignKey('users.id'),
@@ -342,8 +342,6 @@ class SavedJob(db.Model):
             saved_job = cls.translate_values(saved_job)
 
         saved_job.date_posted = date(saved_job.date_posted.year, saved_job.date_posted.month, saved_job.date_posted.day)
-        # date_obj_no_time = date(saved_job.date_posted.year, saved_job.date_posted.month, saved_job.date_posted.day)
-        # saved_job.date_posted = date_obj_no_time.isoformat()
 
         return saved_job
 
@@ -352,7 +350,7 @@ class SavedJob(db.Model):
         """Returns SavedJob object. Strips time from date_posted."""
 
         saved_job = cls.query.get(saved_job_id)
-        saved_job.date_posted = date(saved_job.date_posted.year, saved_job.date_posted.month, saved_job.date_posted.day)
+        # saved_job.date_posted = date(saved_job.date_posted.year, saved_job.date_posted.month, saved_job.date_posted.day)
 
         return saved_job
 
@@ -367,6 +365,12 @@ class SavedJob(db.Model):
             saved_job_translated.date_posted = date(saved_job.date_posted.year, saved_job.date_posted.month, saved_job.date_posted.day)
 
         return saved_job_translated
+
+    @classmethod
+    def get_all_saved_jobs_for_user(cls, user_id):
+        """Returns a list of all saved jobs associated with a user."""
+
+        return cls.query.filter(user_id == user_id).order_by(cls.id.desc()).all()
 
 
 class JobHunt(db.Model):
@@ -401,11 +405,11 @@ class JobHunt(db.Model):
         nullable=False,
         default=False)
     date_begun = db.Column(
-        db.DateTime,
+        db.Date,
         nullable=False,
-        default=datetime.utcnow()
+        default=date.today()
     )
-    hired_by_goal_date = db.Column(db.DateTime)
+    hired_by_goal_date = db.Column(db.Date)
     app_goal_time_frame = db.Column(db.String(1))
     # values:
     #     d: Daily
@@ -425,7 +429,7 @@ class JobHunt(db.Model):
         db.Text
     )
     date_closed = db.Column(
-        db.DateTime
+        db.Date
     )
     user_id = db.Column(
         db.Integer,
@@ -497,9 +501,9 @@ class JobApp(db.Model):
     user_id = db.Column(db.Integer,
         nullable=False)
     date_applied = db.Column(
-        db.DateTime,
+        db.Date,
         nullable=False,
-        default=datetime.utcnow()
+        default=date.today()
     )
     current_status = db.Column(
         db.Integer,
@@ -529,7 +533,7 @@ class JobApp(db.Model):
         default=0
     )
     date_closed = db.Column(
-        db.DateTime
+        db.Date
     )
     job_hunt_id = db.Column(
         db.Integer,
