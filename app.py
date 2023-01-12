@@ -366,7 +366,7 @@ def dashboard_page_load_hunt(hunt_id):
 
     if job_hunt_form.validate_on_submit():
         print('Job Hunt form validated')
-        new_hunt = JobHunt.save_job_hunt(current_user.id, form.data)
+        new_hunt = JobHunt.save_job_hunt(current_user.id, job_hunt_form.data)
         # ******************** Add failed API error handling ******************
         return redirect('/dashboard')
 
