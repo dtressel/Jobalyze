@@ -6,13 +6,13 @@ from keys import COS_API_TOKEN, COS_USER_ID, COS_BASE_URL, COS_API_TOKEN_BAD, CO
 def get_jobs(form):
     """form is WTForm form object, convet_to_dict is True (return dict) or False (return json)"""
 
-    keyword = form.keyword.data
-    location = form.location.data
-    radius = form.radius.data
-    days = form.days.data
-    companyName = form.companyName.data
-    startRecord = form.startRecord.data
-    if form.remote.data:
+    keyword = form['keyword']
+    location = form['location']
+    radius = form['radius']
+    days = form['days']
+    companyName = form['companyName']
+    startRecord = form['startRecord']
+    if form['remote']:
         keyword = keyword + " remote"
     if not location:
         location = "US"
