@@ -56,7 +56,7 @@
   <div id="main-upper-right" class="main-grid-quadrant">
     <div class="heading-expand">
       <h3>Job Apps</h3>
-      <a><img class="expand-icon" src="/static/icons/Expand-icon-30.png"></a>
+      <a href="/job-apps?hunt={{current_hunt.id}}"><img class="expand-icon" src="/static/icons/Expand-icon-30.png"></a>
     </div>
     {% if job_apps_list %}
     <ul>
@@ -98,6 +98,7 @@
 
 {% include "popup-jh.html" %}
 
+{% if api_search_form %}
 <form id="api-search-expand-form" class="display-none" method="GET" action="/cos-jobs/search">
   <div class="form-row">
     {% if current_hunt.o_net_code %}
@@ -113,6 +114,7 @@
     {{api_search_form.startRecord(value="0")}}
   </div>
 </form>
+{% endif %}
 
 {% endblock %}
 

@@ -263,15 +263,14 @@ class SavedJob(db.Model):
     def edit_saved_job(cls, user_id, saved_job_id, details_obj):
         """Edits a saved job. Returns an object to be converted into a response object in app.py."""
 
-        saved_job = cls.query.get(saved_job_id)
-        if saved_job.user_id == user_id:
+        job_to_edit = cls.query.get(saved_job_id)
+        if job_to_edit.user_id == user_id:
             print ('************** User Ids matched! *******************')
 
             if details_obj.get('federal_contractor'):
                 cls.coerce_fc_value(details_obj)
 
             try:
-                job_to_edit = cls.query.get(saved_job_id)
                 for key in details_obj:
                     if not details_obj[key] or details_obj[key] == '-':
                         details_obj[key] = None
@@ -510,6 +509,20 @@ class JobApp(db.Model):
         nullable=False,
         default=0
     )
+    # range: 0-6
+    # values:
+    #     0: Initial Screening
+    #     1: Interviewed - First Round
+    #     2: Interviewed - Multiple Rounds
+    #     3: Interviewed - Final Round
+    #     4: Job Offer
+    #     5: Hired
+    #     6: Closed - Inactive
+    furthest_status = db.Column(
+        db.Integer,
+        nullable=False,
+        default=0
+    )
     # range: 0-5
     # values:
     #     0: Initial Screening
@@ -518,23 +531,14 @@ class JobApp(db.Model):
     #     3: Interviewed - Final Round
     #     4: Job Offer
     #     5: Hired
-
     interviews = db.Column(
         db.Integer,
         nullable=False,
         default=0
     )
     # Value will remain at 0 even when user marks "Interviewed - First Round" in current status.
-    # User will only be asked to change this value when user marks a current_status value of 2 or higher.
-
-    furthest_status = db.Column(
-        db.Integer,
-        nullable=False,
-        default=0
-    )
-    date_closed = db.Column(
-        db.Date
-    )
+    # User will only be asked to change this value when user marks a status value of 2 or higher.
+    dap = db.Column(db.Integer)
     job_hunt_id = db.Column(
         db.Integer,
         db.ForeignKey('job_hunts.id'),
@@ -545,7 +549,20 @@ class JobApp(db.Model):
     factors = db.relationship('Factor', secondary=app_factor, back_populates='job_apps')
 
     def __repr__(self):
-        return f"<Job App #{self.id}: {self.saved_job.company}, {self.current_status}>"
+        return f"<Job App #{self.id}: {self.saved_job.company}, {self.date_applied}>"
+
+    def add_dap(self):
+        dap = self.date_applied - self.saved_job.date_posted
+        self.dap = dap.days
+
+        return self
+
+    def translate_values(self):
+        status_translator = {0: 'Initial Screening', 1: 'Interviewed - First Round', 2: 'Interviewed - Multiple Rounds',
+            3: 'Interviewed - Final Round', 4: 'Job Offer', 5:'Hired', 6: 'Closed - Inactive'}
+        self.status_translated = status_translator[self.current_status]
+
+        return self
 
     @classmethod
     def add_job_app(cls, app_obj):
@@ -563,6 +580,11 @@ class JobApp(db.Model):
         # **********************need some error handling if not addd**********************
         db.session.add(app_to_add)
         db.session.commit()
+
+        app_to_add_with_dap = app_to_add.add_dap()
+        db.session.add(app_to_add_with_dap)
+        db.session.commit()
+
         return {'body': {'message': 'Job App Report Successful!'}, 'status': 200}
     
     @classmethod
@@ -577,6 +599,56 @@ class JobApp(db.Model):
         Returns True if there is; returns False if there isn't."""
 
         return cls.query.get(saved_job_id) is not None
+
+    @classmethod
+    def get_all_job_apps_for_user(cls, job_hunt_id, translate_values):
+        """Returns a list of all saved jobs associated with a user."""
+
+        job_apps = cls.query.filter(job_hunt_id == job_hunt_id).order_by(cls.id.desc()).all()
+
+        if translate_values:
+            for app in job_apps:
+                app = app.translate_values()
+
+        return job_apps
+
+    @classmethod
+    def edit_job_app(cls, user_id, job_app_id, details_obj):
+        """Edits a job app. Returns an object to be converted into a response object in app.py."""
+
+        app_to_edit = cls.query.get(job_app_id)
+        if app_to_edit.user_id == user_id:
+            print ('************** User Ids matched! *******************')
+
+            if details_obj.get('current_status'):
+                if int(details_obj['current_status']) < 6:
+                    details_obj['furthest_status'] = details_obj['current_status']
+
+            try:
+                for key in details_obj:
+                    if not details_obj[key]:
+                        details_obj[key] = None
+                    setattr(app_to_edit, key, details_obj[key])
+                db.session.add(app_to_edit)
+                db.session.commit()
+            except: 
+                return {'body': {'message': 'Sorry, we were unable to process your request. Please try again later!'}, 'status': 500}
+            return {'body': {'message': 'Update Successful!'}, 'status': 200}
+        else:
+            return {'body': {'message': 'Unauthorized: This saved job is associated with another user.'}, 'status': 403}
+
+    @classmethod
+    def delete_job_app(cls, user_id, job_app_id):
+        """Deletes a job app. Returns an object to be converted into a response object in app.py."""
+
+        app_to_delete = cls.query.get(job_app_id)
+        if app_to_delete.user_id == user_id:
+            print ('************** User Ids matched! *******************')
+
+            db.session.delete(app_to_delete)
+            db.session.commit()
+
+        return {'body': 'success!', 'status': 200}
 
 class Factor(db.Model):
 

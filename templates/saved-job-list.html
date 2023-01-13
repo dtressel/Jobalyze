@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 
-{% block stylesheets %}{% endblock %}
+{% block stylesheets %}
+<link rel="stylesheet" href="/static/css/table.css">
+{% endblock %}
 
 
 {% block title %}Saved Jobs{% endblock %}
@@ -28,7 +30,14 @@
       <td><a href="/saved-jobs/{{job.id}}">{{job.title}}</a></td>
       <td>{{job.location}}</td>
       <td>{{job.date_posted}}</td>
-      <td class="text-center">{% if job.job_app %}&#10004;{% endif %}</td>
+      <td>
+        {% if job.job_app %}
+        <span>
+          <a><span>&#10004;</span></a>
+          <a href="/job-apps/{{job.id}}"><button>View</button></a>
+        </span>
+        {% endif %}
+      </td>
       <td>
         <form method="POST" action="/saved-jobs/{{job.id}}/delete">
           <button type="submit">Delete</button>

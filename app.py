@@ -380,7 +380,7 @@ def dashboard_page_load_hunt(hunt_id):
 
     current_hunt = JobHunt.query.get(hunt_id)
     saved_jobs_list = SavedJob.get_dashboard_saved_jobs_list(current_user.id)
-    job_apps_list = JobApp.get_dashboard_job_apps_list(current_user.id)
+    job_apps_list = JobApp.get_dashboard_job_apps_list(hunt_id)
     new_job_postings = get_postings_for_dashboard(current_hunt)
     goals = None
 
@@ -403,6 +403,18 @@ def save_job_hunt():
     # fix this return
     return "success"  
 
+@app.route('/job-apps')
+@login_required
+def job_app_list():
+    """Shows a list of a users' job apps."""
+
+    # job_hunts (retrieved in template from current_user object)
+    job_apps = JobApp.get_all_job_apps_for_user(current_user.id, translate_values=True)
+
+    current_hunt_id = int(request.args['hunt'])
+
+    return render_template('job-app-list.html', job_apps=job_apps, current_hunt_id=current_hunt_id)
+
 @app.route('/job-apps/add/json', methods=['POST'])
 @login_required
 def save_job_app():
@@ -419,6 +431,25 @@ def save_job_app():
     # ********************** JS can't see the body of response **************************
     return make_response(resp['body']['message'], resp['status'])
 
+@app.route('/job-apps/<job_app_id>/edit/json', methods=['POST'])
+@login_required
+def edit_job_app(job_app_id):
+    """Endpoint for frontend to edit a job app."""
+
+    resp = JobApp.edit_job_app(current_user.id, job_app_id, request.get_json())
+
+    # ********************** JS can't see the body of response **************************
+    return make_response(resp['body']['message'], resp['status'])
+
+@app.route('/job-apps/<job_app_id>/delete', methods=['DELETE'])
+@login_required
+def delete_job_app(job_app_id):
+    """Endpoint for frontend to delete a job app."""
+
+    resp = JobApp.delete_job_app(current_user.id, job_app_id)
+
+    # ********************** JS can't see the body of response **************************
+    return make_response(resp['body'], resp['status'])
 
 @app.route('/factors/add/json', methods=['POST'])
 @login_required

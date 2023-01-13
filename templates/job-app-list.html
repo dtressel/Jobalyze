@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block stylesheets %}
+<link rel="stylesheet" href="/static/css/table.css">
+{% endblock %}
+
+
+{% block title %}Job Apps{% endblock %}
+
+
+{% block content %}
+<div class="h2-with-neighbors-div">
+  <h2>Job Apps</h2>
+  <p><i>Click on status values to update. Click "Save Updates" after updates.</i></p>
+</div>
+<table id="job-app-list-table">
+  <thead>
+    <tr>
+      <th>Date Applied</th>
+      <th>Company</th>
+      <th>Job Title</th>
+      <th>Location</th>
+      <th>
+        <span>Status</span>
+        <button id="save-updates-button">Save Updates</button>
+      </th>
+      <th>DAP</th>
+      <th class="factors-th">Factors</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody id="job-app-list-tbody"> 
+    {% for app in job_apps %}
+    {% if app.job_hunt_id == current_hunt_id %}
+    <tr>
+      <td>{{app.date_applied}}</td>
+      <td>{{app.saved_job['company']}}</td>
+      <td><a href="/saved-apps/{{app.id}}">{{app.saved_job['title']}}</a></td>
+      <td>{{app.saved_job['location']}}</td>
+      <td>
+        <select data-app-id="{{app.id}}">
+          <option value="0" {% if app.current_status == 0 %}selected{% endif %}>Initial Screening</option>
+          <option value="1" {% if app.current_status == 1 %}selected{% endif %}>Interviewed - First Round</option>
+          <option value="2" {% if app.current_status == 2 %}selected{% endif %}>Interviewed - Multiple Rounds</option>
+          <option value="3" {% if app.current_status == 3 %}selected{% endif %}>Interviewed - Final Round</option>
+          <option value="4" {% if app.current_status == 4 %}selected{% endif %}>Job Offer</option>
+          <option value="5" {% if app.current_status == 5 %}selected{% endif %}>Hired</option>
+          <option value="6" {% if app.current_status == 6 %}selected{% endif %}>Closed - Inactive</option>
+        </select>
+      </td>
+      <td>{{app.dap}}</td>
+      <td class="factors-td">
+        {% for factor in app.factors %}
+          {% if loop.index == app.factors|length %}
+            {{loop.index}}. {{factor.name}}
+            {% else %}
+            {{loop.index}}. {{factor.name}},
+            {% endif %}
+        {% endfor %}
+      </td>
+      <td>
+        <button class="job-app-delete-button" data-app-id="{{app.id}}">Delete</button>
+      </td>
+    </tr>
+    {% endif %}
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
+
+
+{% block scripts %}
+<script src="/static/js/job-app-list.js"></script>
+{% endblock %}
