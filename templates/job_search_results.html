@@ -9,7 +9,7 @@
 {% block content %}
 <form method="GET">
   {% for field in form if field.widget.input_type != 'hidden' %}
-    <div class="form-row">
+    <div class="form-group">
       {{field.label}}
       {{field}}
     </div>
@@ -19,7 +19,7 @@
     </div>
     {% endfor %}
   {% endfor %}
-  <div class="form-row">
+  <div class="form-group">
     <div class="button-div">
       <button type="submit" class="btn btn-success mt-2">Submit</button>
     </div>

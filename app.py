@@ -48,7 +48,7 @@ def homepage():
         form = LoginForm()
         return render_template('home_anon.html', form=form, current_user=current_user)
     else:
-        return render_template('home_user.html', current_user=current_user)
+        return redirect('/dashboard')
 
 # Authorization:
 

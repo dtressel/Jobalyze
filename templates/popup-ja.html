@@ -11,7 +11,7 @@
     <span> at </span>
     <span class="company-spans">{{saved_job['company']}}</span>
     <form id="job-app-report-form" data-saved-job-id="{{saved_job['id']}}" data-user-id="{{current_user.id}}">
-      <div class="form-row">
+      <div class="form-group">
         <label for="job-hunt-select">This application report is for the</label>
         <select id="job-hunt-select">
           {% for hunt in active_hunts %}
@@ -20,7 +20,7 @@
         </select>
         <span>job hunt.</span>
       </div>
-      <div class="form-row">
+      <div class="form-group">
         <label for="applied-date-input">I applied on</label>
         <input type="date" id="applied-date-input">
       </div>
@@ -47,7 +47,7 @@
     <span>:</span>
     <p>Check all boxes for any factors that correspond with this job report.</p>
     <form>
-      <div class="form-row">
+      <div class="form-group">
         <input type="text" id="add-factor-input">
         <button type="button" id="add-factor-button">Add New Factor</button>
       </div>

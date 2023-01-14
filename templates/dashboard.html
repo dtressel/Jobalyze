@@ -34,7 +34,7 @@
     </div>
   </div>
   <div id="top-right" class="top-grid-section">
-    <div id="hired-button" class="hired-button">Hired!</div>
+    <!-- <div id="hired-button" class="hired-button">Hired!</div> -->
   </div>
 </div>
 <div class="main-grid">
@@ -55,13 +55,13 @@
   </div>
   <div id="main-upper-right" class="main-grid-quadrant">
     <div class="heading-expand">
-      <h3>Job Apps</h3>
+      <h3>Job Applied</h3>
       <a href="/job-apps?hunt={{current_hunt.id}}"><img class="expand-icon" src="/static/icons/Expand-icon-30.png"></a>
     </div>
     {% if job_apps_list %}
     <ul>
       {% for app in job_apps_list %}
-      <a href="/job-apps/{{app.id}}"><li>{{app.saved_job.company}}, {{app.saved_job.title}}</li></a>
+      <li>{{app.saved_job.company}}, <a href="/job-apps/{{app.id}}">{{app.saved_job.title}}</a></li>
       {% endfor %}
     </ul>
     {% else %}
@@ -85,7 +85,7 @@
   </div>
   <div id="main-lower-right" class="main-grid-quadrant">
     <div class="heading-expand">
-      <h3>{{current_hunt.name}} Details:</h3>
+      <h3>{{current_hunt.name}} Job Hunt Details:</h3>
       <a><img class="expand-icon" src="/static/icons/Expand-icon-30.png"></a>
     </div>
     <div>Status: {{current_hunt.status_translated}}</div>
@@ -101,19 +101,17 @@
 
 {% if api_search_form %}
 <form id="api-search-expand-form" class="display-none" method="GET" action="/cos-jobs/search">
-  <div class="form-row">
-    {% if current_hunt.o_net_code %}
-      {{api_search_form.keyword(value=current_hunt.o_net_code)}}
-    {% else %}
-      {{api_search_form.keyword(value=current_hunt.job_title_desired)}}
-    {% endif %}
-    {{api_search_form.location(value=current_hunt.location)}}
-    {{api_search_form.radius(value=current_hunt.radius)}}
-    {{api_search_form.days(value="7")}}
-    {{api_search_form.companyName}}
-    {{api_search_form.remote(value=current_hunt.remote)}}
-    {{api_search_form.startRecord(value="0")}}
-  </div>
+  {% if current_hunt.o_net_code %}
+    {{api_search_form.keyword(value=current_hunt.o_net_code)}}
+  {% else %}
+    {{api_search_form.keyword(value=current_hunt.job_title_desired)}}
+  {% endif %}
+  {{api_search_form.location(value=current_hunt.location)}}
+  {{api_search_form.radius(value=current_hunt.radius)}}
+  {{api_search_form.days(value="7")}}
+  {{api_search_form.companyName}}
+  {{api_search_form.remote(value=current_hunt.remote)}}
+  {{api_search_form.startRecord(value="0")}}
 </form>
 {% endif %}
 

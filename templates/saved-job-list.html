@@ -30,12 +30,13 @@
       <td><a href="/saved-jobs/{{job.id}}">{{job.title}}</a></td>
       <td>{{job.location}}</td>
       <td>{{job.date_posted}}</td>
-      <td>
+      <td class="text-center">
         {% if job.job_app %}
-        <span>
+        &#10004;
+        <!-- <span>
           <a><span>&#10004;</span></a>
           <a href="/job-apps/{{job.id}}"><button>View</button></a>
-        </span>
+        </span> -->
         {% endif %}
       </td>
       <td>

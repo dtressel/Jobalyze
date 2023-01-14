@@ -15,7 +15,7 @@
   {{form.hidden_tag()}}
 
   <!-- Date Field: -->
-  <div class="form-row">
+  <div class="form-group">
     {{form.date_applied.label}}
     {{form.date_applied(value=job_app.date_applied)}}
   </div>
@@ -26,7 +26,7 @@
   {% endfor %}
   
   <!-- Select Field: -->
-  <div class="form-row">
+  <div class="form-group">
     {{form.current_status.label}}
     {{form.current_status(data_value=job_app.current_status)}}
   </div>
@@ -37,7 +37,7 @@
   {% endfor %}
 
   <!-- Integer Field: -->
-  <div class="form-row">
+  <div class="form-group">
     {{form.interviews.label}}
     {{form.interviews(data_value=job_app.interviews)}}
   </div>
