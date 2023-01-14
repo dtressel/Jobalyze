@@ -261,6 +261,21 @@ class NewJobHuntForm(FlaskForm):
 
     # https://stackoverflow.com/questions/33429510/wtforms-selectfield-not-properly-coercing-for-booleans
 
+class JobAppEditForm(FlaskForm):
+    """Form to edit a job app."""
+
+    date_applied = DateField("Date Applied")
+    current_status = SelectField("Current Status", choices=[
+        (0, 'Initial Screening'),
+        (1, 'Interviewed - First Round'),
+        (2, 'Interviewed - Multiple Rounds'),
+        (3, 'Interviewed - Final Round'),
+        (4, 'Job Offer'),
+        (5, 'Hired'),
+        (6, 'Closed - Inactive'),
+    ])
+    interviews = IntegerField("Number Of Interviews", default=0)
+
 # class JobAppCreateForm(FlaskForm):
 #     """Form to create a new job app from dialog. Form is not displayed."""
 

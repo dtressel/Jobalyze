@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block stylesheets %}{% endblock %}
+
+
+{% block title %}Job App Details{% endblock %}
+
+
+{% block content %}
+<div class="header flex-space-between">
+  <h2>Job App Details</h2>
+</div>
+
+<div class="flex-space-between">
+  <h3 id="details-job-title">{{job_app.saved_job['title']}}</h3>
+  <div class="edit-delete-buttons-div">
+    <a href="/job-apps/{{job_app.id}}/edit"><button>Edit</button></a>
+    <button>Delete</button>
+  </div>
+</div>
+
+<div>{{job_app.saved_job['company']}}</div>
+<div>{{job_app.saved_job['location']}}</div>
+<br>
+<div>Date Posted: {{job_app.saved_job['date_posted']}}</div>
+<div>Date Applied: {{job_app.date_applied}}</div>
+<br>
+<div>Current Status: {{job_app.current_status_translated}}</div>
+{% if job_app.current_status == 6 %}
+<div>Status Before Closed: {{job_app.furthest_status_translated}}</div>
+{% endif %}
+<div>Number of Interviews: {{job_app.interviews}}</div>
+<h4>Factors:</h4>
+<ul>
+{% for factor in job_app.factors %}
+  <li>{{factor.name}}</li>
+{% endfor %}
+</ul>
+<hr>
+<div class="flex-space-between">
+  <h3>Job Description</h3>
+  <div>
+    <a href="{{job_app.saved_job['application_link']}}"><button>Application Link</button></a>
+    <a href="/saved-jobs/{{job_app.id}}" target="_blank"><button>Job Details Page</button></a>
+  </div>
+</div>
+<div id="details-description">{{job_app.saved_job['job_description'] | safe}}</div>
+{% endblock %}
+
+
+{% block scripts %}{% endblock %}

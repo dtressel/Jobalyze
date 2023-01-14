@@ -7,7 +7,7 @@ from markupsafe import Markup
 
 from utilities import is_safe_url
 from models import db, connect_db, User, SavedJob, JobHunt, JobApp, Factor
-from forms import RegistrationForm, LoginForm, ApiJobSearchForm, ManualJobAddForm, NewJobHuntForm, SavedJobRegularEditForm, SavedJobCosEditForm, UserEditForm
+from forms import RegistrationForm, LoginForm, ApiJobSearchForm, ManualJobAddForm, NewJobHuntForm, SavedJobRegularEditForm, SavedJobCosEditForm, JobAppEditForm, UserEditForm
 from api_requests import get_jobs, get_job_details, get_page_navigation_values, get_postings_for_dashboard
 
 app = Flask(__name__)
@@ -248,7 +248,9 @@ def add_job():
 def show_saved_job(saved_job_id):
     """Shows details of a particular saved job"""
 
-    applied = JobApp.check_if_applied(saved_job_id)
+    job_app = None
+    if JobApp.check_if_applied(saved_job_id):
+        job_app = JobApp.get_job_app_by_id(saved_job_id, translate_values=True)
     active_hunts = JobHunt.get_active_job_hunts(current_user.id)
     if not active_hunts:
         job_hunt_form = NewJobHuntForm()
@@ -275,7 +277,7 @@ def show_saved_job(saved_job_id):
                             active_hunts=active_hunts,
                             popup_ja=popup_ja,
                             popup_jh=popup_jh,
-                            applied=applied)
+                            job_app=job_app)
 
 @app.route('/saved-jobs/<saved_job_id>/edit', methods=["GET", "POST"])
 @login_required
@@ -378,7 +380,7 @@ def dashboard_page_load_hunt(hunt_id):
 
         return render_template('job_search_results.html', api_search_form=api_search_form, results=results_dict, page_data=page_data)
 
-    current_hunt = JobHunt.query.get(hunt_id)
+    current_hunt = JobHunt.get_job_hunt_by_id(hunt_id, translate_values=True)
     saved_jobs_list = SavedJob.get_dashboard_saved_jobs_list(current_user.id)
     job_apps_list = JobApp.get_dashboard_job_apps_list(hunt_id)
     new_job_postings = get_postings_for_dashboard(current_hunt)
@@ -431,9 +433,48 @@ def save_job_app():
     # ********************** JS can't see the body of response **************************
     return make_response(resp['body']['message'], resp['status'])
 
-@app.route('/job-apps/<job_app_id>/edit/json', methods=['POST'])
+# ****************** Not currently used ************************
+@app.route('/job-apps/<job_app_id>')
+@login_required
+def show_job_app_details(job_app_id):
+    """Shows the details of a particular job app."""
+
+    job_app = JobApp.get_job_app_by_id(job_app_id, translate_values=True)
+
+    return render_template('job-app-details.html', job_app=job_app)
+
+@app.route('/job-apps/<job_app_id>/edit', methods=['GET', 'POST'])
 @login_required
 def edit_job_app(job_app_id):
+    """Shows job app edit form or posts job app edit to database."""
+
+    job_app = JobApp.get_job_app_by_id(job_app_id)
+    form = JobAppEditForm()
+
+    if form.validate_on_submit():
+        factors = request.form.getlist('factor')
+        oldFactors = [factor for factor in factors if factor.isnumeric()]
+        newFactors = [factor for factor in factors if not factor.isnumeric()]
+        resp = Factor.add_factors_from_name_list(newFactors, job_app.job_hunt_id, current_user.id)
+        if resp['status'] == 200:
+            factor_ids_to_associate = oldFactors + resp['body']
+            resp = Factor.associate_factors_from_id_list(factor_ids_to_associate, job_app_id, current_user.id)
+            if resp['status'] == 200:
+                return redirect(f'/saved-jobs/{job_app_id}')
+        # **************** flash message ********************************
+
+    job_hunt_factors_list = JobHunt.getFactors(job_app.job_hunt_id)
+    job_app_factors_list = [factor.id for factor in job_app.factors]
+
+    return render_template('job-app-edit.html',
+                            form=form,
+                            job_app=job_app,
+                            job_hunt_factors_list=job_hunt_factors_list,
+                            job_app_factors_list=job_app_factors_list)
+
+@app.route('/job-apps/<job_app_id>/edit/json', methods=['POST'])
+@login_required
+def edit_job_app_endpoint(job_app_id):
     """Endpoint for frontend to edit a job app."""
 
     resp = JobApp.edit_job_app(current_user.id, job_app_id, request.get_json())
@@ -471,8 +512,7 @@ def associate_factor():
     """Endpoint that Accepts a list of new factors' ids to associate them with a job app by adding to the app_factor table in the database."""
 
     associate_factors_dict = request.get_json()
-    resp = Factor.associate_factors(associate_factors_dict, current_user.id)
-    import pdb; pdb.set_trace()
+    resp = Factor.associate_factors_from_dict(associate_factors_dict, current_user.id)
 
     if resp['status'] == 200:
         return resp['body']

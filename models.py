@@ -202,22 +202,22 @@ class SavedJob(db.Model):
         if self.company_size:
             cs_translator = [None, '1-10 employees', '11-50 employees', '51-200 employees', '201-500 employees',
             '501-1,000 employees', '1,001-5,000 employees', '5,001-10,000 employees', '10,001+ employees']
-            self.company_size = cs_translator[self.company_size]
+            self.company_size_translated = cs_translator[self.company_size]
 
         # Salary range locale string translation done in job-details-saved.js
 
         if self.job_type:
             jt_translator = {'f': 'Full-time', 'p': 'Part-time', 'c': 'Contract', 'i': 'Internship', 'v': 'Volunteer'}
-            self.job_type = jt_translator[self.job_type]
+            self.job_type_translated = jt_translator[self.job_type]
 
         if self.federal_contractor != None:
             fc_translator = {True: 'Yes', False: 'No'}
-            self.federal_contractor = fc_translator[self.federal_contractor]
+            self.federal_contractor_translated = fc_translator[self.federal_contractor]
 
         if self.experience_level:
             el_translator = {'i': 'Internship', 'e': 'Entry level', 'a': 'Associate',
             'm': 'Mid-Senior level', 'd': 'Director', 'x': 'Executive'}
-            self.experience_level = el_translator[self.experience_level]
+            self.experience_level_translated = el_translator[self.experience_level]
 
         return self
 
@@ -340,6 +340,7 @@ class SavedJob(db.Model):
         if translate_values:
             saved_job = cls.translate_values(saved_job)
 
+        # ************************* Can remove below!? And change docstring ********************************************
         saved_job.date_posted = date(saved_job.date_posted.year, saved_job.date_posted.month, saved_job.date_posted.day)
 
         return saved_job
@@ -421,6 +422,7 @@ class JobHunt(db.Model):
     )
     # values:
     #     a: Actively Applying
+    #     p: On Pause
     #     h: Closed, Hired
     #     c: Closed, Abandoned
     
@@ -446,6 +448,19 @@ class JobHunt(db.Model):
     def __repr__(self):
         return f"<Job Hunt #{self.id}: {self.job_title_desired}, {self.status}>"
 
+    def translate_values(self):
+        """Changes values from database abreviations to actual values for display."""
+
+        if self.app_goal_time_frame:
+            agtf_translator = {'d': 'Daily', 'w': 'Weekly', 'm': 'Monthly'}
+            self.app_goal_time_frame_translated = agtf_translator[self.app_goal_time_frame]
+
+        if self.status:
+            status_translator = {'a': 'Actively Applying', 'p': 'On Pause', 'h': 'Closed, Hired', 'c': 'Closed, Abandoned'}
+            self.status_translated = status_translator[self.status]
+
+        return self
+
     @classmethod
     def save_job_hunt(cls, user_id, hunt_obj):
         """Saves a job hunt."""
@@ -465,6 +480,16 @@ class JobHunt(db.Model):
         """Returns a list of active job hunts for a user."""
 
         return db.session.query(cls).filter(cls.user_id == user_id, cls.status == 'a').order_by(cls.id.desc()).all()
+
+    @classmethod
+    def get_job_hunt_by_id(cls, job_hunt_id, translate_values):
+
+        job_hunt = JobHunt.query.get(job_hunt_id)
+
+        if translate_values:
+            job_hunt = job_hunt.translate_values()
+
+        return job_hunt
 
     @classmethod
     def getFactors(cls, job_hunt_id):
@@ -560,7 +585,8 @@ class JobApp(db.Model):
     def translate_values(self):
         status_translator = {0: 'Initial Screening', 1: 'Interviewed - First Round', 2: 'Interviewed - Multiple Rounds',
             3: 'Interviewed - Final Round', 4: 'Job Offer', 5:'Hired', 6: 'Closed - Inactive'}
-        self.status_translated = status_translator[self.current_status]
+        self.current_status_translated = status_translator[self.current_status]
+        self.furthest_status_translated = status_translator[self.furthest_status]
 
         return self
 
@@ -611,6 +637,15 @@ class JobApp(db.Model):
                 app = app.translate_values()
 
         return job_apps
+
+    @classmethod
+    def get_job_app_by_id(cls, job_app_id, translate_values=False):
+
+        job_app = cls.query.get(job_app_id)
+        if translate_values:
+            job_app = job_app.translate_values()
+
+        return job_app
 
     @classmethod
     def edit_job_app(cls, user_id, job_app_id, details_obj):
@@ -675,7 +710,7 @@ class Factor(db.Model):
 
     @classmethod
     def add_factors(cls, factors_to_add, current_user_id):
-        """Accepts a list of factors to add to the database."""
+        """Accepts a list of factor objects to add to the database."""
 
         new_factor_id_list = []
 
@@ -696,19 +731,54 @@ class Factor(db.Model):
         return {'body': new_factor_id_list, 'status': 200}
 
     @classmethod
-    def associate_factors(cls, associate_factors_dict, current_user_id):
-        """Accepts a list of factors to add to the database."""
+    def add_factors_from_name_list(cls, factors_to_add, job_hunt_id, current_user_id):
+        """Accepts a list of factor names to add to the database."""
 
-        user_id_associated_with_job_app = db.session.query(SavedJob.user_id).filter_by(id = associate_factors_dict['savedJobId']).first()[0]
+        new_factor_id_list = []
+
+        if (factors_to_add):
+            user_id_associated_with_job_hunt = db.session.query(JobHunt.user_id).filter_by(id = job_hunt_id).first()[0]
+            if (current_user_id != user_id_associated_with_job_hunt):
+                return {'body': {'message': 'You are not authorized to do this.'}, 'status': 401}
+
+            new_factor_list = []
+
+            for factor in factors_to_add:
+                new_factor = cls(job_hunt_id = job_hunt_id, name = factor)
+                new_factor_list.append(new_factor)
+                db.session.add(new_factor)
+            db.session.commit()
+            new_factor_id_list = [x.id for x in new_factor_list]
+
+        return {'body': new_factor_id_list, 'status': 200}
+
+    @classmethod
+    def associate_factors_from_dict(cls, factors_dict, current_user_id):
+        """Accepts a dict of factors to add to the database."""
+
+        user_id_associated_with_job_app = db.session.query(SavedJob.user_id).filter_by(id = factors_dict['savedJobId']).first()[0]
         if (current_user_id != user_id_associated_with_job_app):
             return {'body': 'You are not authorized to do this.', 'status': 401}
 
-        factors_list = [cls.query.get(factorId) for factorId in associate_factors_dict['allFactorsIdArray']]
-        app_to_associate_factors_with = JobApp.query.get(associate_factors_dict['savedJobId'])
-        import pdb; pdb.set_trace()
+        factors_list = [cls.query.get(factorId) for factorId in factors_dict['allFactorsIdArray']]
+        app_to_associate_factors_with = JobApp.query.get(factors_dict['savedJobId'])
         app_to_associate_factors_with.factors.extend(factors_list)
         db.session.commit()
-        import pdb; pdb.set_trace()
+
+        return {'body': 'success!', 'status': 200}
+
+    @classmethod
+    def associate_factors_from_id_list(cls, factors_id_list, job_app_id, current_user_id):
+        """Accepts a dict of factors to add to the database."""
+
+        user_id_associated_with_job_app = db.session.query(SavedJob.user_id).filter_by(id = job_app_id).first()[0]
+        if (current_user_id != user_id_associated_with_job_app):
+            return {'body': 'You are not authorized to do this.', 'status': 401}
+
+        factors_list = [cls.query.get(factorId) for factorId in factors_id_list]
+        app_to_associate_factors_with = JobApp.query.get(job_app_id)
+        app_to_associate_factors_with.factors = factors_list
+        db.session.commit()
 
         return {'body': 'success!', 'status': 200}
 

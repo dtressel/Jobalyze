@@ -12,11 +12,11 @@
 
 {% block content %}
 <div class="header flex-space-between">
-  <h2>Saved Job</h2>
+  <h2>Job Details</h2>
   <div class="edit-delete-buttons-div">
-    <a href="/saved-jobs/{{saved_job.id}}/edit"><button>Edit</button></a>
+    <a href="/saved-jobs/{{saved_job.id}}/edit"><button>Edit Job</button></a>
     <form method="POST" action="/saved-jobs/{{saved_job.id}}/delete">
-      <button type="submit">Delete</button>
+      <button type="submit">Delete Job</button>
     </form>
   </div>
 </div>
@@ -25,7 +25,7 @@
     <h3 id="details-job-title">{{saved_job.title}}</h3>
     <div class="hor-buttons-div">
       {% if saved_job.application_link != None and saved_job.application_link != '' %}
-      <a id="details-url" href="{{saved_job.application_link}}" target="_blank"><button>Apply</button></a>
+      <a id="details-url" href="{{saved_job.application_link}}" target="_blank"><button>Application Link</button></a>
       {% else %}
       <button id="apply-button-no-url">Apply</button>
       {% endif %}
@@ -39,22 +39,54 @@
     </div>
     <button id="i-applied-button" data-saved-job-id={{saved_job['id']}}
       {% if popup_jh == 'ready' %}data-job-hunt="none"{% else %}data-job-hunt="yes"{% endif %}
-      {% if applied %}class="display-none"{% endif %}>
+      {% if job_app %}class="display-none"{% endif %}>
       I applied
     </button>
-    <div id="you-applied-icon" {% if not applied %}class="display-none"{% endif %}>You applied!</div>
+    <div id="you-applied-icon" {% if not job_app %}class="display-none"{% endif %}>You applied!</div>
   </div>
   <div id="details-description">{{saved_job.job_description}}</div>
+
+  {% if job_app %}
+
+  <hr>
+
+  <div class="flex-space-between">
+    <h3>Job App Details</h3>
+    <div class="edit-delete-buttons-div">
+      <a href="/job-apps/{{job_app.id}}/edit"><button>Edit Job App</button></a>
+      <button>Delete Job App</button>
+    </div>
+  </div>
+
+  <div>Date Applied: {{job_app.date_applied}}</div>
+  <div>(Applied {{job_app.dap}} {% if job_app.dap == 1 %}day{% else %}days{% endif %} after posting date)</div>
+  <br>
+  <div>Current Status: {{job_app.current_status_translated}}</div>
+  {% if job_app.current_status == 6 %}
+  <div>Status Before Closed: {{job_app.furthest_status_translated}}</div>
+  {% endif %}
+  <div>Number of Interviews: {{job_app.interviews}}</div>
+  <h4>Factors:</h4>
+  <ul>
+  {% for factor in job_app.factors %}
+    <li>{{factor.name}}</li>
+  {% endfor %}
+  </ul>
+
+  {% endif %}
 
   <hr>
 
   <div id="additional-details">
-    <h3>Additional Details</h3>
+    <div class="flex-space-between">
+      <h3>Additional Job Details</h3>
+      <a href="/saved-jobs/{{saved_job.id}}/edit"><button>Edit Details</button></a>
+    </div>
 
     <div id="details-company-size" class="additional-details-row">
       <span><b>Company size:</b> </span>
       {% if saved_job.company_size != None %}
-      <span id="details-company-size-value-display">{{saved_job.company_size}}</span>
+      <span id="details-company-size-value-display">{{saved_job.company_size_translated}}</span>
       {% else %}
       <span id="details-company-size-value-display"></span>
       <button data-group-id="details-company-size" id="details-company-size-add">Add</button>
@@ -97,7 +129,7 @@
     <div id="details-job-type" class="additional-details-row">
       <span><b>Job type:</b> </span>
       {% if saved_job.job_type != None %}
-      <span id="details-job-type-value-display">{{saved_job.job_type}}</span>
+      <span id="details-job-type-value-display">{{saved_job.job_type_translated}}</span>
       {% else %}
       <span id="details-job-type-value-display"></span>
       <button data-group-id="details-job-type" id="details-job-type-add">Add</button>
@@ -118,7 +150,7 @@
     <div id="details-experience-level" class="additional-details-row">
       <span><b>Experience level:</b> </span>
       {% if saved_job.experience_level != None %}
-      <span id="details-experience-level-value-display">{{saved_job.experience_level}}</span>
+      <span id="details-experience-level-value-display">{{saved_job.experience_level_translated}}</span>
       {% else %}
       <span id="details-experience-level-value-display"></span>
       <button data-group-id="details-experience-level" id="details-experience-level-add">Add</button>
@@ -140,7 +172,7 @@
     <div id="details-federal-contractor" class="additional-details-row">
       <span><b>Federal contractor:</b> </span>
       {% if saved_job.federal_contractor != None %}
-      <span id="details-federal-contractor-value-display">{{saved_job.federal_contractor}}</span>
+      <span id="details-federal-contractor-value-display">{{saved_job.federal_contractor_translated}}</span>
       {% else %}
       <span id="details-federal-contractor-value-display"></span>
       <button data-group-id="details-federal-contractor" id="details-federal-contractor-add">Add</button>

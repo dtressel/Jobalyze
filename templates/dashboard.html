@@ -85,14 +85,15 @@
   </div>
   <div id="main-lower-right" class="main-grid-quadrant">
     <div class="heading-expand">
-      <h3>Progress</h3>
+      <h3>{{current_hunt.name}} Details:</h3>
       <a><img class="expand-icon" src="/static/icons/Expand-icon-30.png"></a>
     </div>
-    {% if current_hunt.app_goal_number and current_hunt.app_goal_time_frame %}
-      You have goals!
-    {% else %}
-      You have not created goals yet.
-    {% endif %}
+    <div>Status: {{current_hunt.status_translated}}</div>
+    <div>Job Title Desired: {{current_hunt.job_title_desired}}</div>
+    <div>Location: {{current_hunt.location}}</div>
+    <div>Location Radius: {{current_hunt.radius}}</div>
+    <div>Remote: {% if current_hunt.remote %}Yes{% else %}No{% endif %}</div>
+    <div>Date Started: {{current_hunt.date_begun}}</div>
   </div>
 </div>
 
