@@ -7,9 +7,12 @@
 {% block title %}home_user{% endblock %}
 
 {% block content %}
-<form method="GET">
-  {% for field in form if field.widget.input_type != 'hidden' %}
-    <div class="form-group">
+<form method="GET" class="top-mini-form">
+{% for field in form if field.widget.input_type != 'hidden' %}
+  {% if loop.index == 1 or loop.index == 4 %}
+  <div class="flex-align-center">
+  {% endif %}
+    <div class="field-group field-style-1 narrow">
       {{field.label}}
       {{field}}
     </div>
@@ -18,14 +21,18 @@
       <div class="error-div">{{err}}</div>
     </div>
     {% endfor %}
-  {% endfor %}
-  <div class="form-group">
-    <div class="button-div">
-      <button type="submit" class="btn btn-success mt-2">Submit</button>
-    </div>
+  {% if loop.index == 3 %}
   </div>
+  {% endif %}
+  {% if loop.index == 6 %}
+  <div class="button-div">
+    <button type="submit" class="btn btn-success mt-2">Submit</button>
+  </div>
+  </div>
+{% endif %} 
+{% endfor %}
 </form>
-<hr>
+<h3>Results</h3>
 <div class="search-results-wrapper" id="search-results-wrapper">
   <div class="left-column-wrapper">
     <div class="left-column" id="left-column">

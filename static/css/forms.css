@@ -1,0 +1,80 @@
+/* Form Field Styles */
+
+.field-style-1 input, .field-style-1 select {
+  border: none;
+  background-color: inherit;
+}
+
+.field-style-1 input:focus, .field-style-1 select:focus, .field-style-1 .contenteditable-field:focus {
+  outline: none;
+}
+
+.field-style-1 {
+  border: 1px solid rgb(78, 78, 78);
+  border-radius: 5px;
+  background-color: var(--field-background-color);
+  width: fit-content;
+  padding: 0.7rem;
+  margin: 0.3rem;
+}
+
+.field-style-1.narrow {
+  padding: 0.35rem;
+  margin: 0.15rem 0.3rem;
+}
+
+.field-style-1:focus-within {
+  box-shadow: 0 0 0 1px var(--main-color);
+  border-color: var(--main-color);
+}
+
+.field-style-1 label {
+  font-weight: bold;
+  color: var(--greyed-main-color);
+  margin-right: 0.3rem;
+}
+
+.field-style-1 select {
+  border-radius: 0.5rem;
+}
+
+.field-style-1 .contenteditable-field {
+  /* outline: 1px solid black; */
+  min-height: 3rem;
+  background-color: inherit;
+  width: 500px;
+}
+
+.field-style-1.contenteditable-field-group label {
+  display: inline-block;
+  margin-bottom: 0.4rem;
+  margin-right: 0;
+}
+
+.field-style-1 input[type=text], .field-style-1 input[type=url] {
+  width: 20rem;
+}
+
+.field-style-1 .salary-input {
+  width: 5.3rem !important;
+}
+
+/* Buttons */
+
+/* Default Button */
+button {
+  font-weight: bold;
+  color: var(--field-background-color);
+  padding: 0.7rem 0.9rem;
+  min-width: 5rem;
+  border-radius: 0.5rem;
+  border: 1px solid rgb(235, 233, 205);
+  background-color: var(--main-color-lighter);
+  margin: 0.3rem;
+  /* letter-spacing: 0.05rem; */
+}
+
+button:hover {
+  background-color: var(--main-color);
+  cursor: pointer;
+}

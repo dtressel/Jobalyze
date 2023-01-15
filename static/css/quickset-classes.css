@@ -1,0 +1,9 @@
+/* Might not be used */
+.pointer-events-none {
+  pointer-events: none;
+}
+
+.flex-align-center {
+  display: flex;
+  align-items: center;
+}

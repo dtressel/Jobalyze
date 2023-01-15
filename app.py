@@ -137,7 +137,6 @@ def jobs_search_result():
     form = ApiJobSearchForm(request.args, meta={'csrf': False})
     if form.validate():
         results_dict = get_jobs(form.data)
-        import pdb; pdb.set_trace()
         if results_dict.get('ErrorCode'):
             return render_template('api_error.html', results_dict=results_dict)
         page_data = get_page_navigation_values(form)

@@ -5,151 +5,171 @@
 {% block content %}
 <h2>Manually Add a Job to Saved Jobs</h2>
 <form method="POST" id="saved-job-add-form">
-  {{form.hidden_tag()}}
+  <div class="form-inner-wrapper">
+    
+    {{form.hidden_tag()}}
 
-  <div class="form-group">
-    {{form.title.label}}
-    {{form.title}}
-  </div>
-  {% for err in form.title.errors %}
-  <div class="error-row">
-    <div class="error-div">{{err}}</div>
-  </div>
-  {% endfor %}
+    <div class="display-flex">
+      <div class="field-group field-style-1">
+        {{form.title.label}}
+        {{form.title}}
+      </div>
+      {% for err in form.title.errors %}
+      <div class="error-row">
+        <div class="error-div">{{err}}</div>
+      </div>
+      {% endfor %}
 
-  <div class="form-group">
-    {{form.company.label}}
-    {{form.company}}
-  </div>
-  {% for err in form.company.errors %}
-  <div class="error-row">
-    <div class="error-div">{{err}}</div>
-  </div>
-  {% endfor %}
+      <div class="field-group field-style-1">
+        {{form.company.label}}
+        {{form.company}}
+      </div>
+      {% for err in form.company.errors %}
+      <div class="error-row">
+        <div class="error-div">{{err}}</div>
+      </div>
+      {% endfor %}
+    </div>
 
-  <div class="form-group">
-    {{form.location.label}}
-    {{form.location}}
-  </div>
-  {% for err in form.location.errors %}
-  <div class="error-row">
-    <div class="error-div">{{err}}</div>
-  </div>
-  {% endfor %}
+    <div class="display-flex">
+      <div class="field-group field-style-1">
+        {{form.location.label}}
+        {{form.location}}
+      </div>
+      {% for err in form.location.errors %}
+      <div class="error-row">
+        <div class="error-div">{{err}}</div>
+      </div>
+      {% endfor %}
 
-  <div class="form-group">
-    {{form.date_posted.label}}
-    {{form.date_posted}}
-  </div>
-  {% for err in form.date_posted.errors %}
-  <div class="error-row">
-    <div class="error-div">{{err}}</div>
-  </div>
-  {% endfor %}
+      <div class="field-group field-style-1">
+        {{form.date_posted.label}}
+        {{form.date_posted}}
+      </div>
+      {% for err in form.date_posted.errors %}
+      <div class="error-row">
+        <div class="error-div">{{err}}</div>
+      </div>
+      {% endfor %}
+    </div>
 
-  <div class="form-group">
-    {{form.application_link.label}}
-    {{form.application_link}}
-  </div>
-  {% for err in form.application_link.errors %}
-  <div class="error-row">
-    <div class="error-div">{{err}}</div>
-  </div>
-  {% endfor %}
+    <div class="display-flex">
+      <div class="field-group field-style-1">
+        {{form.application_link.label}}
+        {{form.application_link}}
+      </div>
+      {% for err in form.application_link.errors %}
+      <div class="error-row">
+        <div class="error-div">{{err}}</div>
+      </div>
+      {% endfor %}
+    </div>
 
-  <!-- Text Field: -->
-  <!-- Use contenteditable div instead of textarea -->
-  <div class="form-group">
-    {{form.job_description.label}}
-    <div id="description-editable-div" contenteditable="true" class="contenteditable-field"></div>
-    {{form.job_description(class="display-none")}}
-  </div>
-  {% for err in form.job_description.errors %}
-  <div class="error-row">
-    <div class="error-div">{{err}}</div>
-  </div>
-  {% endfor %}
+    <!-- Text Field: -->
+    <!-- Use contenteditable div instead of textarea -->
+    <div class="display-flex">
+      <div class="field-group field-style-1 contenteditable-field-group">
+        {{form.job_description.label}}
+        <div id="description-editable-div" contenteditable="true" class="contenteditable-field"></div>
+        {{form.job_description(class="display-none")}}
+      </div>
+      {% for err in form.job_description.errors %}
+      <div class="error-row">
+        <div class="error-div">{{err}}</div>
+      </div>
+      {% endfor %}
+    </div>
 
-  <div class="form-group">
-    {{form.job_type.label}}
-    {{form.job_type}}
-  </div>
-  {% for err in form.job_type.errors %}
-  <div class="error-row">
-    <div class="error-div">{{err}}</div>
-  </div>
-  {% endfor %}
+    <div class="display-flex">
+      <div class="field-group field-style-1">
+        {{form.job_type.label}}
+        {{form.job_type}}
+      </div>
+      {% for err in form.job_type.errors %}
+      <div class="error-row">
+        <div class="error-div">{{err}}</div>
+      </div>
+      {% endfor %}
 
-  <div class="form-group">
-    {{form.experience_level.label}}
-    {{form.experience_level}}
-  </div>
-  {% for err in form.experience_level.errors %}
-  <div class="error-row">
-    <div class="error-div">{{err}}</div>
-  </div>
-  {% endfor %}
+      <div class="field-group field-style-1">
+        {{form.experience_level.label}}
+        {{form.experience_level}}
+      </div>
+      {% for err in form.experience_level.errors %}
+      <div class="error-row">
+        <div class="error-div">{{err}}</div>
+      </div>
+      {% endfor %}
+    </div>
 
-  <div class="form-group">
-    {{form.salary_min.label}}
-    {{form.salary_min}}
-    <span> &ndash; </span>
-    {{form.salary_max}}
-  </div>
-  {% for err in form.salary_min.errors %}
-  <div class="error-row">
-    <div class="error-div">{{err}}</div>
-  </div>
-  {% endfor %}
-  {% for err in form.salary_max.errors %}
-  <div class="error-row">
-    <div class="error-div">{{err}}</div>
-  </div>
-  {% endfor %}
+    <div class="display-flex">
+      <div class="field-group field-style-1">
+        {{form.salary_min.label}}
+        {{form.salary_min(class='salary-input')}}
+        <span> &ndash; </span>
+        {{form.salary_max(class='salary-input')}}
+      </div>
+      {% for err in form.salary_min.errors %}
+      <div class="error-row">
+        <div class="error-div">{{err}}</div>
+      </div>
+      {% endfor %}
+      {% for err in form.salary_max.errors %}
+      <div class="error-row">
+        <div class="error-div">{{err}}</div>
+      </div>
+      {% endfor %}
+    </div>
 
-<div class="form-group">
-  {{form.company_size.label}}
-  {{form.company_size}}
-</div>
-{% for err in form.company_size.errors %}
-<div class="error-row">
-  <div class="error-div">{{err}}</div>
-</div>
-{% endfor %}
+    <div class="display-flex">
+      <div class="field-group field-style-1">
+        {{form.company_size.label}}
+        {{form.company_size}}
+      </div>
+      {% for err in form.company_size.errors %}
+      <div class="error-row">
+        <div class="error-div">{{err}}</div>
+      </div>
+      {% endfor %}
 
-<div class="form-group">
-  {{form.federal_contractor.label}}
-  {{form.federal_contractor}}
-</div>
-{% for err in form.federal_contractor.errors %}
-<div class="error-row">
-  <div class="error-div">{{err}}</div>
-</div>
-{% endfor %}
+      <div class="field-group field-style-1">
+        {{form.federal_contractor.label}}
+        {{form.federal_contractor}}
+      </div>
+      {% for err in form.federal_contractor.errors %}
+      <div class="error-row">
+        <div class="error-div">{{err}}</div>
+      </div>
+      {% endfor %}
+    </div>
 
-<!-- Text Field: -->
-<!-- Use contenteditable div instead of textarea -->
-<div class="form-group">
-  {{form.user_notes.label}}
-  <div id="user-notes-editable-div" contenteditable="true" class="contenteditable-field"></div>
-  {{form.user_notes(class="display-none")}}
+    <!-- Text Field: -->
+    <!-- Use contenteditable div instead of textarea -->
+    <div class="display-flex">
+      <div class="field-group field-style-1 contenteditable-field-group">
+        {{form.user_notes.label}}
+        <div id="user-notes-editable-div" contenteditable="true" class="contenteditable-field"></div>
+        {{form.user_notes(class="display-none")}}
+      </div>
+      {% for err in form.user_notes.errors %}
+      <div class="error-row">
+        <div class="error-div">{{err}}</div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <div class="display-flex">
+      <div class="button-div">
+        <button type="button" id="save-button">Save</button>
+      </div>
+    </div>
+
   </div>
-  {% for err in form.user_notes.errors %}
-  <div class="error-row">
-  <div class="error-div">{{err}}</div>
-  </div>
-  {% endfor %}
-
 </form>
-
-<div class="form-group">
-  <div class="button-div">
-    <button id="save-button">Save</button>
-  </div>
-</div>
 {% endblock %}
 
 {% block scripts %}
+<script src="/static/js/contenteditable-div.js"></script>
 <script src="/static/js/currency-input.js"></script>
 <script src="/static/js/job-add.js"></script>
 {% endblock %}

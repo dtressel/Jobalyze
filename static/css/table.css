@@ -11,14 +11,14 @@ th {
   padding-top: 12px;
   padding-bottom: 12px;
   text-align: left;
-  background-color:rgb(0, 120, 128);
+  background-color: var(--main-color);
   color: white;
 }
 
 table select {
   appearance: none;
   border: none;
-  background-color: rgb(202, 202, 202);
+  background-color: var(--body-background-color);
   padding: 0.3rem;
 }
 
