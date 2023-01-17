@@ -16,6 +16,7 @@
   width: fit-content;
   padding: 0.7rem;
   margin: 0.3rem;
+  user-select: none;
 }
 
 .field-style-1.narrow {
@@ -31,7 +32,7 @@
 .field-style-1 label {
   font-weight: bold;
   color: var(--greyed-main-color);
-  margin-right: 0.3rem;
+  padding-right: 0.3rem;
 }
 
 .field-style-1 select {
@@ -74,7 +75,16 @@ button {
   /* letter-spacing: 0.05rem; */
 }
 
-button:hover {
+button:hover, button:focus {
   background-color: var(--main-color);
   cursor: pointer;
+  box-shadow: 0 0 7px 2px rgb(235, 233, 205);
+}
+
+.button-narrow {
+  padding: 0.5rem 0.6rem;
+}
+
+.button-danger {
+  background-color: var(--button-color-danger);
 }

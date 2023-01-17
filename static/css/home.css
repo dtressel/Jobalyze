@@ -1,0 +1,17 @@
+/* .home-login-form {
+  width: 100%
+} */
+
+
+.field-group {
+  display: flex;
+  width: clamp(15rem, 100vw, 18rem);
+}
+
+input {
+  width: 100% !important;
+}
+
+/* button {
+  width: clamp(15rem, 100vw, 18rem);
+} */
