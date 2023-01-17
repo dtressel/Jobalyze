@@ -106,7 +106,7 @@
       <div class="field-group field-style-1">
         {{form.salary_min.label}}
         {{form.salary_min(class='salary-input')}}
-        <span> &ndash; </span>
+        <label for="salary_max">&ndash;</label>
         {{form.salary_max(class='salary-input')}}
       </div>
       {% for err in form.salary_min.errors %}
@@ -169,7 +169,7 @@
 {% endblock %}
 
 {% block scripts %}
-<script src="/static/js/contenteditable-div.js"></script>
+<script src="/static/js/field-style-1-focus.js"></script>
 <script src="/static/js/currency-input.js"></script>
 <script src="/static/js/job-add.js"></script>
 {% endblock %}

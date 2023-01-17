@@ -27,9 +27,9 @@
         {% else %}
         <div>No Job Hunts Created</div>
         {% endif %}
-      </div>
-      <div class="new-job-hunt-container">
-        <button id="new-job-hunt-button">New Job Hunt</button>
+        <div class="new-job-hunt-container">
+          <button id="new-job-hunt-button" class="button-narrow dashboard-new-hunt-button">New Job Hunt</button>
+        </div>
       </div>
     </div>
   </div>
@@ -55,7 +55,7 @@
   </div>
   <div id="main-upper-right" class="main-grid-quadrant">
     <div class="heading-expand">
-      <h3>Job Applied</h3>
+      <h3>Pending Job Applications</h3>
       <a href="/job-apps?hunt={{current_hunt.id}}"><img class="expand-icon" src="/static/icons/Expand-icon-30.png"></a>
     </div>
     {% if job_apps_list %}

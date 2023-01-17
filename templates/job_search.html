@@ -16,10 +16,12 @@
     </div>
     {% endfor %}
   {% endfor %}
-  <div class="field-group field-style-1">
-    <div class="button-div">
-      <button type="submit" class="btn btn-success mt-2">Submit</button>
-    </div>
+  <div class="button-div">
+    <button type="submit" class="btn btn-success mt-2">Submit</button>
   </div>
 </form>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/field-style-1-focus.js"></script>
 {% endblock %}

@@ -24,7 +24,7 @@
         <span>Status</span>
         <button id="save-updates-button">Save Updates</button>
       </th>
-      <th>DAP</th>
+      <th>DPBA</th>
       <th class="factors-th">Factors</th>
       <th></th>
     </tr>
@@ -48,7 +48,7 @@
           <option value="6" {% if app.current_status == 6 %}selected{% endif %}>Closed - Inactive</option>
         </select>
       </td>
-      <td>{{app.dap}}</td>
+      <td>{{app.pba}}</td>
       <td class="factors-td">
         {% for factor in app.factors %}
           {% if loop.index == app.factors|length %}

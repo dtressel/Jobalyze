@@ -15,10 +15,10 @@
     <h3 id="details-job-title"></h3>
     <div class="hor-buttons-div">
       {% if current_user.is_authenticated %}
-      <button id="save-button" {% if saved_job.id %}class="display-none"{% endif %}>Save</button>
+      <button id="save-button" {% if saved_job.id %}class="display-none btn-small"{% endif %}>Save</button>
       <div id="saved-icon" {% if not saved_job.id %}class="display-none"{% endif %}>Saved</div>
       {% endif %}
-      <a id="details-url" target="_blank"><button>Apply</button></a>
+      <a id="details-url" target="_blank"><button class="btn-small">Apply</button></a>
     </div>
   </div>
   <div class="details-i-applied">

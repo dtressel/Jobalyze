@@ -59,7 +59,7 @@
   </div>
 
   <div>Date Applied: {{job_app.date_applied}}</div>
-  <div>(Applied {{job_app.dap}} {% if job_app.dap == 1 %}day{% else %}days{% endif %} after posting date)</div>
+  <div>(Applied {{job_app.pba}} {% if job_app.pba == 1 %}day{% else %}days{% endif %} after posting date)</div>
   <br>
   <div>Current Status: {{job_app.current_status_translated}}</div>
   {% if job_app.current_status == 6 %}

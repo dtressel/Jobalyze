@@ -122,7 +122,7 @@
   <div class="field-group">
     {{form.salary_min.label}}
     {{form.salary_min(value=saved_job.salary_min)}}
-    <span> &ndash; </span>
+    <label for="salary_max">&ndash;</label>
     {{form.salary_max(value=saved_job.salary_max)}}
   </div>
   {% for err in form.salary_min.errors %}

@@ -1,12 +1,16 @@
 {% extends 'base.html' %}
 
-{% block title %}home_anon{% endblock %}
+{% block stylesheets %}
+<link rel="stylesheet" href="/static/css/home.css">
+{% endblock %}
+
+{% block title %}Jobalyze - Home{% endblock %}
 
 {% block content %}
 <h2>Welcome to Jobalyze!</h2>
 <p>A Job Search tool to track your applications, analyze your application results, and search for jobs!</p>
 <p>Find jobs using our job search through the National Labor Exchange or Login to access all our tools!</p>
-<form method="POST" action="/login">
+<form method="POST" action="/login" id="home-login-form">
   {{form.hidden_tag()}}
   {% for field in form if field.widget.input_type != 'hidden' %}
     <div class="field-group field-style-1">
@@ -19,10 +23,12 @@
     </div>
     {% endfor %}
   {% endfor %}
-  <div class="field-group field-style-1">
     <div class="button-div">
       <button type="submit" class="btn btn-success mt-2">Submit</button>
     </div>
-  </div>
 </form>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/field-style-1-focus.js"></script>
 {% endblock %}
