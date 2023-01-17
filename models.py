@@ -1,4 +1,4 @@
-from datetime import datetime, date
+from datetime import date
 
 from flask_bcrypt import Bcrypt
 from flask_sqlalchemy import SQLAlchemy
@@ -8,6 +8,16 @@ from flask_login import UserMixin
 bcrypt = Bcrypt()
 db = SQLAlchemy()
 
+def connect_db(app):
+    """Connect this database to provided Flask app.
+
+    You should call this in your Flask app.
+    """
+
+    db.app = app
+    db.init_app(app)
+
+# --------------------------- User -------------------------------------------------------------------------------------------------
 
 class User(db.Model, UserMixin):
 
@@ -51,7 +61,6 @@ class User(db.Model, UserMixin):
         nullable=False,
         default=date.today()
     )
-    saved_jobs = db.relationship('SavedJob', back_populates='user', cascade="all, delete")
     job_hunts = db.relationship('JobHunt', back_populates='user', cascade="all, delete")
 
     def __repr__(self):
@@ -91,6 +100,137 @@ class User(db.Model, UserMixin):
             return user
         else:
             return False
+
+# --------------------------- JobHunt -------------------------------------------------------------------------------------------------
+
+class JobHunt(db.Model):
+
+    __tablename__ = 'job_hunts'
+
+    id = db.Column(
+        db.Integer,
+        primary_key=True
+    )
+    name = db.Column(
+        db.String(50),
+        nullable=False
+    )
+    job_title_desired = db.Column(
+        db.Text,
+        nullable=False
+    )
+    o_net_code = db.Column(
+        db.String(10)
+    )
+    location = db.Column(db.String(100),
+        nullable=False,
+        default='US')
+    radius = db.Column(db.Integer,
+        nullable=False,
+        default=25)
+    non_us = db.Column(db.Boolean,
+        nullable=False,
+        default=False)
+    remote = db.Column(db.Boolean,
+        nullable=False,
+        default=False)
+    date_begun = db.Column(
+        db.Date,
+        nullable=False,
+        default=date.today()
+    )
+    hired_by_goal_date = db.Column(db.Date)
+    app_goal_time_frame = db.Column(db.String(1))
+    # values:
+    #     d: Daily
+    #     w: Weekly
+    #     m: Monthly
+    app_goal_number = db.Column(db.Integer)
+    status = db.Column(
+        db.String(1),
+        default='a'
+    )
+    # values:
+    #     a: Actively Applying
+    #     p: On Pause
+    #     h: Closed, Hired
+    #     c: Closed, Abandoned
+    
+    description = db.Column(
+        db.Text
+    )
+    date_closed = db.Column(
+        db.Date
+    )
+    user_id = db.Column(
+        db.Integer,
+        db.ForeignKey('users.id'),
+        nullable = False
+    )
+    hired_by_app_id = db.Column(db.Integer)
+    # value referes to JobApp id
+    # no postgres relationship used to avoid error
+    
+    user = db.relationship('User', back_populates='job_hunts')
+    saved_jobs = db.relationship('SavedJob', back_populates='job_hunt', cascade="all, delete")
+    factors = db.relationship("Factor", back_populates="job_hunt", cascade="all, delete")
+
+    def __repr__(self):
+        return f"<Job Hunt #{self.id}: {self.job_title_desired}, {self.status}>"
+
+    def translate_values(self):
+        """Changes values from database abreviations to actual values for display."""
+
+        if self.app_goal_time_frame:
+            agtf_translator = {'d': 'Daily', 'w': 'Weekly', 'm': 'Monthly'}
+            self.app_goal_time_frame_translated = agtf_translator[self.app_goal_time_frame]
+
+        if self.status:
+            status_translator = {'a': 'Actively Applying', 'p': 'On Pause', 'h': 'Closed, Hired', 'c': 'Closed, Abandoned'}
+            self.status_translated = status_translator[self.status]
+
+        return self
+
+    @classmethod
+    def save_job_hunt(cls, user_id, hunt_obj):
+        """Saves a job hunt."""
+
+        hunt_to_save = cls(user_id = user_id)
+
+        for key in hunt_obj:
+            setattr(hunt_to_save, key, hunt_obj[key])
+
+        # **********************need some error handling if not saved**********************
+        db.session.add(hunt_to_save)
+        db.session.commit()
+        return hunt_to_save
+
+    @classmethod
+    def get_active_job_hunts(cls, user_id):
+        """Returns a list of active job hunts for a user."""
+
+        return db.session.query(cls).filter(cls.user_id == user_id, cls.status == 'a').order_by(cls.id.desc()).all()
+
+    @classmethod
+    def get_job_hunt_by_id(cls, job_hunt_id, translate_values):
+
+        job_hunt = JobHunt.query.get(job_hunt_id)
+
+        if translate_values:
+            job_hunt = job_hunt.translate_values()
+
+        return job_hunt
+
+    @classmethod
+    def getFactors(cls, job_hunt_id):
+        """Returns factors for a given job hunt id"""
+
+        job_hunt = cls.query.get(job_hunt_id)
+        factors_list = [{'id': x.id, 'name': x.name} for x in job_hunt.factors]
+
+        return factors_list
+
+# --------------------------- SavedJob -------------------------------------------------------------------------------------------------
 
 class SavedJob(db.Model):
 
@@ -185,10 +325,12 @@ class SavedJob(db.Model):
         db.ForeignKey('users.id'),
         nullable = False
     )
-    exclude = db.Column(db.Boolean,
-        default=False)
-        # exclude from saved job list?
-    user = db.relationship('User', back_populates='saved_jobs')
+    job_hunt_id = db.Column(
+        db.Integer,
+        db.ForeignKey('job_hunts.id'),
+        nullable = False
+    )
+    job_hunt = db.relationship("JobHunt", back_populates="saved_jobs")
     job_app = db.relationship("JobApp", back_populates="saved_job", uselist=False, cascade="all, delete")
     # Make sure to not allow or at least warn a user that deleting a saved job that has a job app
     # will also delete the job app.
@@ -372,133 +514,7 @@ class SavedJob(db.Model):
 
         return cls.query.filter(user_id == user_id).order_by(cls.id.desc()).all()
 
-
-class JobHunt(db.Model):
-
-    __tablename__ = 'job_hunts'
-
-    id = db.Column(
-        db.Integer,
-        primary_key=True
-    )
-    name = db.Column(
-        db.String(50),
-        nullable=False
-    )
-    job_title_desired = db.Column(
-        db.Text,
-        nullable=False
-    )
-    o_net_code = db.Column(
-        db.String(10)
-    )
-    location = db.Column(db.String(100),
-        nullable=False,
-        default='US')
-    radius = db.Column(db.Integer,
-        nullable=False,
-        default=25)
-    non_us = db.Column(db.Boolean,
-        nullable=False,
-        default=False)
-    remote = db.Column(db.Boolean,
-        nullable=False,
-        default=False)
-    date_begun = db.Column(
-        db.Date,
-        nullable=False,
-        default=date.today()
-    )
-    hired_by_goal_date = db.Column(db.Date)
-    app_goal_time_frame = db.Column(db.String(1))
-    # values:
-    #     d: Daily
-    #     w: Weekly
-    #     m: Monthly
-    app_goal_number = db.Column(db.Integer)
-    status = db.Column(
-        db.String(1),
-        default='a'
-    )
-    # values:
-    #     a: Actively Applying
-    #     p: On Pause
-    #     h: Closed, Hired
-    #     c: Closed, Abandoned
-    
-    description = db.Column(
-        db.Text
-    )
-    date_closed = db.Column(
-        db.Date
-    )
-    user_id = db.Column(
-        db.Integer,
-        db.ForeignKey('users.id'),
-        nullable = False
-    )
-    hired_by_app_id = db.Column(db.Integer)
-    # value referes to JobApp id
-    # no postgres relationship used to avoid error
-    
-    user = db.relationship('User', back_populates='job_hunts')
-    job_apps = db.relationship('JobApp', back_populates='job_hunt', cascade="all, delete")
-    factors = db.relationship("Factor", back_populates="job_hunt", cascade="all, delete")
-
-    def __repr__(self):
-        return f"<Job Hunt #{self.id}: {self.job_title_desired}, {self.status}>"
-
-    def translate_values(self):
-        """Changes values from database abreviations to actual values for display."""
-
-        if self.app_goal_time_frame:
-            agtf_translator = {'d': 'Daily', 'w': 'Weekly', 'm': 'Monthly'}
-            self.app_goal_time_frame_translated = agtf_translator[self.app_goal_time_frame]
-
-        if self.status:
-            status_translator = {'a': 'Actively Applying', 'p': 'On Pause', 'h': 'Closed, Hired', 'c': 'Closed, Abandoned'}
-            self.status_translated = status_translator[self.status]
-
-        return self
-
-    @classmethod
-    def save_job_hunt(cls, user_id, hunt_obj):
-        """Saves a job hunt."""
-
-        hunt_to_save = cls(user_id = user_id)
-
-        for key in hunt_obj:
-            setattr(hunt_to_save, key, hunt_obj[key])
-
-        # **********************need some error handling if not saved**********************
-        db.session.add(hunt_to_save)
-        db.session.commit()
-        return hunt_to_save
-
-    @classmethod
-    def get_active_job_hunts(cls, user_id):
-        """Returns a list of active job hunts for a user."""
-
-        return db.session.query(cls).filter(cls.user_id == user_id, cls.status == 'a').order_by(cls.id.desc()).all()
-
-    @classmethod
-    def get_job_hunt_by_id(cls, job_hunt_id, translate_values):
-
-        job_hunt = JobHunt.query.get(job_hunt_id)
-
-        if translate_values:
-            job_hunt = job_hunt.translate_values()
-
-        return job_hunt
-
-    @classmethod
-    def getFactors(cls, job_hunt_id):
-        """Returns factors for a given job hunt id"""
-
-        job_hunt = cls.query.get(job_hunt_id)
-        factors_list = [{'id': x.id, 'name': x.name} for x in job_hunt.factors]
-
-        return factors_list
+# --------------------------- app_factor -------------------------------------------------------------------------------------------------
 
 app_factor = db.Table('app_factor',
     db.Column('job_app_id',
@@ -512,6 +528,8 @@ app_factor = db.Table('app_factor',
         primary_key=True
     )
 )
+
+# --------------------------- JobApp -------------------------------------------------------------------------------------------------
 
 class JobApp(db.Model):
 
@@ -534,51 +552,56 @@ class JobApp(db.Model):
         nullable=False,
         default=0
     )
-    # range: 0-6
+    # range: 0-8
     # values:
     #     0: Initial Screening
-    #     1: Interviewed - First Round
-    #     2: Interviewed - Multiple Rounds
-    #     3: Interviewed - Final Round
-    #     4: Job Offer
-    #     5: Hired
-    #     6: Closed - Inactive
+    #     1: Passed IS - No Interview Yet
+    #     2: Interviewed - First Round
+    #     3: Interviewed - Multiple Rounds
+    #     4: Interviewed - Final Round
+    #     5: Job Offer
+    #     6: Hired
+    #     7: Closed - Ghosted
+    #     8: Closed - Rejection Note
     furthest_status = db.Column(
         db.Integer,
         nullable=False,
         default=0
     )
-    # range: 0-5
+    # range: 0-6
     # values:
     #     0: Initial Screening
-    #     1: Interviewed - First Round
-    #     2: Interviewed - Multiple Rounds
-    #     3: Interviewed - Final Round
-    #     4: Job Offer
-    #     5: Hired
-    interviews = db.Column(
-        db.Integer,
+    #     1: Passed IS - No Interview Yet
+    #     2: Interviewed - First Round
+    #     3: Interviewed - Multiple Rounds
+    #     4: Interviewed - Final Round
+    #     5: Job Offer
+    #     6: Hired
+    last_status_change = db.Column(
+        db.Date,
         nullable=False,
-        default=0
+        default=date.today()
     )
     # Value will remain at 0 even when user marks "Interviewed - First Round" in current status.
     # User will only be asked to change this value when user marks a status value of 2 or higher.
-    dap = db.Column(db.Integer)
+    dpba = db.Column(db.Integer)
+    # Days Posted Before Applying
+    user_notes = db.Column(
+        db.Text
+    )
     job_hunt_id = db.Column(
         db.Integer,
-        db.ForeignKey('job_hunts.id'),
         nullable = False
     )
     saved_job = db.relationship("SavedJob", back_populates="job_app")
-    job_hunt = db.relationship("JobHunt", back_populates="job_apps")
     factors = db.relationship('Factor', secondary=app_factor, back_populates='job_apps')
 
     def __repr__(self):
         return f"<Job App #{self.id}: {self.saved_job.company}, {self.date_applied}>"
 
-    def add_dap(self):
-        dap = self.date_applied - self.saved_job.date_posted
-        self.dap = dap.days
+    def add_dpba(self):
+        dpba = self.date_applied - self.saved_job.date_posted
+        self.dpba = dpba.days
 
         return self
 
@@ -607,17 +630,17 @@ class JobApp(db.Model):
         db.session.add(app_to_add)
         db.session.commit()
 
-        app_to_add_with_dap = app_to_add.add_dap()
-        db.session.add(app_to_add_with_dap)
+        app_to_add_with_dpba = app_to_add.add_dpba()
+        db.session.add(app_to_add_with_dpba)
         db.session.commit()
 
         return {'body': {'message': 'Job App Report Successful!'}, 'status': 200}
     
     @classmethod
-    def get_dashboard_job_apps_list(cls, user_id):
+    def get_dashboard_job_apps_list(cls, job_hunt_id):
         """creates shortened and prioritized saved_jobs list for dashboard"""
 
-        return cls.query.filter_by(user_id = user_id).order_by(cls.date_applied.desc()).limit(8)
+        return cls.query.filter_by(job_hunt_id = job_hunt_id).order_by(cls.date_applied.desc()).limit(8)
 
     @classmethod
     def check_if_applied(cls, saved_job_id):
@@ -684,6 +707,8 @@ class JobApp(db.Model):
             db.session.commit()
 
         return {'body': 'success!', 'status': 200}
+
+# --------------------------- Factor -------------------------------------------------------------------------------------------------
 
 class Factor(db.Model):
 
@@ -781,12 +806,3 @@ class Factor(db.Model):
         db.session.commit()
 
         return {'body': 'success!', 'status': 200}
-
-def connect_db(app):
-    """Connect this database to provided Flask app.
-
-    You should call this in your Flask app.
-    """
-
-    db.app = app
-    db.init_app(app)
