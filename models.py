@@ -333,11 +333,6 @@ class SavedJob(db.Model):
         db.ForeignKey('users.id'),
         nullable = False
     )
-    job_hunt_id = db.Column(
-        db.Integer,
-        db.ForeignKey('job_hunts.id'),
-        nullable = False
-    )
     applied = db.Column(db.Boolean,
                         nullable=False,
                         default=False)
