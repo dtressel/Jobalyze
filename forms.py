@@ -266,13 +266,15 @@ class JobAppEditForm(FlaskForm):
 
     date_applied = DateField("Date Applied")
     current_status = SelectField("Current Status", choices=[
-        (0, 'Initial Screening'),
-        (1, 'Interviewed - First Round'),
-        (2, 'Interviewed - Multiple Rounds'),
-        (3, 'Interviewed - Final Round'),
-        (4, 'Job Offer'),
-        (5, 'Hired'),
-        (6, 'Closed - Inactive'),
+        (2, 'Initial Screening'),
+        (3, 'Passed IS - No Interview Yet'),
+        (4, 'Interviewed - First Round'),
+        (5, 'Interviewed - Multiple Rounds'),
+        (6, 'Interviewed - Final Round'),
+        (7, 'Job Offer'),
+        (8, 'Hired'),
+        (0, 'Closed - Ghosted'),
+        (1, 'Closed - Rejection Notice')
     ])
     interviews = IntegerField("Number Of Interviews", default=0)
 

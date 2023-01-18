@@ -18,7 +18,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = (
     os.environ.get('DATABASE_URL', 'postgresql:///jobalyze'))
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SQLALCHEMY_ECHO'] = False
+app.config['SQLALCHEMY_ECHO'] = True
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', "aji32ojfuJHwp")
 
 connect_db(app)
@@ -68,14 +68,11 @@ def register():
             email = form.email.data,
             password = form.password.data
             )
-        db.session.add(new_user)
-        try:
-            db.session.commit()
-        except Exception as err:
-            if err.code == 'gkpj':
-                form.username.errors.append(f"{err.params['username']} already exists.")
+        if isinstance(new_user, dict):
+            if new_user['error'] == 409:
+                form.username.errors.append(new_user['message'])
             else:
-                form.username.errors.append('Registration failed. Please try again later.')
+                flash(new_user['message'])
             return render_template('register.html', form = form, current_user=current_user)
 
         # login user
@@ -344,7 +341,7 @@ def dashboard_page_no_hunt():
     saved_jobs_list = SavedJob.get_dashboard_saved_jobs_list(current_user.id)
 
     return render_template('dashboard.html',
-        current_hunt = current_hunt,
+        current_hunt = None,
         saved_jobs_list = saved_jobs_list,
         job_apps_list = None,
         new_job_postings = None,

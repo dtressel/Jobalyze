@@ -1,4 +1,5 @@
 :root {
+  /* Colors */
   --main-color: rgb(0, 120, 128);
   --main-color-lighter: rgb(21, 146, 155);
   --main-color-for-text: rgb(22, 84, 89);
@@ -7,4 +8,5 @@
   --body-background-color: rgb(202, 202, 202);
   --field-background-color: rgb(240, 240, 240);
   --button-color-danger: rgb(151, 30, 17);
+  --error-row-text-color: rgb(96, 11, 11);
 }

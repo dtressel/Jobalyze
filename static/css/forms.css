@@ -60,6 +60,15 @@
   width: 5.3rem !important;
 }
 
+/* Error Rows */
+
+.error-row {
+  color: var(--error-row-text-color);
+  font-style: italic;
+  font-size: 0.9rem;
+  margin: 0.3rem 0.7rem;
+}
+
 /* Buttons */
 
 /* Default Button */

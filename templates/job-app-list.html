@@ -39,13 +39,15 @@
       <td>{{app.saved_job['location']}}</td>
       <td>
         <select data-app-id="{{app.id}}">
-          <option value="0" {% if app.current_status == 0 %}selected{% endif %}>Initial Screening</option>
-          <option value="1" {% if app.current_status == 1 %}selected{% endif %}>Interviewed - First Round</option>
-          <option value="2" {% if app.current_status == 2 %}selected{% endif %}>Interviewed - Multiple Rounds</option>
-          <option value="3" {% if app.current_status == 3 %}selected{% endif %}>Interviewed - Final Round</option>
-          <option value="4" {% if app.current_status == 4 %}selected{% endif %}>Job Offer</option>
-          <option value="5" {% if app.current_status == 5 %}selected{% endif %}>Hired</option>
-          <option value="6" {% if app.current_status == 6 %}selected{% endif %}>Closed - Inactive</option>
+          <option value="2" {% if app.current_status == 2 %}selected{% endif %}>Initial Screening</option>
+          <option value="3" {% if app.current_status == 3 %}selected{% endif %}>Passed IS - No Interview Yet</option>
+          <option value="4" {% if app.current_status == 4 %}selected{% endif %}>Interviewed - First Round</option>
+          <option value="5" {% if app.current_status == 5 %}selected{% endif %}>Interviewed - Multiple Rounds</option>
+          <option value="6" {% if app.current_status == 6 %}selected{% endif %}>Interviewed - Final Round</option>
+          <option value="7" {% if app.current_status == 7 %}selected{% endif %}>Job Offer</option>
+          <option value="8" {% if app.current_status == 8 %}selected{% endif %}>Hired</option>
+          <option value="0" {% if app.current_status == 0 %}selected{% endif %}>Closed - Ghosted</option>
+          <option value="1" {% if app.current_status == 1 %}selected{% endif %}>Closed - rejection Notice</option>
         </select>
       </td>
       <td>{{app.pba}}</td>

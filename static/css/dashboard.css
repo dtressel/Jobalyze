@@ -94,3 +94,7 @@ main {
 .expand-icon:hover {
   cursor: pointer;
 }
+
+.match-margin-below {
+  margin-bottom: 0.6rem;
+}

@@ -115,12 +115,6 @@ body {
   display: none;
 }
 
-.error-row {
-  color: rgb(96, 11, 11);
-  font-style: italic;
-  font-size: 0.9rem;
-}
-
 .flex-space-between {
   display: flex;
   justify-content: space-between;
