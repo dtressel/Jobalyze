@@ -61,6 +61,8 @@ class User(db.Model, UserMixin):
         nullable=False,
         default=date.today()
     )
+    saved_jobs = db.relationship('SavedJob', back_populates='user', cascade="all, delete")
+    job_apps = db.relationship('JobApp', back_populates='user')
     job_hunts = db.relationship('JobHunt', back_populates='user', cascade="all, delete")
 
     def __repr__(self):
@@ -74,21 +76,27 @@ class User(db.Model, UserMixin):
 
     @classmethod
     def signup(cls, email, username, password):
-        """Sign up user.
-
-        Hashes password and adds user to system.
-        """
+        """Hashes user password and adds user to database.
+        Returns new user SQLAlchemy object or error dict."""
 
         hashed_pwd = bcrypt.generate_password_hash(password).decode('UTF-8')
 
-        user = cls(
+        user_to_register = cls(
             email=email,
             username=username,
             password=hashed_pwd
         )
 
-        db.session.add(user)
-        return user
+        db.session.add(user_to_register)
+        try:
+            db.session.commit()
+        except Exception as err:
+            if err.code == 'gkpj':
+                return {'error': 409, 'message': f"{err.params['username']} already exists."}
+            else:
+                return {'error': 500, 'message': 'Registration failed. Please try again later.'}
+
+        return user_to_register
 
     @classmethod
     def authenticate_user(cls, username, password):
@@ -172,7 +180,7 @@ class JobHunt(db.Model):
     # no postgres relationship used to avoid error
     
     user = db.relationship('User', back_populates='job_hunts')
-    saved_jobs = db.relationship('SavedJob', back_populates='job_hunt', cascade="all, delete")
+    job_apps = db.relationship('JobApp', back_populates='job_hunt', cascade="all, delete")
     factors = db.relationship("Factor", back_populates="job_hunt", cascade="all, delete")
 
     def __repr__(self):
@@ -330,7 +338,10 @@ class SavedJob(db.Model):
         db.ForeignKey('job_hunts.id'),
         nullable = False
     )
-    job_hunt = db.relationship("JobHunt", back_populates="saved_jobs")
+    applied = db.Column(db.Boolean,
+                        nullable=False,
+                        default=False)
+    user = db.relationship('User', back_populates='saved_jobs')
     job_app = db.relationship("JobApp", back_populates="saved_job", uselist=False, cascade="all, delete")
     # Make sure to not allow or at least warn a user that deleting a saved job that has a job app
     # will also delete the job app.
@@ -468,9 +479,9 @@ class SavedJob(db.Model):
 
     @classmethod
     def get_dashboard_saved_jobs_list(cls, user_id):
-        """creates shortened and prioritized saved_jobs list for dashboard"""
+        """creates shortened and prioritized saved_jobs list for dashboard."""
 
-        return cls.query.filter_by(user_id = user_id).order_by(cls.id.desc()).limit(10)
+        return cls.query.filter_by(user_id = user_id, applied = False).order_by(cls.id.desc()).limit(10).all()
 
     @classmethod
     def get_saved_job_by_id(cls, saved_job_id, translate_values):
@@ -541,6 +552,7 @@ class JobApp(db.Model):
         primary_key=True
     )
     user_id = db.Column(db.Integer,
+        db.ForeignKey('users.id'),
         nullable=False)
     date_applied = db.Column(
         db.Date,
@@ -554,15 +566,16 @@ class JobApp(db.Model):
     )
     # range: 0-8
     # values:
-    #     0: Initial Screening
-    #     1: Passed IS - No Interview Yet
-    #     2: Interviewed - First Round
-    #     3: Interviewed - Multiple Rounds
-    #     4: Interviewed - Final Round
-    #     5: Job Offer
-    #     6: Hired
-    #     7: Closed - Ghosted
-    #     8: Closed - Rejection Note
+    #     2: Initial Screening
+    #     3: Passed IS - No Interview Yet
+    #     4: Interviewed - First Round
+    #     5: Interviewed - Multiple Rounds
+    #     6: Interviewed - Final Round
+    #     7: Job Offer
+    #     8: Hired
+    #     0: Closed - Ghosted
+    #     1: Closed - Rejection Notice
+    # **Values are ordered by most exciting/interesting for prioritizing in lists.**
     furthest_status = db.Column(
         db.Integer,
         nullable=False,
@@ -591,9 +604,12 @@ class JobApp(db.Model):
     )
     job_hunt_id = db.Column(
         db.Integer,
+        db.ForeignKey('job_hunts.id'),
         nullable = False
     )
     saved_job = db.relationship("SavedJob", back_populates="job_app")
+    job_hunt = db.relationship("JobHunt", back_populates="job_apps")
+    user = db.relationship('User', back_populates='job_apps')
     factors = db.relationship('Factor', secondary=app_factor, back_populates='job_apps')
 
     def __repr__(self):
@@ -640,7 +656,7 @@ class JobApp(db.Model):
     def get_dashboard_job_apps_list(cls, job_hunt_id):
         """creates shortened and prioritized saved_jobs list for dashboard"""
 
-        return cls.query.filter_by(job_hunt_id = job_hunt_id).order_by(cls.date_applied.desc()).limit(8)
+        return cls.query.filter_by(job_hunt_id = job_hunt_id).order_by(cls.current_status.desc(), cls.id.desc()).limit(8).all()
 
     @classmethod
     def check_if_applied(cls, saved_job_id):
