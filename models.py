@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, timedelta
 
 from flask_bcrypt import Bcrypt
 from flask_sqlalchemy import SQLAlchemy
@@ -74,6 +74,17 @@ class User(db.Model, UserMixin):
             return self.job_hunts[-1]
         return None
 
+    def change_password(self, new_password):
+        """Changes a user's password."""
+
+        hashed_new_pwd = bcrypt.generate_password_hash(new_password).decode('UTF-8')
+
+        self.password = hashed_new_pwd
+        db.session.add(self)
+        db.session.commit()
+
+        return "success!"
+
     @classmethod
     def signup(cls, email, username, password):
         """Hashes user password and adds user to database.
@@ -135,7 +146,7 @@ class JobHunt(db.Model):
         default='US')
     radius = db.Column(db.Integer,
         nullable=False,
-        default=25)
+        default=0)
     non_us = db.Column(db.Boolean,
         nullable=False,
         default=False)
@@ -214,13 +225,55 @@ class JobHunt(db.Model):
         return hunt_to_save
 
     @classmethod
+    def edit_job_hunt(cls, user_id, job_hunt_id, details_obj):
+        """Edits a job hunt. Returns an object to be converted into a response object in app.py."""
+
+        hunt_to_edit = cls.query.get(job_hunt_id)
+        if hunt_to_edit.user_id == user_id:
+            print ('************** User Ids matched! *******************')
+
+            if details_obj.get('status') in ['h', 'c'] and hunt_to_edit.status in ['a', 'p']:
+                details_obj['date_closed'] = date.today()
+
+            details_obj = cls.coerce_non_us(details_obj)
+
+            try:
+                for key in details_obj:
+                    setattr(hunt_to_edit, key, details_obj[key])
+                db.session.add(hunt_to_edit)
+                db.session.commit()
+            except: 
+                return {'body': {'message': 'Sorry, we were unable to process your request. Please try again later!'}, 'status': 500}
+            return {'body': {'message': 'Update Successful!'}, 'status': 200}
+        else:
+            return {'body': {'message': 'Unauthorized: This saved job is associated with another user.'}, 'status': 403}
+
+    @classmethod
+    def coerce_non_us(cls, details_obj):
+        """Changes 'False' and 'True' string values into true Booleans for non_us value."""
+
+        if details_obj.get('non_us') == 'True':
+            details_obj['non_us'] = True
+
+        if details_obj.get('non_us') == 'False':
+            details_obj['non_us'] = False
+
+        return details_obj
+
+    @classmethod
     def get_active_job_hunts(cls, user_id):
         """Returns a list of active job hunts for a user."""
 
         return db.session.query(cls).filter(cls.user_id == user_id, cls.status == 'a').order_by(cls.id.desc()).all()
 
     @classmethod
-    def get_job_hunt_by_id(cls, job_hunt_id, translate_values):
+    def get_active_job_hunt_ids(cls, user_id):
+        """Returns a list of active job hunts for a user."""
+
+        return db.session.query(cls.id).filter(cls.user_id == user_id, cls.status == 'a').order_by(cls.id.desc()).all()
+
+    @classmethod
+    def get_job_hunt_by_id(cls, job_hunt_id, translate_values=False):
 
         job_hunt = JobHunt.query.get(job_hunt_id)
 
@@ -333,9 +386,6 @@ class SavedJob(db.Model):
         db.ForeignKey('users.id'),
         nullable = False
     )
-    applied = db.Column(db.Boolean,
-                        nullable=False,
-                        default=False)
     user = db.relationship('User', back_populates='saved_jobs')
     job_app = db.relationship("JobApp", back_populates="saved_job", uselist=False, cascade="all, delete")
     # Make sure to not allow or at least warn a user that deleting a saved job that has a job app
@@ -415,18 +465,31 @@ class SavedJob(db.Model):
         if job_to_edit.user_id == user_id:
             print ('************** User Ids matched! *******************')
 
+            import pdb; pdb.set_trace()
+
             if details_obj.get('federal_contractor'):
                 cls.coerce_fc_value(details_obj)
 
-            try:
-                for key in details_obj:
-                    if not details_obj[key] or details_obj[key] == '-':
-                        details_obj[key] = None
-                    setattr(job_to_edit, key, details_obj[key])
-                db.session.add(job_to_edit)
-                db.session.commit()
-            except: 
-                return {'body': {'message': 'Sorry, we were unable to process your request. Please try again later!'}, 'status': 500}
+            if isinstance(details_obj.get('salary_min'), str):
+                if details_obj['salary_min'] == '':
+                    details_obj['salary_min'] = None
+                else:
+                    details_obj['salary_min'] = int(details_obj['salary_min'])
+
+            if isinstance(details_obj.get('salary_max'), str):
+                if details_obj['salary_max'] == '':
+                    details_obj['salary_max'] = None
+                else:
+                    details_obj['salary_max'] = int(details_obj['salary_max'])
+
+            # try:
+            for key in details_obj:
+                setattr(job_to_edit, key, details_obj[key])
+            import pdb; pdb.set_trace()
+            db.session.add(job_to_edit)
+            db.session.commit()
+            # except: 
+            #     return {'body': {'message': 'Sorry, we were unable to process your request. Please try again later!'}, 'status': 500}
             return {'body': {'message': 'Update Successful!'}, 'status': 200}
         else:
             return {'body': {'message': 'Unauthorized: This saved job is associated with another user.'}, 'status': 403}
@@ -476,20 +539,16 @@ class SavedJob(db.Model):
     def get_dashboard_saved_jobs_list(cls, user_id):
         """creates shortened and prioritized saved_jobs list for dashboard."""
 
-        return cls.query.filter_by(user_id = user_id, applied = False).order_by(cls.id.desc()).limit(10).all()
+        return cls.query.filter_by(user_id = user_id, job_app = None).order_by(cls.id.desc()).limit(10).all()
 
     @classmethod
-    def get_saved_job_by_id(cls, saved_job_id, translate_values):
-        """Returns SavedJob object. Set translate_values to true to change shortened select input values to full values.
-        Strips time from date posted datetime value."""
+    def get_saved_job_by_id(cls, saved_job_id, translate_values=False):
+        """Returns SavedJob object. Set translate_values to true to change shortened select input values to full values."""
 
         saved_job = cls.query.get(saved_job_id)
 
         if translate_values:
             saved_job = cls.translate_values(saved_job)
-
-        # ************************* Can remove below!? And change docstring ********************************************
-        saved_job.date_posted = date(saved_job.date_posted.year, saved_job.date_posted.month, saved_job.date_posted.day)
 
         return saved_job
 
@@ -515,10 +574,22 @@ class SavedJob(db.Model):
         return saved_job_translated
 
     @classmethod
-    def get_all_saved_jobs_for_user(cls, user_id):
-        """Returns a list of all saved jobs associated with a user."""
+    def get_saved_jobs_for_list(cls, user_id, days_ago, include_applied):
+        """Returns a list of saved jobs within <days_ago> and can or cannot <include_applied>.
+        days_ago can be a number or 'all' (default, which means get all jobs no matter when saved)
+        include_applied can be 'yes' or 'no' (default)"""
 
-        return cls.query.filter(user_id == user_id).order_by(cls.id.desc()).all()
+        if days_ago != 'all':
+            date_of_x_days_ago = date.today() - timedelta(days = int(days_ago))
+            if include_applied == 'no':
+                return db.session.query(cls).filter(cls.user_id == user_id, cls.date_posted >= date_of_x_days_ago, cls.job_app == None).order_by(cls.id.desc()).all()
+            else:
+                return db.session.query(cls).filter(cls.user_id == user_id, cls.date_posted >= date_of_x_days_ago).order_by(cls.id.desc()).all()
+        else:
+            if include_applied == 'no':
+                return db.session.query(cls).filter(cls.user_id == user_id, cls.job_app == None).order_by(cls.id.desc()).all()
+            else:
+                return db.session.query(cls).filter(cls.user_id == user_id).order_by(cls.id.desc()).all()
 
 # --------------------------- app_factor -------------------------------------------------------------------------------------------------
 
@@ -557,7 +628,7 @@ class JobApp(db.Model):
     current_status = db.Column(
         db.Integer,
         nullable=False,
-        default=0
+        default=2
     )
     # range: 0-8
     # values:
@@ -616,11 +687,28 @@ class JobApp(db.Model):
 
         return self
 
+    def add_dsa_and_dssu(self):
+        dsa = date.today() - self.date_applied
+        self.dsa = dsa.days
+        dssu = date.today() - self.last_status_change
+        self.dssu = dssu.days
+
+        return self
+
     def translate_values(self):
-        status_translator = {0: 'Initial Screening', 1: 'Interviewed - First Round', 2: 'Interviewed - Multiple Rounds',
-            3: 'Interviewed - Final Round', 4: 'Job Offer', 5:'Hired', 6: 'Closed - Inactive'}
+        status_translator = {0: 'Closed - Ghosted', 1: 'Closed - Rejection Notice', 2: 'Initial Screening', 3: 'Passed IS - No Interview Yet',
+            4: 'Interviewed - First Round', 5: 'Interviewed - Multiple Rounds', 6: 'Interviewed - Final Round', 7: 'Job Offer', 8:'Hired'}
         self.current_status_translated = status_translator[self.current_status]
         self.furthest_status_translated = status_translator[self.furthest_status]
+
+        return self
+
+    def calculate_success_score(self):
+        score_translator = [0, 0, 0, 3, 5, 10, 24, 50, 60]
+        score = score_translator[self.furthest_status]
+        if self.current_status == 1:
+            score = score + 1
+        self.success_score = score
 
         return self
 
@@ -673,9 +761,33 @@ class JobApp(db.Model):
         return job_apps
 
     @classmethod
+    def get_job_apps_for_list(cls, user_id, job_hunt_id, translate_values):
+        """Returns a list of all saved jobs associated with a user."""
+
+        if job_hunt_id >= 0:
+            job_apps = db.session.query(cls).filter(cls.job_hunt_id == job_hunt_id).order_by(cls.id.desc()).all()
+        elif job_hunt_id == -1:
+            active_hunt_tuples = JobHunt.get_active_job_hunt_ids(user_id)
+            active_hunt_ids = [tup[0] for tup in active_hunt_tuples]
+            job_apps = db.session.query(cls).filter(cls.job_hunt_id.in_(active_hunt_ids)).order_by(cls.id.desc()).all()
+        else:
+            job_apps = db.session.query(cls).filter(cls.user_id == user_id).order_by(cls.id.desc()).all()
+
+        for app in job_apps:
+            app = app.add_dsa_and_dssu()
+            app = app.calculate_success_score()
+        if translate_values:
+            for app in job_apps:
+                app = app.translate_values()
+
+        return job_apps
+
+    @classmethod
     def get_job_app_by_id(cls, job_app_id, translate_values=False):
 
         job_app = cls.query.get(job_app_id)
+        job_app = job_app.add_dsa_and_dssu()
+        job_app = job_app.calculate_success_score()
         if translate_values:
             job_app = job_app.translate_values()
 
@@ -689,7 +801,9 @@ class JobApp(db.Model):
         if app_to_edit.user_id == user_id:
             print ('************** User Ids matched! *******************')
 
-            if details_obj.get('current_status'):
+            if app_to_edit.current_status != details_obj.get('current_status', app_to_edit.current_status):
+                details_obj['last_status_change'] = date.today()
+
                 if int(details_obj['current_status']) < 6:
                     details_obj['furthest_status'] = details_obj['current_status']
 
@@ -711,13 +825,14 @@ class JobApp(db.Model):
         """Deletes a job app. Returns an object to be converted into a response object in app.py."""
 
         app_to_delete = cls.query.get(job_app_id)
+        job_hunt_id = app_to_delete.job_hunt_id
         if app_to_delete.user_id == user_id:
             print ('************** User Ids matched! *******************')
 
             db.session.delete(app_to_delete)
             db.session.commit()
 
-        return {'body': 'success!', 'status': 200}
+        return {'body': job_hunt_id, 'status': 200}
 
 # --------------------------- Factor -------------------------------------------------------------------------------------------------
 

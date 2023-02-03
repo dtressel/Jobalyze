@@ -11,7 +11,17 @@
 {% block content %}
 <div class="h2-with-neighbors-div">
   <h2>Job Apps</h2>
-  <p><i>Click on status values to quickly update status. Click "Save Updates" after updates.</i></p>
+  <div class="flex-align-center">
+    <p>Applications from:</p>
+    <select name="job_hunt" id="job-hunt-select">
+      {% for hunt in current_user.job_hunts|reverse %}
+      <option value="{{hunt.id}}" {% if hunt.id == current_hunt_id %}selected{% endif %}>{{hunt.name}}</option>
+      {% endfor %}
+      <option value="-1" {% if current_hunt_id == -1 %}selected{% endif %}>All Active Job Hunts</option>
+      <option value="-2" {% if current_hunt_id == -2 %}selected{% endif %}>All Job Hunts</option>
+    </select>
+  </div>
+  <p><i>Click on status values to quickly update status. Click "Save Updates" to save changes.</i></p>
 </div>
 <table id="job-app-list-table">
   <thead>
@@ -25,17 +35,19 @@
         <button id="save-updates-button">Save Updates</button>
       </th>
       <th>DPBA</th>
+      <th>DSA</th>
+      <th>DSSU</th>
+      <th>SS</th>
       <th class="factors-th">Factors</th>
       <th></th>
     </tr>
   </thead>
   <tbody id="job-app-list-tbody"> 
     {% for app in job_apps %}
-    {% if app.job_hunt_id == current_hunt_id %}
     <tr>
       <td>{{app.date_applied}}</td>
       <td>{{app.saved_job['company']}}</td>
-      <td><a href="/saved-jobs/{{app.id}}">{{app.saved_job['title']}}</a></td>
+      <td><a href="/job-apps/{{app.id}}">{{app.saved_job['title']}}</a></td>
       <td>{{app.saved_job['location']}}</td>
       <td>
         <select data-app-id="{{app.id}}">
@@ -50,7 +62,10 @@
           <option value="1" {% if app.current_status == 1 %}selected{% endif %}>Closed - rejection Notice</option>
         </select>
       </td>
-      <td>{{app.pba}}</td>
+      <td>{{app.dpba}}</td>
+      <td>{{app.dsa}}</td>
+      <td id="dssu-{{app.id}}">{{app.dssu}}</td>
+      <td id="ss-{{app.id}}">{{app.ss}}</td>
       <td class="factors-td">
         {% for factor in app.factors %}
           {% if loop.index == app.factors|length %}
@@ -64,10 +79,10 @@
         <a href="/job-apps/{{app.id}}/edit"><button>Edit</button></a>
       </td>
     </tr>
-    {% endif %}
     {% endfor %}
   </tbody>
 </table>
+<p><i><b>DPBA:</b> Days Posted Before Applied, <b>DSA:</b> Days Since Applied, <b>DSSU:</b> Days Since Status Update, <b>SS:</b> Success Score</i></p>
 {% endblock %}
 
 

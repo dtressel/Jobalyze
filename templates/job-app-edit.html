@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 
-{% block stylesheets %}{% endblock %}
+{% block stylesheets %}
+<link rel="stylesheet" href="/static/css/forms.css">
+{% endblock %}
 
 
 {% block title %}Edit Job App{% endblock %}
@@ -11,7 +13,7 @@
 <h3>{{job_app.saved_job['title']}}</h3>
 <div>{{job_app.saved_job['company']}}</div>
 <br>
-<form method="POST" id="job-app-edit-form">
+<form method="POST" id="edit-form">
   {{form.hidden_tag()}}
 
   <!-- Date Field: -->
@@ -36,16 +38,23 @@
   </div>
   {% endfor %}
 
-  <!-- Integer Field: -->
+  <!-- Text Field: -->
+  <!-- Use contenteditable div instead of textarea -->
   <div class="field-group">
-    {{form.interviews.label}}
-    {{form.interviews(data_value=job_app.interviews)}}
-  </div>
-  {% for err in form.interviews.errors %}
-  <div class="error-row">
+    {{form.user_notes.label}}
+    <div id="user-notes-editable-div" contenteditable="true" class="contenteditable-field">
+      {% if job_app.user_notes != None %}
+      {{job_app.user_notes}}
+      {% endif %}
+    </div>
+    {{form.user_notes(class="display-none")}}
+    </div>
+    {% for err in form.user_notes.errors %}
+    <div class="error-row">
     <div class="error-div">{{err}}</div>
-  </div>
-  {% endfor %}
+    </div>
+    {% endfor %}
+
   <p><b>Factors:</b></p>
   <p><i>(All checked factors will be submitted. Add new factors for submission with "Add Factor" field.)</i></p>
   <ul class="no-bullets" id="factor-checkbox-ul">
@@ -62,13 +71,15 @@
   </ul>
 
 
-  <button type="submit">Submit</button>
-  <button type="button">Cancel</button>
+  <button type="button" id="save-button">Submit</button>
+  <a href="/job-apps/{{job_app.id}}"><button type="button">Cancel</button></a>
 </form>
 
 {% endblock %}
 
 
 {% block scripts %}
+<script src="/static/js/cleanHTML.js"></script>
+<script src="/static/js/mark-select-options.js"></script>
 <script src="/static/js/job-app-edit.js"></script>
 {% endblock %}

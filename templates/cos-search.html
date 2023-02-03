@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block stylesheets %}
+<link rel="stylesheet" href="/static/css/job-search.css">
+{% endblock %}
+
+{% block title %}home_user{% endblock %}
+
+{% block content %}
+<h2>Search For Jobs</h2>
+<form method="GET" action="/cos-jobs/search">
+  {% for field in form if field.widget.input_type != 'hidden' %}
+    <div class="field-group field-style-1">
+      {{field.label}}
+      {{field}}
+    </div>
+    {% for err in field.errors %}
+    <div class="error-row">
+      <div class="error-div">{{err}}</div>
+    </div>
+    {% endfor %}
+  {% endfor %}
+  <div class="button-div">
+    <button type="submit" class="btn btn-success mt-2">Submit</button>
+  </div>
+</form>
+<img class="cos-logo cos-logo-search" src="/static/icons/tcm24-30894_PoweredByCOS.jpg">
+  {% endblock %}
+
+
+{% block scripts %}
+<script src="/static/js/field-style-1-focus.js"></script>
+{% endblock %}

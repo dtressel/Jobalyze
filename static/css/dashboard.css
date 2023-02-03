@@ -57,7 +57,7 @@ main {
 .heading-expand {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
 }
 
 .dashboard-new-hunt-button {
@@ -97,4 +97,18 @@ main {
 
 .match-margin-below {
   margin-bottom: 0.6rem;
+}
+
+.posted-today-text {
+  font-style: italic;
+}
+
+.posted-today-span {
+  margin-left: 1.8rem;
+}
+
+.cos-logo-dashboard {
+  width: 6rem;
+  margin: 0.2rem 2rem;
+  padding: 0.2rem 0.1rem 0.1rem;
 }

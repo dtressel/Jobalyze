@@ -2,11 +2,13 @@ const saveUpdatesButton = document.getElementById('save-updates-button');
 const jobAppDeleteButtons = document.getElementsByClassName('job-app-delete-button');
 const jobAppListTbody = document.getElementById('job-app-list-tbody');
 const jobAppListTable = document.getElementById('job-app-list-table');
+const jobHuntSelect = document.getElementById('job-hunt-select');
 
 let changedSelectsList = [];
 
 saveUpdatesButton.addEventListener('click', saveUpdatesButtonClick);
 jobAppListTbody.addEventListener('click', jobAppListTbodyClick);
+jobHuntSelect.addEventListener('change', jobHuntSelectChange);
 
 function jobAppListTbodyClick(evt) {
   if (evt.target.classList[0] === 'job-app-delete-button'){
@@ -50,6 +52,12 @@ async function saveUpdatesButtonClick() {
       indexesUpdated.push(i);
       changedSelectsList[i].parentElement.classList.remove('pending-changes');
       changedSelectsList[i].classList.remove('pending-changes');
+      document.getElementById(`dssu-${jobAppId}`).textContent = '0';
+      if (currentStatusValue != 0) {
+        let successScoreValue = document.getElementById(`ss-${jobAppId}`).textContent;
+        const newSuccessScore = calculateNewSuccessScore(currentStatusValue, successScoreValue)
+        successScoreValue = newSuccessScore;
+      }
     }
   }
   if (indexesUpdated.length === changedSelectsList.length) {
@@ -62,4 +70,17 @@ async function saveUpdatesButtonClick() {
   }
 }
 
+function calculateNewSuccessScore(currentStatusValue, formerSuccessScore) {
+  let newSuccessScore;
+  if (currentStatusValue == 0) {
+    newSuccessScore = formerSuccessScore + 1;
+  } else {
+    const score_translator = [0, 0, 0, 3, 5, 10, 24, 50, 60];
+    newSuccessScore = score_translator[currentStatusValue];
+  }
+  return newSuccessScore;
+}
 
+function jobHuntSelectChange() {
+  window.location.replace(`/job-apps?hunt=${jobHuntSelect.value}`);
+}

@@ -2,11 +2,19 @@
   /* Colors */
   --main-color: rgb(0, 120, 128);
   --main-color-lighter: rgb(21, 146, 155);
+  --main-color-lighter-03a: rgba(21, 146, 155, 0.3);
   --main-color-for-text: rgb(22, 84, 89);
-  --greyed-main-color: rgb(46, 57, 57);
+  --greyed-main-color: rgb(42, 51, 51);
+  --input-label-color: rgb(56, 65, 65);
   --logo-background-color: rgb(107, 161, 208);
+  --logo-background-color-greyed: rgb(132, 157, 180);
   --body-background-color: rgb(202, 202, 202);
   --field-background-color: rgb(240, 240, 240);
   --button-color-danger: rgb(151, 30, 17);
+  --button-color-danger-03a: rgba(151, 30, 17, 0.3);
   --error-row-text-color: rgb(96, 11, 11);
+}
+
+[hidden] {
+  display: none !important;
 }

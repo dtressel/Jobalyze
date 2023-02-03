@@ -1,0 +1,191 @@
+{% extends 'base.html' %}
+
+{% block stylesheets %}
+<link rel="stylesheet" href="/static/css/forms.css">
+{% endblock %}
+
+
+{% block title %}Edit Job App{% endblock %}
+
+
+{% block content %}
+<h2>Edit Job Hunt</h2>
+<br>
+<form method="POST" class="contenteditable-form">
+  {{form.hidden_tag()}}
+
+  <!-- Text Field: -->
+  <div class="field-group field-style-1">
+    {{form.name.label}}
+    {{form.name(value=job_hunt.name)}}
+  </div>
+  {% for err in form.name.errors %}
+  <div class="error-row">
+    <div class="error-div">{{err}}</div>
+  </div>
+  {% endfor %}
+
+  <!-- Select Field: -->
+  <div class="field-group field-style-1">
+    {{form.status.label}}
+    {{form.status(data_value=job_hunt.status)}}
+  </div>
+  {% for err in form.status.errors %}
+  <div class="error-row">
+    <div class="error-div">{{err}}</div>
+  </div>
+  {% endfor %}
+
+  <!-- Date Field: -->
+  <div class="field-group field-style-1">
+    {{form.date_begun.label}}
+    {{form.date_begun(value=job_hunt.date_begun)}}
+  </div>
+  {% for err in form.date_begun.errors %}
+  <div class="error-row">
+    <div class="error-div">{{err}}</div>
+  </div>
+  {% endfor %}
+
+  <!-- Text Field: -->
+  <div class="field-group field-style-1">
+    {{form.job_title_desired.label}}
+    {{form.job_title_desired(value=job_hunt.job_title_desired)}}
+  </div>
+  {% for err in form.job_title_desired.errors %}
+  <div class="error-row">
+    <div class="error-div">{{err}}</div>
+  </div>
+  {% endfor %}
+
+  <!-- Text Field: -->
+  <div class="field-group field-style-1">
+    {{form.o_net_code.label}}
+    {{form.o_net_code(value=job_hunt.o_net_code)}}
+  </div>
+  {% for err in form.o_net_code.errors %}
+  <div class="error-row">
+    <div class="error-div">{{err}}</div>
+  </div>
+  {% endfor %}
+
+  <!-- Select Field: -->
+  <div class="field-group field-style-1">
+    {{form.non_us.label}}
+    {{form.non_us(data_value=job_hunt.non_us | string)}}
+  </div>
+  {% for err in form.non_us.errors %}
+  <div class="error-row">
+    <div class="error-div">{{err}}</div>
+  </div>
+  {% endfor %}
+
+  <!-- Text Field: -->
+  <div class="field-group field-style-1">
+    {{form.location.label}}
+    {{form.location(value=job_hunt.location)}}
+  </div>
+  {% for err in form.location.errors %}
+  <div class="error-row">
+    <div class="error-div">{{err}}</div>
+  </div>
+  {% endfor %}
+
+  <!-- Integer Field: -->
+  <div class="field-group field-style-1">
+    {{form.radius.label}}
+    {{form.radius(value=job_hunt.radius)}}
+  </div>
+  {% for err in form.radius.errors %}
+  <div class="error-row">
+    <div class="error-div">{{err}}</div>
+  </div>
+  {% endfor %}
+
+  <!-- Boolean Field: -->
+  <div class="field-group field-style-1">
+    {{form.remote.label}}
+    {{form.remote(value=job_hunt.remote)}}
+  </div>
+  {% for err in form.remote.errors %}
+  <div class="error-row">
+    <div class="error-div">{{err}}</div>
+  </div>
+  {% endfor %}
+
+  <!-- Date Field: -->
+  <div class="field-group field-style-1">
+    {{form.hired_by_goal_date.label}}
+    {{form.hired_by_goal_date(value=job_hunt.hired_by_goal_date)}}
+  </div>
+  {% for err in form.hired_by_goal_date.errors %}
+  <div class="error-row">
+    <div class="error-div">{{err}}</div>
+  </div>
+  {% endfor %}
+
+  <!-- Dual Integer Field and Select Field: -->
+  <div class="field-group field-style-1">
+    {{form.app_goal_number.label}}
+    {{form.app_goal_number(value=job_hunt.app_goal_number, class="width-3-char")}}
+    {{form.app_goal_time_frame.label}}
+    {{form.app_goal_time_frame(data_value=job_hunt.app_goal_time_frame)}}
+  </div>
+  {% for err in form.app_goal_number.errors %}
+  <div class="error-row">
+    <div class="error-div">{{err}}</div>
+  </div>
+  {% endfor %}
+  {% for err in form.app_goal_time_frame.errors %}
+  <div class="error-row">
+    <div class="error-div">{{err}}</div>
+  </div>
+  {% endfor %}
+
+  <!-- Text Field: -->
+  <!-- Use contenteditable div instead of textarea -->
+  <div class="field-group field-style-1 contenteditable-field-group">
+    {{form.description.label}}
+    <div id="user-notes-editable-div" contenteditable="true" class="contenteditable-field">
+      {% if job_hunt.description != None %}
+      {{job_hunt.description}}
+      {% endif %}
+    </div>
+    {{form.description(class="display-none")}}
+  </div>
+  {% for err in form.description.errors %}
+  <div class="error-row">
+    <div class="error-div">{{err}}</div>
+  </div>
+  {% endfor %}
+
+
+  <!-- <p><b>Factors:</b></p>
+  <p><i>(All checked factors will be submitted. Add new factors for submission with "Add Factor" field.)</i></p>
+  <ul class="no-bullets" id="factor-checkbox-ul">
+    <li>
+      <input type="text" placeholder="Add Factor" id="add-factor-input">
+      <button type="button" id="add-factor-button">Add</button>
+    </li>
+    {% for factor in job_hunt_factors_list %}
+    <li>
+      <input class="old-factor" name="factor" type="checkbox" value="{{factor.id}}" {% if factor.id in job_hunt_factors_list %}checked{% endif %}>
+      <label>{{factor.name}}</label>
+    </li>
+    {% endfor %}
+  </ul> -->
+
+
+  <button type="button" class="contenteditable-form-submit">Save</button>
+  <a href="/job-hunts/{{job_hunt.id}}"><button type="button">Cancel</button></a>
+</form>
+
+{% endblock %}
+
+
+{% block scripts %}
+<script src="/static/js/cleanHTML.js"></script>
+<script src="/static/js/mark-select-options.js"></script>
+<script src="/static/js/field-style-1-focus.js"></script>
+<script src="/static/js/contenteditable-form.js"></script>
+{% endblock %}

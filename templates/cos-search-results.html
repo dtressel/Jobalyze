@@ -1,38 +1,41 @@
 {% extends 'base.html' %}
 
 {% block stylesheets %}
-<link rel="stylesheet" href="/static/css/job_search_results.css">
+<link rel="stylesheet" href="/static/css/cos-search-results.css">
 {% endblock %}
 
 {% block title %}home_user{% endblock %}
 
 {% block content %}
-<form method="GET" class="top-mini-form">
-{% for field in form if field.widget.input_type != 'hidden' %}
-  {% if loop.index == 1 or loop.index == 4 %}
-  <div class="flex-align-center">
-  {% endif %}
-    <div class="field-group field-style-1 narrow">
-      {{field.label}}
-      {{field}}
+<div class="form-logo-wrapper">
+  <form method="GET" class="top-mini-form">
+  {% for field in form if field.widget.input_type != 'hidden' %}
+    {% if loop.index == 1 or loop.index == 4 %}
+    <div class="flex-align-center">
+    {% endif %}
+      <div class="field-group field-style-1 narrow">
+        {{field.label}}
+        {{field}}
+      </div>
+      {% for err in field.errors %}
+      <div class="error-row">
+        <div class="error-div">{{err}}</div>
+      </div>
+      {% endfor %}
+    {% if loop.index == 3 %}
     </div>
-    {% for err in field.errors %}
-    <div class="error-row">
-      <div class="error-div">{{err}}</div>
+    {% endif %}
+    {% if loop.index == 6 %}
+    <div class="button-div">
+      <button type="submit" class="btn btn-success mt-2">Submit</button>
     </div>
-    {% endfor %}
-  {% if loop.index == 3 %}
-  </div>
-  {% endif %}
-  {% if loop.index == 6 %}
-  <div class="button-div">
-    <button type="submit" class="btn btn-success mt-2">Submit</button>
-  </div>
-  </div>
-{% endif %} 
-{% endfor %}
-</form>
-<h3>Results</h3>
+    </div>
+  {% endif %} 
+  {% endfor %}
+  </form>
+  <img class="cos-logo cos-logo-results" src="/static/icons/tcm24-30894_PoweredByCOS.jpg">
+</div>
+<h3 class="results-h3">Results</h3>
 <div class="search-results-wrapper" id="search-results-wrapper">
   <div class="left-column-wrapper">
     <div class="left-column" id="left-column">
@@ -112,5 +115,5 @@
 
 {% block scripts %}
 <script src="/static/js/cleanHTML.js"></script>
-<script src="/static/js/job_search_results.js"></script>
+<script src="/static/js/cos-search-results.js"></script>
 {% endblock %}

@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 
-{% block stylesheets %}{% endblock %}
+{% block stylesheets %}
+<link rel="stylesheet" href="/static/css/forms.css">
+{% endblock %}
 
 
 {% block title %}Edit Job{% endblock %}
@@ -20,7 +22,7 @@
 </div>
 {% endif %}
 
-<form method="POST" id="saved-job-add-form">
+<form method="POST" id="edit-form">
   {{form.hidden_tag()}}
 
 {% if not saved_job['cos_id'] %}
@@ -84,7 +86,7 @@
   <!-- Use contenteditable div instead of textarea -->
   <div class="field-group">
     {{form.job_description.label}}
-    <div id="description-editable-div" contenteditable="true" class="contenteditable-field">{{description}}</div>
+    <div id="description-editable-div" contenteditable="true" class="contenteditable-field">{{saved_job.job_description}}</div>
     {{form.job_description(class="display-none")}}
   </div>
   {% for err in form.job_description.errors %}
@@ -195,5 +197,6 @@
 {% block scripts %}
 <script src="/static/js/currency-input.js"></script>
 <script src="/static/js/cleanHTML.js"></script>
+<script src="/static/js/mark-select-options.js"></script>
 <script src="/static/js/saved-job-edit.js"></script>
 {% endblock %}

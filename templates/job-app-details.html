@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 
-{% block stylesheets %}{% endblock %}
+{% block stylesheets %}
+<link rel="stylesheet" href="/static/css/job-details.css">
+{% endblock %}
 
 
 {% block title %}Job App Details{% endblock %}
@@ -8,14 +10,16 @@
 
 {% block content %}
 <div class="header flex-space-between">
-  <h2>Job App Details</h2>
+  <h2>Job Application Report Details</h2>
 </div>
 
 <div class="flex-space-between">
   <h3 id="details-job-title">{{job_app.saved_job['title']}}</h3>
   <div class="edit-delete-buttons-div">
     <a href="/job-apps/{{job_app.id}}/edit"><button>Edit</button></a>
-    <button>Delete</button>
+    <form method="POST" action="/job-apps/{{job_app.id}}/delete">
+      <button type="submit">Delete Report</button>
+    </form>
   </div>
 </div>
 
@@ -24,12 +28,20 @@
 <br>
 <div>Date Posted: {{job_app.saved_job['date_posted']}}</div>
 <div>Date Applied: {{job_app.date_applied}}</div>
+<div>Job Hunt: <a href="/job-hunts/{{job_app.job_hunt_id}}">{{job_app.job_hunt['name']}}</a></div>
 <br>
 <div>Current Status: {{job_app.current_status_translated}}</div>
 {% if job_app.current_status == 6 %}
 <div>Status Before Closed: {{job_app.furthest_status_translated}}</div>
 {% endif %}
 <div>Number of Interviews: {{job_app.interviews}}</div>
+<br>
+<div>Days Posted Before Applied (DPBA): {{job_app.dpba}}</div>
+<div>Days Since Applied (DSA): {{job_app.dsa}}</div>
+<div>Days Since Status Update (DSSU): {{job_app.dssu}}</div>
+<div>Success Score: {{job_app.success_score}}/60</div>
+<br>
+<div>Application Notes: {{job_app.user_notes}}</div>
 <h4>Factors:</h4>
 <ul>
 {% for factor in job_app.factors %}

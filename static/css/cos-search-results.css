@@ -112,4 +112,19 @@ main > hr {
 
 .top-mini-form {
   margin-top: 0.5rem;
+  grid-column: 1 / 2;
+}
+
+.form-logo-wrapper {
+  display: grid;
+  grid-template-columns: auto 1fr;
+}
+
+.cos-logo-results {
+  grid-column: 2 / 3;
+  margin: 0.5rem 1rem 0;
+}
+
+.results-h3 {
+  margin-top: 0;
 }

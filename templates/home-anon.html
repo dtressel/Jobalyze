@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block stylesheets %}
+<link rel="stylesheet" href="/static/css/home.css">
+{% endblock %}
+
+{% block title %}Jobalyze - Home{% endblock %}
+
+{% block content %}
+<h2>Welcome to Jobalyze!</h2>
+<p>A Job Search tool to track your applications, analyze your application results, and search for jobs!</p>
+<p>Find jobs using our job search through the National Labor Exchange or Login to access all our tools!</p>
+<div class="home-job-search-wrapper">
+  <div class="home-job-search-box">
+    <h3>Search For Jobs</h3>
+    <form method="POST" action="/cos-jobs/search">
+      {{form.hidden_tag()}}
+
+        <div class="field-group field-style-1">
+          {{form.keyword.label}}
+          {{form.keyword}}
+        </div>
+        {% for err in form.keyword.errors %}
+        <div class="error-row">
+          <div class="error-div">{{err}}</div>
+        </div>
+        {% endfor %}
+
+        <div class="field-group field-style-1">
+          {{form.location.label}}
+          {{form.location}}
+        </div>
+        {% for err in form.location.errors %}
+        <div class="error-row">
+          <div class="error-div">{{err}}</div>
+        </div>
+        {% endfor %}
+
+        <div class="button-logo-div">
+          <button type="submit">Search Jobs</button>
+          <img class="cos-logo cos-logo-home" src="/static/icons/tcm24-30894_PoweredByCOS.jpg">
+        </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/field-style-1-focus.js"></script>
+{% endblock %}

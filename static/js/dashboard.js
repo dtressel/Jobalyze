@@ -4,8 +4,9 @@ const expandJobSearchIcon = document.getElementById('expand-job-search-icon');
 const apiSearchExpandForm = document.getElementById('api-search-expand-form');
 
 newJobHuntButton.addEventListener('click', newJobHuntClick);
-expandJobSearchIcon.addEventListener('click', () => apiSearchExpandForm.submit());
-
+if (expandJobSearchIcon) {
+  expandJobSearchIcon.addEventListener('click', () => apiSearchExpandForm.submit());
+}
 jobHuntSelect.addEventListener('change', jobHuntSelectChange);
 
 function jobHuntSelectChange() {

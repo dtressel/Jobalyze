@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block stylesheets %}
-<link rel="stylesheet" href="/static/css/job_details.css">
+<link rel="stylesheet" href="/static/css/job-details.css">
   {% if popup_jh or popup_ja %}
   <link rel="stylesheet" href="/static/css/popup.css">
   {% endif %}
@@ -24,7 +24,7 @@
   <div class="title-apply">
     <h3 id="details-job-title">{{saved_job.title}}</h3>
     <div class="hor-buttons-div">
-      {% if saved_job.application_link != None and saved_job.application_link != '' %}
+      {% if saved_job.application_link != None or saved_job.application_link != '' %}
       <a id="details-url" href="{{saved_job.application_link}}" target="_blank"><button>Application Link</button></a>
       {% else %}
       <button id="apply-button-no-url">Apply</button>
@@ -44,6 +44,12 @@
     </button>
     <div id="you-applied-icon" {% if not job_app %}class="display-none"{% endif %}>You applied!</div>
   </div>
+
+  {% if job_app %}
+  <div>Date Applied: {{job_app.date_applied}}</div>
+  <a href="/job-apps/{{saved_job.id}}"><button class="button-narrow">View Application Report</button></a>
+  {% endif %}
+
   <div id="details-description">{{saved_job.job_description}}</div>
 
   {% if job_app %}
@@ -81,49 +87,6 @@
     <div class="flex-space-between">
       <h3>Additional Job Details</h3>
       <a href="/saved-jobs/{{saved_job.id}}/edit"><button>Edit Details</button></a>
-    </div>
-
-    <div id="details-company-size" class="additional-details-row">
-      <span><b>Company size:</b> </span>
-      {% if saved_job.company_size != None %}
-      <span id="details-company-size-value-display">{{saved_job.company_size_translated}}</span>
-      {% else %}
-      <span id="details-company-size-value-display"></span>
-      <button data-group-id="details-company-size" id="details-company-size-add">Add</button>
-      {% endif %}
-      <span class="display-none" id="details-company-size-input-group">
-        <select id="details-company-size-input">
-          <option value="1">1-10 employees</option>
-          <option value="2">11-50 employees</option>
-          <option value="3">51-200 employees</option>
-          <option value="4">201-500 employees</option>
-          <option value="5">501-1,000 employees</option>
-          <option value="6">1,001-5,000 employees</option>
-          <option value="7">5,001-10,000 employees</option>
-          <option value="8">10,001+ employees</option>
-        </select>
-        <button data-group-id="details-company-size">Save</button>
-        <button data-group-id="details-company-size">Cancel</button>
-      </span>
-    </div>
-
-    <div id="details-salary-range" class="additional-details-row">
-      <span><b>Salary range:</b> </span>
-      <span class="display-none" id="details-salary-range-display">
-        <span id="details-salary-min-value-display">{{saved_job.salary_min}}</span>
-        <span> &ndash; </span>
-        <span id="details-salary-max-value-display">{{saved_job.salary_max}}</span>
-      </span>
-      {% if saved_job.salary_min == None %}
-      <button data-group-id="details-salary-range" id="details-salary-range-add">Add</button>
-      {% endif %}
-      <span class="display-none" id="details-salary-range-input-group">
-        <input type="text" id="details-salary-range-1-input">
-        <span> &ndash; </span>
-        <input type="text" id="details-salary-range-2-input">
-        <button data-group-id="details-salary-range">Save</button>
-        <button data-group-id="details-salary-range">Cancel</button>
-      </span>
     </div>
 
     <div id="details-job-type" class="additional-details-row">
@@ -169,6 +132,49 @@
       </span>
     </div>
 
+    <div id="details-salary-range" class="additional-details-row">
+      <span><b>Salary range:</b> </span>
+      <span class="display-none" id="details-salary-range-display">
+        <span id="details-salary-min-value-display">{{saved_job.salary_min}}</span>
+        <span> &ndash; </span>
+        <span id="details-salary-max-value-display">{{saved_job.salary_max}}</span>
+      </span>
+      {% if saved_job.salary_min == None %}
+      <button data-group-id="details-salary-range" id="details-salary-range-add">Add</button>
+      {% endif %}
+      <span class="display-none" id="details-salary-range-input-group">
+        <input type="text" id="details-salary-range-1-input">
+        <span> &ndash; </span>
+        <input type="text" id="details-salary-range-2-input">
+        <button data-group-id="details-salary-range">Save</button>
+        <button data-group-id="details-salary-range">Cancel</button>
+      </span>
+    </div>
+
+    <div id="details-company-size" class="additional-details-row">
+      <span><b>Company size:</b> </span>
+      {% if saved_job.company_size != None %}
+      <span id="details-company-size-value-display">{{saved_job.company_size_translated}}</span>
+      {% else %}
+      <span id="details-company-size-value-display"></span>
+      <button data-group-id="details-company-size" id="details-company-size-add">Add</button>
+      {% endif %}
+      <span class="display-none" id="details-company-size-input-group">
+        <select id="details-company-size-input">
+          <option value="1">1-10 employees</option>
+          <option value="2">11-50 employees</option>
+          <option value="3">51-200 employees</option>
+          <option value="4">201-500 employees</option>
+          <option value="5">501-1,000 employees</option>
+          <option value="6">1,001-5,000 employees</option>
+          <option value="7">5,001-10,000 employees</option>
+          <option value="8">10,001+ employees</option>
+        </select>
+        <button data-group-id="details-company-size">Save</button>
+        <button data-group-id="details-company-size">Cancel</button>
+      </span>
+    </div>
+
     <div id="details-federal-contractor" class="additional-details-row">
       <span><b>Federal contractor:</b> </span>
       {% if saved_job.federal_contractor != None %}
@@ -189,8 +195,8 @@
 
     <div id="details-user-notes" class="additional-details-row">
       <div class="display-flex">
-        <div><b>User notes:</b></div>
-        {% if saved_job.user_notes != None and saved_job.user_notes != '' %}
+        <div><b>User notes:</b>&nbsp;</div>
+        {% if saved_job.user_notes %}
         <div id="details-user-notes-value-display">{{saved_job.user_notes}}</div>
         {% else %}
         <div id="details-user-notes-value-display"></div>
@@ -198,7 +204,7 @@
         {% endif %}
       </div>
       <div class="display-none" id="details-user-notes-input-group">
-        <div id="details-user-notes-input" class="contenteditable-field"></div>
+        <div id="details-user-notes-input" class="contenteditable-field" contenteditable="true"></div>
         <button data-group-id="details-user-notes">Save</button>
         <button data-group-id="details-user-notes">Cancel</button>
       </div>
@@ -226,5 +232,5 @@
   {% endif %}
 <script src="/static/js/cleanHTML.js"></script>
 <script src="/static/js/currency-input.js"></script>
-<script src="/static/js/job-details-saved.js"></script>
+<script src="/static/js/saved-job-details.js"></script>
 {% endblock %}

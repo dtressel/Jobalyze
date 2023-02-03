@@ -5,11 +5,39 @@
 
 .field-group {
   display: flex;
-  width: clamp(15rem, 100vw, 18rem);
+  width: clamp(22rem, 85vw, 25rem);
 }
 
 input {
   width: 100% !important;
+}
+
+.home-job-search-wrapper{
+  display: flex;
+}
+
+.home-job-search-box {
+  background-color: var(--logo-background-color-greyed);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  border: 1px solid rgb(75, 74, 74);
+  box-shadow: inset 0 -3em 3em rgba(0, 0, 0, 0.1), 0 0 0 1px rgb(255, 255, 255),
+  0.3em 0.3em 1em rgba(0, 0, 0, 0.3);
+}
+
+.home-job-search-box h3 {
+  margin-top: 0;
+}
+
+.cos-logo-home {
+  margin: 0.3rem;
+  width: 7.5rem;
+}
+
+.button-logo-div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 /* button {

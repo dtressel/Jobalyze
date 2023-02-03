@@ -9,7 +9,25 @@
 
 
 {% block content %}
-<h2>Saved Jobs</h2>
+<div class="flex-space-between">
+  <h2>Saved Jobs</h2>
+  <div class="display-flex">
+    <h4>Filters:</h4>
+    <div class="filter-group" id="days-ago-filter" data-days-ago="{{days_ago}}">
+      <span>Jobs saved</span>
+      <input type="radio" id="days-ago-30" name="days-ago" value="30">
+      <label for="days-ago-30">within 30 days</label>
+      <input type="radio" id="days-ago-90" name="days-ago" value="90">
+      <label for="days-ago-90">within 90 days</label>
+      <input type="radio" id="days-ago-all" name="days-ago" value="all">
+      <label for="days-ago-any">any time</label>
+    </div>
+    <div id="include-applied-filter" class="filter-group" data-include-applied="{{include_applied}}">
+      <input type="checkbox" id="include-applied-checkbox" name="include-applied">
+      <label for="include-applied-checkbox">Include applied jobs</label>
+    </div>
+  </div>
+</div>
 <table>
   <thead>
     <tr>
@@ -51,4 +69,6 @@
 {% endblock %}
 
 
-{% block scripts %}{% endblock %}
+{% block scripts %}
+<script src="/static/js/saved-job-list.js"></script>
+{% endblock %}

@@ -100,7 +100,7 @@ async function saveButtonClick(saveButton) {
     case "details-user-notes": 
       resp = await postToServer({user_notes: cleanHTML(document.getElementById('details-user-notes-input').innerHTML)});
       if (resp.status === 200) {
-        document.getElementById('details-user-notes-value-display').textContent = document.getElementById('details-user-notes-input').value;
+        document.getElementById('details-user-notes-value-display').innerHTML = document.getElementById('details-user-notes-input').innerHTML;
       }
       break;
   }

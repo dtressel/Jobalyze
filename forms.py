@@ -7,12 +7,12 @@ class RegistrationForm(FlaskForm):
 
     username = StringField('Username', validators=[
         InputRequired(),
-        Length(max=40, message="Must be less than 40 characters.")        
+        Length(max=40, message="40 characters or less.")        
     ])
     email = StringField('Email', validators=[
         InputRequired(),
         Email(message="Must be a valid email address."),
-        Length(max=100, message="Must be less than 100 characters.")    
+        Length(max=100, message="Must 100 characters or less.")    
     ])
     password = PasswordField('Password', validators=[
         InputRequired(),
@@ -28,6 +28,19 @@ class LoginForm(FlaskForm):
 
     username = StringField("Username", validators=[InputRequired()])
     password = PasswordField("Password", validators=[InputRequired()])
+
+class ChangePasswordForm(FlaskForm):
+    """Form to allow user to change their password."""
+
+    old_password = PasswordField("Old Password", validators=[InputRequired()])
+    new_password = PasswordField("New Password", validators=[
+        InputRequired(),
+        Length(min=8, message="Must be at least 8 characters.")
+    ])
+    password_confirm = PasswordField("Confirm New Password", validators=[
+        InputRequired(),
+        EqualTo(fieldname="new_password", message="Passwords do not  match.")
+    ])
 
 class UserEditForm(FlaskForm):
     "Form to edit a user and add additional info"
@@ -87,7 +100,7 @@ class UserEditForm(FlaskForm):
 class ApiJobSearchForm(FlaskForm):
     """Form to fetch api job list data."""
 
-    keyword = StringField("What", validators=[InputRequired()], render_kw={"placeholder": "job title, O*NET code, or keywords"})
+    keyword = StringField("What", validators=[InputRequired()], render_kw={"placeholder": "job title, keywords or O*NET-SOC code"})
     location = StringField("Where", render_kw={"placeholder": "zip code or city, state"})
     radius = IntegerField("Radius", validators=[Optional()], render_kw={"placeholder": "miles"})
     days = IntegerField("Days Old", validators=[Optional()])
@@ -95,6 +108,12 @@ class ApiJobSearchForm(FlaskForm):
     remote = BooleanField("Remote Only")
         # If remote only is selected, add "remote" to user's keyword input
     startRecord = HiddenField("Start", default=0)
+
+# class MiniCosJobSearchForm(FlaskForm):
+#     """Mini form to fetch COS job list data."""
+
+#     keyword = StringField("What", validators=[InputRequired()], render_kw={"placeholder": "job title, O*NET code, or keywords"})
+#     location = StringField("Where", render_kw={"placeholder": "zip code or city, state"})
 
 class ManualJobAddForm(FlaskForm):
     """Form to manually add a job."""
@@ -276,7 +295,37 @@ class JobAppEditForm(FlaskForm):
         (0, 'Closed - Ghosted'),
         (1, 'Closed - Rejection Notice')
     ])
-    interviews = IntegerField("Number Of Interviews", default=0)
+    user_notes = StringField("Application Notes")
+
+class JobHuntEditForm(FlaskForm):
+    """Form to edit a job hunt."""
+
+    name = StringField("Name", validators=[
+        Length(max=50, message="Must be 50 characters or less.")])
+    status = SelectField("Status", choices=[
+        ('a', 'Actively Applying'),
+        ('p', 'On Pause'),
+        ('h', 'Closed, Hired'),
+        ('c', 'Closed, Abandoned')])
+    date_begun = DateField("Date Begun")
+    job_title_desired = StringField("Desired Job Title")
+    o_net_code = StringField('O*NET-SOC Code', validators=[
+        Length(max=10, message='Must be 10 charaters long (Example: "15-1252.00").')])
+    non_us = SelectField('Country', choices=[
+        ('False', 'United States'),
+        ('True', 'Outside the U.S.')
+    ])
+    location = StringField("Location", validators=[
+        Length(max=100, message="Must be 100 characters or less.")])
+    radius = IntegerField("Location Radius")
+    remote = BooleanField("Remote")
+    hired_by_goal_date = DateField("Hired By")
+    app_goal_number = IntegerField("I hope to complete")
+    app_goal_time_frame = SelectField("applications", choices=[
+        ('d', 'Daily'),
+        ('w', 'Weekly'),
+        ('m', 'Monthly')])
+    description = StringField()
 
 # class JobAppCreateForm(FlaskForm):
 #     """Form to create a new job app from dialog. Form is not displayed."""

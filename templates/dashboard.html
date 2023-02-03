@@ -32,9 +32,12 @@
       </div>
     </div>
   </div>
+  {% if new_job_postings %}
   <div id="top-right" class="top-grid-section">
+    <img class="cos-logo cos-logo-dashboard" src="/static/icons/tcm24-30894_PoweredByCOS.jpg">
     <!-- <div id="hired-button" class="hired-button">Hired!</div> -->
   </div>
+  {% endif %}
 </div>
 <div class="main-grid">
   <div id="main-upper-left" class="main-grid-quadrant">
@@ -66,6 +69,41 @@
   </div>
   <div id="main-upper-right" class="main-grid-quadrant">
     <div class="heading-expand">
+      <div class="flex-align-center">
+        <h3>New Job Postings</h3>
+        {% if new_job_postings %}
+        <span class="posted-today-span">
+          <span class="posted-today-asterisk">**</span>
+          <span class="posted-today-text">posted today</span>
+        </span>
+        {% endif %}
+      </div>
+      {% if new_job_postings %}
+      <span><img class="expand-icon" id="expand-job-search-icon" src="/static/icons/Expand-icon-30.png"></span>
+      {% endif %}
+    </div>
+    {% if new_job_postings %}
+    <ul>
+      {% for job in new_job_postings %}
+      <li>
+        <span>{{job['Company']}},&nbsp;</span>
+        <a href="/cos-jobs/details/{{job['JvId']}}?fc={{job['Fc']}}">{{job['JobTitle']}}</a> 
+        {% if job['posted_today'] %}
+        <span class="posted-today-asterisk">**</span>
+        {% endif %}
+      </li>
+      {% endfor %}
+    </ul>
+    {% else %}
+      {% if current_hunt.non_us %}
+      <p>Job Postings are only available for U.S. job searches.</p>
+      {% else %}
+      <p>Create a Job Hunt to see recent job postings here!</p>
+      {% endif %}
+    {% endif %}
+  </div>
+  <div id="main-lower-left" class="main-grid-quadrant">
+    <div class="heading-expand">
       <h3>Pending Job Applications</h3>
       {% if job_apps_list %}
       <a href="/job-apps?hunt={{current_hunt.id}}"><img class="expand-icon" src="/static/icons/Expand-icon-30.png"></a>
@@ -86,28 +124,11 @@
       {% endif %}
     {% endif %}
   </div>
-  <div id="main-lower-left" class="main-grid-quadrant">
-    <div class="heading-expand">
-      <h3>New Job Postings</h3>
-      {% if new_job_postings %}
-      <span><img class="expand-icon" id="expand-job-search-icon" src="/static/icons/Expand-icon-30.png"></span>
-      {% endif %}
-    </div>
-    {% if new_job_postings %}
-    <ul>
-      {% for job in new_job_postings['Jobs'] %}
-      <li>{{job['Company']}}, <a href="/cos-jobs/details/{{job['JvId']}}?fc={{job['Fc']}}">{{job['JobTitle']}}</a></li>
-      {% endfor %}
-    </ul>
-    {% else %}
-    <p>Create a Job Hunt to see recent job postings here!</p>
-    {% endif %}
-  </div>
   <div id="main-lower-right" class="main-grid-quadrant">
     <div class="heading-expand">
       <h3>{{current_hunt.name}} Job Hunt Details:</h3>
       {% if current_hunt %}
-      <a><img class="expand-icon" src="/static/icons/Expand-icon-30.png"></a>
+      <a href="/job-hunts/{{current_hunt.id}}"><img class="expand-icon" src="/static/icons/Expand-icon-30.png"></a>
       {% endif %}
     </div>
     {% if current_hunt %}

@@ -7,7 +7,7 @@ from markupsafe import Markup
 
 from utilities import is_safe_url
 from models import db, connect_db, User, SavedJob, JobHunt, JobApp, Factor
-from forms import RegistrationForm, LoginForm, ApiJobSearchForm, ManualJobAddForm, NewJobHuntForm, SavedJobRegularEditForm, SavedJobCosEditForm, JobAppEditForm, UserEditForm
+from forms import RegistrationForm, LoginForm, ApiJobSearchForm, ManualJobAddForm, NewJobHuntForm, SavedJobRegularEditForm, SavedJobCosEditForm, JobAppEditForm, JobHuntEditForm, ChangePasswordForm
 from api_requests import get_jobs, get_job_details, get_page_navigation_values, get_postings_for_dashboard
 
 app = Flask(__name__)
@@ -45,8 +45,8 @@ def homepage():
     """Show homepage"""
 
     if current_user.is_anonymous:
-        form = LoginForm()
-        return render_template('home_anon.html', form=form, current_user=current_user)
+        form = ApiJobSearchForm()
+        return render_template('home-anon.html', form=form, current_user=current_user)
     else:
         return redirect('/dashboard')
 
@@ -88,7 +88,7 @@ def login():
     "Show login form and handle submission"
 
     if current_user.is_authenticated:
-        flash(f'{current_user.username} is already logged in.')
+        flash(f'{current_user.username} is already logged in.', 'failure')
         return redirect('/')
 
     form = LoginForm()
@@ -99,7 +99,7 @@ def login():
         )
         if authenticated_user:
             login_user(authenticated_user)
-            flash(f'Welcome {authenticated_user.username}!')
+            flash(f'Welcome {authenticated_user.username}!', 'success')
 
             next = request.args.get('next')
             # is_safe_url should check if the url is safe for redirects.
@@ -119,13 +119,31 @@ def logout():
     logout_user()
     return redirect('/')
 
+@app.route('/user/change-password', methods=['GET', 'POST'])
+@login_required
+def change_password():
+    """Allows logged in user to change password."""
+
+    form = ChangePasswordForm()
+    import pdb; pdb.set_trace()
+    if form.validate_on_submit():
+        authenticated_user = User.authenticate_user(
+            username = current_user.username,
+            password = form.old_password.data
+        )
+        if authenticated_user and form.new_password.data == form.password_confirm.data:
+            current_user.change_password(form.new_password.data)
+            return redirect ('/dashboard')
+
+    return render_template('change-password.html', form=form)
+
 @app.route('/cos-jobs')
 def jobs_page():
     """Shows form to search jobs through Career OneStop API"""
 
     form = ApiJobSearchForm()
 
-    return render_template('job_search.html', form=form)
+    return render_template('cos-search.html', form=form)
 
 @app.route('/cos-jobs/search')
 def jobs_search_result():
@@ -138,7 +156,7 @@ def jobs_search_result():
             return render_template('api_error.html', results_dict=results_dict)
         page_data = get_page_navigation_values(form)
 
-    return render_template('job_search_results.html', form=form, results=results_dict, page_data=page_data)
+    return render_template('cos-search-results.html', form=form, results=results_dict, page_data=page_data)
 
 @app.route('/cos-jobs/details/<cos_id>/json')
 def send_job_details_json(cos_id):
@@ -196,7 +214,7 @@ def show_job_details_page(cos_id):
 
     # Job details API request are sent from front end after page loads
 
-    return render_template('job_details_api.html',
+    return render_template('cos-job-details.html',
                             cos_id=cos_id,
                             fc=request.args['fc'],
                             saved_job=saved_job,
@@ -211,9 +229,11 @@ def show_job_details_page(cos_id):
 def saved_job_list():
     """Displays a list of saved jobs."""
 
-    saved_jobs = SavedJob.get_all_saved_jobs_for_user(current_user.id)
+    days_ago = request.args.get('days', 30)
+    include_applied = request.args.get('ia', 'no')
+    saved_jobs = SavedJob.get_saved_jobs_for_list(current_user.id, days_ago, include_applied)
 
-    return render_template('saved-job-list.html', saved_jobs=saved_jobs)
+    return render_template('saved-job-list.html', saved_jobs=saved_jobs, days_ago=days_ago, include_applied=include_applied)
 
 @app.route('/saved-jobs/add/cos', methods=['POST'])
 @login_required
@@ -237,7 +257,7 @@ def add_job():
         # ******************** Add failed API error handling ******************
         return redirect(f'/saved-jobs/{saved_job_id}')
 
-    return render_template('job_add.html', form=form)
+    return render_template('saved-job-add.html', form=form)
 
 @app.route('/saved-jobs/<saved_job_id>', methods=["GET", "POST"])
 @login_required
@@ -264,10 +284,13 @@ def show_saved_job(saved_job_id):
         popup_ja = 'ready'
         popup_jh = None
     saved_job = SavedJob.get_saved_job_obj_for_details_page(saved_job_id)
+    if saved_job.user_id != current_user.id:
+        flash("That saved job is associated with another user's account. You are not authorized to view that page!", 'failure')
+        return redirect('/dashboard')
     saved_job.job_description = Markup(saved_job.job_description)
     saved_job.user_notes = Markup(saved_job.user_notes)
 
-    return render_template('job_details_saved.html',
+    return render_template('saved-job-details.html',
                             saved_job=saved_job,
                             job_hunt_form=job_hunt_form,
                             active_hunts=active_hunts,
@@ -283,6 +306,9 @@ def edit_saved_job(saved_job_id):
     # saved_job values do not need to be translated since select fields need database value
     # This save_job object is equivalent to save_job_raw in '/saved-jobs/<saved_job_id>'
     saved_job = SavedJob.get_saved_job_obj_for_edit_form(saved_job_id)
+    if saved_job.user_id != current_user.id:
+        flash("That saved job is associated with another user's account. You are not authorized to view that page!", 'failure')
+        return redirect('/dashboard')
     if saved_job.cos_id:
         print('Yes COS ID')
         form = SavedJobCosEditForm()
@@ -293,6 +319,7 @@ def edit_saved_job(saved_job_id):
     if form.validate_on_submit():
         resp = SavedJob.edit_saved_job(current_user.id, saved_job_id, form.data)
         # ************************** error handling *******************************
+        import pdb; pdb.set_trace()
         return redirect(url_for('show_saved_job', saved_job_id = saved_job_id))
 
     saved_job.job_description = Markup(saved_job.job_description)
@@ -307,6 +334,11 @@ def edit_saved_job(saved_job_id):
 def delete_saved_job(saved_job_id):
     """Deletes a saved job."""
 
+    saved_job = SavedJob.query.get(saved_job_id)
+    if saved_job.user_id != current_user.id:
+        flash("That saved job is associated with another user's account. You are not authorized to delete that saved job!", 'failure')
+        return redirect('/dashboard')
+    # ************************** Change below classmethod to regular instance method **********************************
     resp = SavedJob.delete_saved_job(saved_job_id)
 
     return redirect('/dashboard')
@@ -316,6 +348,11 @@ def delete_saved_job(saved_job_id):
 def edit_saved_job_json(saved_job_id):
     """Endpoint for frontend to post an edit to a saved job. Used for the Add buttons on incomplete saved jobs."""
 
+    saved_job = SavedJob.query.get(saved_job_id)
+    if saved_job.user_id != current_user.id:
+        flash("That saved job is associated with another user's account. You are not authorized to edit that saved job!", 'failure')
+        return redirect('/dashboard')
+    # ************************** Change below classmethod to regular instance method **********************************
     resp = SavedJob.edit_saved_job(current_user.id, saved_job_id, request.get_json())
 
     # ********************** JS can't see the body of response **************************
@@ -332,7 +369,7 @@ def dashboard_page_no_hunt():
         print('Job Hunt form validated')
         new_hunt = JobHunt.save_job_hunt(current_user.id, job_hunt_form.data)
         # ******************** Add failed API error handling ******************
-        return redirect('/dashboard')
+        return redirect(f'/dashboard/{new_hunt.id}')
 
     current_hunt = User.current_hunt(current_user)
     if current_hunt:
@@ -348,9 +385,9 @@ def dashboard_page_no_hunt():
         goals = None,
         job_hunt_form = job_hunt_form)
 
-@app.route('/dashboard/<hunt_id>', methods=['GET', 'POST'])
+@app.route('/dashboard/<job_hunt_id>', methods=['GET', 'POST'])
 @login_required
-def dashboard_page_load_hunt(hunt_id):
+def dashboard_page_load_hunt(job_hunt_id):
     """Shows dashboard page with information displayed pertaining to chosen hunt"""
 
     # job_hunts (retrieved in template from current_user object)
@@ -359,6 +396,10 @@ def dashboard_page_load_hunt(hunt_id):
     # job_apps (available from current job_hunt)
     # recent job postings (get from front end)
 
+    current_hunt = JobHunt.get_job_hunt_by_id(job_hunt_id, translate_values=True)
+    if current_hunt.user_id != current_user.id:
+        return redirect('/dashboard')
+
     job_hunt_form = NewJobHuntForm()
     api_search_form = ApiJobSearchForm()
 
@@ -366,7 +407,7 @@ def dashboard_page_load_hunt(hunt_id):
         print('Job Hunt form validated')
         new_hunt = JobHunt.save_job_hunt(current_user.id, job_hunt_form.data)
         # ******************** Add failed API error handling ******************
-        return redirect('/dashboard')
+        return redirect(f'/dashboard/{new_hunt.id}')
 
     if api_search_form.validate():
         results_dict = get_jobs(api_search_form.data)
@@ -374,12 +415,14 @@ def dashboard_page_load_hunt(hunt_id):
             return render_template('api_error.html', results_dict=results_dict)
         page_data = get_page_navigation_values(api_search_form)
 
-        return render_template('job_search_results.html', api_search_form=api_search_form, results=results_dict, page_data=page_data)
+        return render_template('cos-search-results.html', api_search_form=api_search_form, results=results_dict, page_data=page_data)
 
-    current_hunt = JobHunt.get_job_hunt_by_id(hunt_id, translate_values=True)
     saved_jobs_list = SavedJob.get_dashboard_saved_jobs_list(current_user.id)
-    job_apps_list = JobApp.get_dashboard_job_apps_list(hunt_id)
-    new_job_postings = get_postings_for_dashboard(current_hunt)
+    job_apps_list = JobApp.get_dashboard_job_apps_list(job_hunt_id)
+    if current_hunt.non_us:
+        new_job_postings = None
+    else:
+        new_job_postings = get_postings_for_dashboard(current_hunt)
     goals = None
 
     return render_template('dashboard.html',
@@ -391,6 +434,47 @@ def dashboard_page_load_hunt(hunt_id):
         job_hunt_form=job_hunt_form,
         api_search_form=api_search_form)
 
+@app.route('/job-hunts/<job_hunt_id>', methods=['GET', 'POST'])
+@login_required
+def job_hunt_details(job_hunt_id):
+    """Shows the details of any of the user's job hunts. Displays Job Hunt popup 
+    when creating new job hunt and handles form new job hunt form submission."""
+
+    current_hunt = JobHunt.get_job_hunt_by_id(job_hunt_id, translate_values=True)
+    if current_hunt.user_id != current_user.id:
+        flash("That job hunt is associated with another user's account. You are not authorized to view that job hunt!", 'failure')
+        return redirect('/dashboard') 
+    
+    job_hunt_form = NewJobHuntForm()
+
+    if job_hunt_form.validate_on_submit():
+        new_hunt = JobHunt.save_job_hunt(current_user.id, job_hunt_form.data)
+        # ******************** Add failed API error handling ******************
+        return redirect(f'/job-hunts/{new_hunt.id}')
+
+    return render_template('job-hunt-details.html', current_hunt=current_hunt, job_hunt_form=job_hunt_form)
+
+@app.route('/job-hunts/<job_hunt_id>/edit', methods=['GET', 'POST'])
+@login_required
+def edit_job_hunt(job_hunt_id):
+    """Shows a form to edit a job hunt and handles edit form subission."""
+
+    job_hunt = JobHunt.get_job_hunt_by_id(job_hunt_id)
+    if job_hunt.user_id != current_user.id:
+        flash("That job hunt is associated with another user's account. You are not authorized to edit that job hunt!", 'failure')
+        return redirect('/dashboard')
+
+    form = JobHuntEditForm()
+
+    if form.validate_on_submit():
+        resp = JobHunt.edit_job_hunt(current_user.id, job_hunt_id, form.data)
+        # ************************** error handling *******************************
+        return redirect(url_for('job_hunt_details', job_hunt_id = job_hunt_id))
+
+    return render_template('job-hunt-edit.html', form=form, job_hunt=job_hunt)
+
+
+# ****************** Is this used anywhere????? ***********************************
 @app.route('/job-hunts/add', methods=['POST'])
 @login_required
 def save_job_hunt():
@@ -406,10 +490,10 @@ def save_job_hunt():
 def job_app_list():
     """Shows a list of a users' job apps."""
 
-    # job_hunts (retrieved in template from current_user object)
-    job_apps = JobApp.get_all_job_apps_for_user(current_user.id, translate_values=True)
-
     current_hunt_id = int(request.args['hunt'])
+
+    # job_hunts (retrieved in template from current_user object)
+    job_apps = JobApp.get_job_apps_for_list(current_user.id, current_hunt_id, translate_values=True)
 
     return render_template('job-app-list.html', job_apps=job_apps, current_hunt_id=current_hunt_id)
 
@@ -436,6 +520,9 @@ def show_job_app_details(job_app_id):
     """Shows the details of a particular job app."""
 
     job_app = JobApp.get_job_app_by_id(job_app_id, translate_values=True)
+    if job_app.user_id != current_user.id:
+        flash("That job application report is associated with another user's account. You are not authorized to view that page!", 'failure')
+        return redirect('/dashboard')
 
     return render_template('job-app-details.html', job_app=job_app)
 
@@ -445,9 +532,16 @@ def edit_job_app(job_app_id):
     """Shows job app edit form or posts job app edit to database."""
 
     job_app = JobApp.get_job_app_by_id(job_app_id)
+    if job_app.user_id != current_user.id:
+        flash("That job application report is associated with another user's account. You are not authorized to edit that report!", 'failure')
+        return redirect('/dashboard')    
+
     form = JobAppEditForm()
 
     if form.validate_on_submit():
+        # Update Job App (Everything besides factors)
+        resp = JobApp.edit_job_app(current_user.id, job_app_id, form.data)
+        # Update Factors
         factors = request.form.getlist('factor')
         oldFactors = [factor for factor in factors if factor.isnumeric()]
         newFactors = [factor for factor in factors if not factor.isnumeric()]
@@ -456,7 +550,7 @@ def edit_job_app(job_app_id):
             factor_ids_to_associate = oldFactors + resp['body']
             resp = Factor.associate_factors_from_id_list(factor_ids_to_associate, job_app_id, current_user.id)
             if resp['status'] == 200:
-                return redirect(f'/saved-jobs/{job_app_id}')
+                return redirect(f'/job-apps/{job_app_id}')
         # **************** flash message ********************************
 
     job_hunt_factors_list = JobHunt.getFactors(job_app.job_hunt_id)
@@ -478,15 +572,25 @@ def edit_job_app_endpoint(job_app_id):
     # ********************** JS can't see the body of response **************************
     return make_response(resp['body']['message'], resp['status'])
 
-@app.route('/job-apps/<job_app_id>/delete', methods=['DELETE'])
+@app.route('/job-apps/<job_app_id>/delete', methods=['POST'])
 @login_required
 def delete_job_app(job_app_id):
     """Endpoint for frontend to delete a job app."""
 
+    job_app = JobApp.get_job_app_by_id(job_app_id)
+    if job_app.user_id != current_user.id:
+        flash("That job application report is associated with another user's account. You are not authorized to delete that report!", 'failure')
+        return redirect('/dashboard')     
+    
+    # **************************** change from class method to regular instance method *********************************************
     resp = JobApp.delete_job_app(current_user.id, job_app_id)
+    if resp['status'] == 200:
+        job_hunt_id = resp['body']
+        # ************************* Flash Message successful delete **************************
+        return redirect(f'/dashboard/{job_hunt_id}')
 
-    # ********************** JS can't see the body of response **************************
-    return make_response(resp['body'], resp['status'])
+    # ************************* Flash Message failed delete **************************
+    return redirect(f'job_apps/{job_app_id}')
 
 @app.route('/factors/add/json', methods=['POST'])
 @login_required

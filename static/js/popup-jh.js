@@ -93,12 +93,15 @@ function popupJh3() {
 function popupJh4() {
   hideAllScreens();
   // get data from screen 3:
-  remote = +document.querySelector('input[name="remote"]:checked').value;
-  if (remote) {
+  const remote = +document.querySelector('input[name="remote"]:checked').value;
+  if (remote == 1) {
+    console.log('in remote')
     newJobHuntObj.remote = true;
   }
   popupJhScreens[5].classList.remove('display-none');
   popupJhWindowNum++;
+  console.log('input:', document.querySelector('#new-job-hunt-form > input[name="remote"]'));
+  console.log(newJobHuntObj.remote);
 }
 
 function popupJh5() {
@@ -173,8 +176,8 @@ function fillHiddenForm() {
   document.querySelector('#new-job-hunt-form > input[name="o_net_code"]').value = newJobHuntObj.o_net_code;
   document.querySelector('#new-job-hunt-form > input[name="location"]').value = newJobHuntObj.location;
   document.querySelector('#new-job-hunt-form > input[name="radius"]').value = newJobHuntObj.radius;
-  document.querySelector('#new-job-hunt-form > input[name="non_us"]').value = newJobHuntObj.non_us;
-  document.querySelector('#new-job-hunt-form > input[name="remote"]').value = newJobHuntObj.remote;
+  document.querySelector('#new-job-hunt-form > input[name="non_us"]').checked = newJobHuntObj.non_us;
+  document.querySelector('#new-job-hunt-form > input[name="remote"]').checked = newJobHuntObj.remote;
   document.querySelector('#new-job-hunt-form > input[name="app_goal_time_frame"]').value = newJobHuntObj.app_goal_time_frame;
   document.querySelector('#new-job-hunt-form > input[name="app_goal_number"]').value = newJobHuntObj.app_goal_number;
   document.querySelector('#new-job-hunt-form > input[name="hired_by_goal_date"]').value = newJobHuntObj.hired_by_goal_date;

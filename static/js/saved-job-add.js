@@ -23,7 +23,7 @@ function saveButtonClick() {
     document.getElementById('salary_max').value = fromUsLocaleStr(document.getElementById('salary_max').value);
   }
   for (const div of editableDivs) {
-    const value = div.textContent;
+    const value = cleanHTML(div.innerHTML);
     div.nextElementSibling.value = value;
   }
   document.getElementById('saved-job-add-form').submit();

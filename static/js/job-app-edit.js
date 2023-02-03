@@ -2,7 +2,12 @@ const addFactorInput = document.getElementById('add-factor-input');
 const addFactorButton = document.getElementById('add-factor-button');
 const factorCheckboxUl = document.getElementById('factor-checkbox-ul');
 
+const editForm = document.getElementById('edit-form');
+const saveButton = document.getElementById('save-button');
+const editableDivs = document.getElementsByClassName('contenteditable-field');
+
 addFactorButton.addEventListener('click', addFactorButtonClick);
+saveButton.addEventListener('click', saveButtonClick);
 
 function addFactorButtonClick() {
   const factorName = addFactorInput.value;
@@ -29,18 +34,10 @@ function addFactorToForm(factor) {
   factorCheckboxUl.append(containerLi);
 }
 
-function markSelectedOptionsForSelectInputs() {
-  const selectInputs = document.getElementsByTagName('select');
-  for (const input of selectInputs) {
-    const value = input.dataset.value;
-    const optionList = input.childNodes;
-    for (const option of optionList) {
-      if (option.value === value) {
-        option.selected = true;
-      }
-    }
+function saveButtonClick() {
+  for (const div of editableDivs) {
+    const value = cleanHTML(div.innerHTML);
+    div.nextElementSibling.value = value;
   }
+  editForm.submit();
 }
-
-// On Page load:
-markSelectedOptionsForSelectInputs();

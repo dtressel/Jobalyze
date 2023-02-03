@@ -8,6 +8,11 @@
   align-items: center;
 }
 
+.flex-align-top {
+  display: flex;
+  align-items: flex-start;
+}
+
 .no-margin-bottom {
   margin-bottom: 0;
 }
