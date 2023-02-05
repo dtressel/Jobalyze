@@ -48,7 +48,6 @@ async function saveUpdatesButtonClick() {
       body: JSON.stringify({current_status: currentStatusValue})
     })
     if (resp.status === 200) {
-      console.log('200 status code');
       indexesUpdated.push(i);
       changedSelectsList[i].parentElement.classList.remove('pending-changes');
       changedSelectsList[i].classList.remove('pending-changes');
@@ -57,6 +56,7 @@ async function saveUpdatesButtonClick() {
         let successScoreValue = document.getElementById(`ss-${jobAppId}`).textContent;
         const newSuccessScore = calculateNewSuccessScore(currentStatusValue, successScoreValue)
         successScoreValue = newSuccessScore;
+        document.getElementById(`ss-${jobAppId}`).textContent = newSuccessScore;
       }
     }
   }
@@ -72,8 +72,11 @@ async function saveUpdatesButtonClick() {
 
 function calculateNewSuccessScore(currentStatusValue, formerSuccessScore) {
   let newSuccessScore;
-  if (currentStatusValue == 0) {
-    newSuccessScore = formerSuccessScore + 1;
+  // if current status is one of the closed values
+  if (currentStatusValue < 2) {
+    // add bonus for Closed - Rejection Notice, which coincidentally has a status value of 1, and 1 is the bonus amount
+    // Closed - Ghosted has no bonus and has a status value of 0
+    newSuccessScore = (+formerSuccessScore) + (+currentStatusValue);
   } else {
     const score_translator = [0, 0, 0, 3, 5, 10, 24, 50, 60];
     newSuccessScore = score_translator[currentStatusValue];

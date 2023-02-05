@@ -708,7 +708,7 @@ class JobApp(db.Model):
         score = score_translator[self.furthest_status]
         if self.current_status == 1:
             score = score + 1
-        self.success_score = score
+        self.ss = score
 
         return self
 
@@ -804,7 +804,7 @@ class JobApp(db.Model):
             if app_to_edit.current_status != details_obj.get('current_status', app_to_edit.current_status):
                 details_obj['last_status_change'] = date.today()
 
-                if int(details_obj['current_status']) < 6:
+                if int(details_obj['current_status']) > 1:
                     details_obj['furthest_status'] = details_obj['current_status']
 
             try:
