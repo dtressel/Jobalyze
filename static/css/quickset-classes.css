@@ -16,3 +16,34 @@
 .no-margin-bottom {
   margin-bottom: 0;
 }
+
+.no-margin-left {
+  margin-left: 0 !important;
+}
+
+.flex-space-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.display-flex {
+  display: flex;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.no-bullets {
+  list-style: none;
+}
+
+.display-none {
+  display: none;
+}
+
+.flex-justify-center {
+  display: flex;
+  justify-content: center;
+}
