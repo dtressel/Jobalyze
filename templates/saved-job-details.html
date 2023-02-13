@@ -16,7 +16,7 @@
   <div class="edit-delete-buttons-div">
     <a href="/saved-jobs/{{saved_job.id}}/edit"><button>Edit Job</button></a>
     <form method="POST" action="/saved-jobs/{{saved_job.id}}/delete">
-      <button type="submit">Delete Job</button>
+      <button type="button" class="button-danger" id="delete-button">Delete Job</button>
     </form>
   </div>
 </div>
@@ -25,7 +25,7 @@
     <h3 id="details-job-title">{{saved_job.title}}</h3>
     <div class="hor-buttons-div">
       {% if saved_job.application_link != None or saved_job.application_link != '' %}
-      <a id="details-url" href="{{saved_job.application_link}}" target="_blank"><button>Application Link</button></a>
+      <a id="details-url" href="{{saved_job.application_link}}" target="_blank"><button>Apply Now</button></a>
       {% else %}
       <button id="apply-button-no-url">Apply</button>
       {% endif %}
@@ -33,53 +33,24 @@
   </div>
   <div class="details-i-applied">
     <div>
-      <div id="details-company-name">{{saved_job.company}}</div>
-      <div id="details-location">{{saved_job.location}}</div>
-      <div id="details-date-posted">{{saved_job.date_posted}}</div>
+      <div id="details-company-name" class="company">{{saved_job.company}}</div>
+      <div id="details-location" class="spaced">{{saved_job.location}}</div>
+      <div id="details-date-posted" class="spaced">{{saved_job.date_posted}}</div>
     </div>
     <button id="i-applied-button" data-saved-job-id={{saved_job['id']}}
       {% if popup_jh == 'ready' %}data-job-hunt="none"{% else %}data-job-hunt="yes"{% endif %}
       {% if job_app %}class="display-none"{% endif %}>
-      I applied
+      Report Application
     </button>
     <div id="you-applied-icon" {% if not job_app %}class="display-none"{% endif %}>You applied!</div>
   </div>
 
   {% if job_app %}
   <div>Date Applied: {{job_app.date_applied}}</div>
-  <a href="/job-apps/{{saved_job.id}}"><button class="button-narrow">View Application Report</button></a>
+  <a href="/job-apps/{{saved_job.id}}"><button class="button-narrow no-margin-left">View Application Report</button></a>
   {% endif %}
 
   <div id="details-description">{{saved_job.job_description}}</div>
-
-  {% if job_app %}
-
-  <hr>
-
-  <div class="flex-space-between">
-    <h3>Job App Details</h3>
-    <div class="edit-delete-buttons-div">
-      <a href="/job-apps/{{job_app.id}}/edit"><button>Edit Job App</button></a>
-      <button>Delete Job App</button>
-    </div>
-  </div>
-
-  <div>Date Applied: {{job_app.date_applied}}</div>
-  <div>(Applied {{job_app.pba}} {% if job_app.pba == 1 %}day{% else %}days{% endif %} after posting date)</div>
-  <br>
-  <div>Current Status: {{job_app.current_status_translated}}</div>
-  {% if job_app.current_status == 6 %}
-  <div>Status Before Closed: {{job_app.furthest_status_translated}}</div>
-  {% endif %}
-  <div>Number of Interviews: {{job_app.interviews}}</div>
-  <h4>Factors:</h4>
-  <ul>
-  {% for factor in job_app.factors %}
-    <li>{{factor.name}}</li>
-  {% endfor %}
-  </ul>
-
-  {% endif %}
 
   <hr>
 
@@ -95,7 +66,7 @@
       <span id="details-job-type-value-display">{{saved_job.job_type_translated}}</span>
       {% else %}
       <span id="details-job-type-value-display"></span>
-      <button data-group-id="details-job-type" id="details-job-type-add">Add</button>
+      <button data-group-id="details-job-type" id="details-job-type-add" class="button-small button-primary-outline">Add</button>
       {% endif %}
       <span class="display-none" id="details-job-type-input-group">
         <select id="details-job-type-input">
@@ -105,8 +76,8 @@
           <option value="i">Internship</option>
           <option value="v">Volunteer</option>
         </select>
-        <button data-group-id="details-job-type">Save</button>
-        <button data-group-id="details-job-type">Cancel</button>
+        <button data-group-id="details-job-type" class="button-small">Save</button>
+        <button data-group-id="details-job-type" class="button-small button-primary-outline">Cancel</button>
       </span>
     </div>
 
@@ -116,7 +87,7 @@
       <span id="details-experience-level-value-display">{{saved_job.experience_level_translated}}</span>
       {% else %}
       <span id="details-experience-level-value-display"></span>
-      <button data-group-id="details-experience-level" id="details-experience-level-add">Add</button>
+      <button data-group-id="details-experience-level" id="details-experience-level-add" class="button-small button-primary-outline">Add</button>
       {% endif %}
       <span class="display-none" id="details-experience-level-input-group">
         <select id="details-experience-level-input">
@@ -127,8 +98,8 @@
           <option value="d">Director</option>
           <option value="x">Executive</option>
         </select>
-        <button data-group-id="details-experience-level">Save</button>
-        <button data-group-id="details-experience-level">Cancel</button>
+        <button data-group-id="details-experience-level" class="button-small">Save</button>
+        <button data-group-id="details-experience-level" class="button-small button-primary-outline">Cancel</button>
       </span>
     </div>
 
@@ -140,14 +111,14 @@
         <span id="details-salary-max-value-display">{{saved_job.salary_max}}</span>
       </span>
       {% if saved_job.salary_min == None %}
-      <button data-group-id="details-salary-range" id="details-salary-range-add">Add</button>
+      <button data-group-id="details-salary-range" id="details-salary-range-add" class="button-small button-primary-outline">Add</button>
       {% endif %}
       <span class="display-none" id="details-salary-range-input-group">
         <input type="text" id="details-salary-range-1-input">
         <span> &ndash; </span>
         <input type="text" id="details-salary-range-2-input">
-        <button data-group-id="details-salary-range">Save</button>
-        <button data-group-id="details-salary-range">Cancel</button>
+        <button data-group-id="details-salary-range" class="button-small">Save</button>
+        <button data-group-id="details-salary-range" class="button-small button-primary-outline">Cancel</button>
       </span>
     </div>
 
@@ -157,7 +128,7 @@
       <span id="details-company-size-value-display">{{saved_job.company_size_translated}}</span>
       {% else %}
       <span id="details-company-size-value-display"></span>
-      <button data-group-id="details-company-size" id="details-company-size-add">Add</button>
+      <button data-group-id="details-company-size" id="details-company-size-add" class="button-small button-primary-outline">Add</button>
       {% endif %}
       <span class="display-none" id="details-company-size-input-group">
         <select id="details-company-size-input">
@@ -170,8 +141,8 @@
           <option value="7">5,001-10,000 employees</option>
           <option value="8">10,001+ employees</option>
         </select>
-        <button data-group-id="details-company-size">Save</button>
-        <button data-group-id="details-company-size">Cancel</button>
+        <button data-group-id="details-company-size" class="button-small">Save</button>
+        <button data-group-id="details-company-size" class="button-small button-primary-outline">Cancel</button>
       </span>
     </div>
 
@@ -181,15 +152,15 @@
       <span id="details-federal-contractor-value-display">{{saved_job.federal_contractor_translated}}</span>
       {% else %}
       <span id="details-federal-contractor-value-display"></span>
-      <button data-group-id="details-federal-contractor" id="details-federal-contractor-add">Add</button>
+      <button data-group-id="details-federal-contractor" id="details-federal-contractor-add" class="button-small button-primary-outline">Add</button>
       {% endif %}
       <span class="display-none" id="details-federal-contractor-input-group">
         <select id="details-federal-contractor-input">
           <option value="True">Yes</option>
           <option value="False">No</option>
         </select>
-        <button data-group-id="details-federal-contractor">Save</button>
-        <button data-group-id="details-federal-contractor">Cancel</button>
+        <button data-group-id="details-federal-contractor" class="button-small">Save</button>
+        <button data-group-id="details-federal-contractor" class="button-small button-primary-outline">Cancel</button>
       </span>
     </div>
 
@@ -200,13 +171,13 @@
         <div id="details-user-notes-value-display">{{saved_job.user_notes}}</div>
         {% else %}
         <div id="details-user-notes-value-display"></div>
-        <button data-group-id="details-user-notes" id="details-user-notes-add">Add</button>
+        <button data-group-id="details-user-notes" id="details-user-notes-add" class="button-small button-primary-outline">Add</button>
         {% endif %}
       </div>
       <div class="display-none" id="details-user-notes-input-group">
         <div id="details-user-notes-input" class="contenteditable-field" contenteditable="true"></div>
-        <button data-group-id="details-user-notes">Save</button>
-        <button data-group-id="details-user-notes">Cancel</button>
+        <button data-group-id="details-user-notes" class="button-small">Save</button>
+        <button data-group-id="details-user-notes" class="button-small button-primary-outline">Cancel</button>
       </div>
     </div>
   </div>
