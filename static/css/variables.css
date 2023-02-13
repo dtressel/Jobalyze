@@ -10,7 +10,8 @@
   --logo-background-color-greyed: rgb(132, 157, 180);
   --body-background-color: rgb(202, 202, 202);
   --field-background-color: rgb(240, 240, 240);
-  --button-color-danger: rgb(151, 30, 17);
+  --button-color-danger: rgb(115, 60, 60);
+  --button-color-danger-hover: rgb(100, 43, 43);
   --button-color-danger-03a: rgba(151, 30, 17, 0.3);
   --error-row-text-color: rgb(96, 11, 11);
 }
