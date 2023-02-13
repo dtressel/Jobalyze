@@ -18,30 +18,29 @@
   <div class="edit-delete-buttons-div">
     <a href="/job-apps/{{job_app.id}}/edit"><button>Edit</button></a>
     <form method="POST" action="/job-apps/{{job_app.id}}/delete">
-      <button type="submit">Delete Report</button>
+      <button type="button" class="button-danger" id="delete-button">Delete Report</button>
     </form>
   </div>
 </div>
 
-<div>{{job_app.saved_job['company']}}</div>
+<div class="company">{{job_app.saved_job['company']}}</div>
 <div>{{job_app.saved_job['location']}}</div>
 <br>
-<div>Date Posted: {{job_app.saved_job['date_posted']}}</div>
-<div>Date Applied: {{job_app.date_applied}}</div>
-<div>Job Hunt: <a href="/job-hunts/{{job_app.job_hunt_id}}">{{job_app.job_hunt['name']}}</a></div>
+<div class="spaced">Date Posted: {{job_app.saved_job['date_posted']}}</div>
+<div class="spaced">Date Applied: {{job_app.date_applied}}</div>
+<div class="spaced">Job Hunt: <a href="/job-hunts/{{job_app.job_hunt_id}}">{{job_app.job_hunt['name']}}</a></div>
 <br>
-<div>Current Status: {{job_app.current_status_translated}}</div>
+<div class="spaced">Current Status: {{job_app.current_status_translated}}</div>
 {% if job_app.current_status == 6 %}
-<div>Status Before Closed: {{job_app.furthest_status_translated}}</div>
+<div class="spaced">Status Before Closed: {{job_app.furthest_status_translated}}</div>
 {% endif %}
-<div>Number of Interviews: {{job_app.interviews}}</div>
 <br>
-<div>Days Posted Before Applied (DPBA): {{job_app.dpba}}</div>
-<div>Days Since Applied (DSA): {{job_app.dsa}}</div>
-<div>Days Since Status Update (DSSU): {{job_app.dssu}}</div>
-<div>Success Score: {{job_app.success_score}}/60</div>
+<div class="spaced">Days Posted Before Applied (DPBA): {{job_app.dpba}}</div>
+<div class="spaced">Days Since Applied (DSA): {{job_app.dsa}}</div>
+<div class="spaced">Days Since Status Update (DSSU): {{job_app.dssu}}</div>
+<div class="spaced">Success Score: {{job_app.ss}}</div>
 <br>
-<div>Application Notes: {{job_app.user_notes}}</div>
+<div class="spaced">Application Notes: {{job_app.user_notes}}</div>
 <h4>Factors:</h4>
 <ul>
 {% for factor in job_app.factors %}
@@ -52,7 +51,7 @@
 <div class="flex-space-between">
   <h3>Job Description</h3>
   <div>
-    <a href="{{job_app.saved_job['application_link']}}"><button>Application Link</button></a>
+    <a href="{{job_app.saved_job['application_link']}}" target="_blank"><button>External Link</button></a>
     <a href="/saved-jobs/{{job_app.id}}" target="_blank"><button>Job Details Page</button></a>
   </div>
 </div>
@@ -60,4 +59,6 @@
 {% endblock %}
 
 
-{% block scripts %}{% endblock %}
+{% block scripts %}
+<script src="/static/js/job-app-details.js"></script>
+{% endblock %}
