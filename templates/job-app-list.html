@@ -5,15 +5,15 @@
 {% endblock %}
 
 
-{% block title %}Job Apps{% endblock %}
+{% block title %}Job Applications{% endblock %}
 
 
 {% block content %}
 <div class="h2-with-neighbors-div">
-  <h2>Job Apps</h2>
+  <h2>Job Applications</h2>
   <div class="flex-align-center">
-    <p>Applications from:</p>
-    <select name="job_hunt" id="job-hunt-select">
+    <p>Applications from:&nbsp;</p>
+    <select name="job_hunt" id="job-hunt-select" class="isolated-select">
       {% for hunt in current_user.job_hunts|reverse %}
       <option value="{{hunt.id}}" {% if hunt.id == current_hunt_id %}selected{% endif %}>{{hunt.name}}</option>
       {% endfor %}
@@ -32,7 +32,7 @@
       <th>Location</th>
       <th>
         <span>Status</span>
-        <button id="save-updates-button">Save Updates</button>
+        <button id="save-updates-button" class="button-gray">Save Updates</button>
       </th>
       <th>DPBA</th>
       <th>DSA</th>
@@ -69,9 +69,9 @@
       <td class="factors-td">
         {% for factor in app.factors %}
           {% if loop.index == app.factors|length %}
-            {{loop.index}}. {{factor.name}}
+            {{factor.name}}
             {% else %}
-            {{loop.index}}. {{factor.name}},
+            {{factor.name}},
             {% endif %}
         {% endfor %}
       </td>
