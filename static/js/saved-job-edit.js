@@ -14,7 +14,7 @@ function saveButtonClick() {
   if (document.getElementById('company_size').value === '-') {
     document.getElementById('company_size').value = null;
   }
-  if (document.getElementById('federal_contractor').value === '-') {
+  if (document.getElementById('federal_contractor') && document.getElementById('federal_contractor').value === '-') {
     document.getElementById('federal_contractor').value = null;
   }
   if (document.getElementById('salary_min').value != '') {
