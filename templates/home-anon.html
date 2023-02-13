@@ -8,12 +8,12 @@
 
 {% block content %}
 <h2>Welcome to Jobalyze!</h2>
-<p>A Job Search tool to track your applications, analyze your application results, and search for jobs!</p>
-<p>Find jobs using our job search through the National Labor Exchange or Login to access all our tools!</p>
+<p>A Job Search tool to search for job openings, track your job applications, and analyze the results of your job application!</p>
+<p>Find jobs using Jobalyze's job search through the National Labor Exchange or Login to access all of Jobalyze's tools!</p>
 <div class="home-job-search-wrapper">
   <div class="home-job-search-box">
     <h3>Search For Jobs</h3>
-    <form method="POST" action="/cos-jobs/search">
+    <form method="GET" action="/cos-jobs/search">
       {{form.hidden_tag()}}
 
         <div class="field-group field-style-1">
@@ -36,11 +36,34 @@
         </div>
         {% endfor %}
 
+        <div class="display-none">
+        {{form.days(value=7)}}
+        </div>
+
         <div class="button-logo-div">
           <button type="submit">Search Jobs</button>
           <img class="cos-logo cos-logo-home" src="/static/icons/tcm24-30894_PoweredByCOS.jpg">
         </div>
     </form>
+  </div>
+</div>
+<hr>
+<div class="site-preview">
+  <h3>Example Search Results</h3>
+  <img src="/static/images/ss-job-search.png">
+  <hr>
+  <h3>Registered Users Can</h3>
+  <div class="display-flex">
+    <div>
+      <p>Save jobs, create job hunts, report job applications, and view these details and more on their dashboard.</p>
+    </div>
+    <img src="/static/images/ss-dashboard.png">
+  </div>
+  <div class="display-flex">
+    <img src="/static/images/ss-jobs-apps-list.png">
+    <div>
+      <p>Keep track of their current open job applications, update their status, and keep track of strategies and unique characteristics of each job application.</p>
+    </div>
   </div>
 </div>
 {% endblock %}
