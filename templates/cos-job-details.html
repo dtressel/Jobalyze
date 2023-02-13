@@ -16,14 +16,14 @@
     <div class="hor-buttons-div">
       {% if current_user.is_authenticated %}
       <button id="save-button" {% if saved_job.id %}class="display-none btn-small"{% endif %}>Save</button>
-      <div id="saved-icon" {% if not saved_job.id %}class="display-none"{% endif %}>Saved</div>
+      <div id="saved-icon" {% if not saved_job.id %}class="display-none"{% endif %}>&#x2714; Saved</div>
       {% endif %}
-      <a id="details-url" target="_blank"><button class="btn-small">Apply</button></a>
+      <a id="details-url" target="_blank"><button class="btn-small">Apply Now</button></a>
     </div>
   </div>
   <div class="details-i-applied">
     <div>
-      <div id="details-company-name"></div>
+      <div id="details-company-name" class="company"></div>
       <div id="details-location"></div>
       <div id="details-date-posted"></div>
     </div>
@@ -32,7 +32,7 @@
       {% if saved_job['id'] %}data-saved-job-id={{saved_job['id']}}{% else %}data-saved-job-id="none"{% endif %} 
       {% if popup_jh == 'ready' %}data-job-hunt="none"{% else %}data-job-hunt="yes"{% endif %} 
       {% if applied %}class="display-none"{% endif %}>
-      I applied
+      Report Application
     </button>
     <div id="you-applied-icon" {% if not applied %}class="display-none"{% endif %}>You applied!</div>
     {% endif %}
