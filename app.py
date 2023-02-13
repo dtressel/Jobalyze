@@ -57,7 +57,7 @@ def register():
     """Register User"""
 
     if current_user.is_authenticated:
-        flash(f'{current_user.username} is already logged in.')
+        flash(f'{current_user.username} is already logged in.', 'failure')
         return redirect('/')
 
     form = RegistrationForm()
@@ -72,12 +72,12 @@ def register():
             if new_user['error'] == 409:
                 form.username.errors.append(new_user['message'])
             else:
-                flash(new_user['message'])
+                flash(new_user['message'], 'failure')
             return render_template('register.html', form = form, current_user=current_user)
 
         # login user
         login_user(new_user)
-        flash(f'Welcome {new_user.username}!')
+        flash(f'Welcome {new_user.username}!', 'success')
 
         return redirect('/')
     else:
@@ -99,7 +99,7 @@ def login():
         )
         if authenticated_user:
             login_user(authenticated_user)
-            flash(f'Welcome {authenticated_user.username}!', 'success')
+            flash(f'Welcome back {authenticated_user.username}!', 'success')
 
             next = request.args.get('next')
             # is_safe_url should check if the url is safe for redirects.
@@ -117,7 +117,14 @@ def logout():
     """Logs out a user"""
 
     logout_user()
+    flash("You have successfully logged out!", 'success')
     return redirect('/')
+
+@app.route('/faq')
+def faq_page():
+    """Shows the FAQ page."""
+
+    return render_template('faq.html')
 
 @app.route('/user/change-password', methods=['GET', 'POST'])
 @login_required
@@ -125,7 +132,7 @@ def change_password():
     """Allows logged in user to change password."""
 
     form = ChangePasswordForm()
-    import pdb; pdb.set_trace()
+
     if form.validate_on_submit():
         authenticated_user = User.authenticate_user(
             username = current_user.username,
@@ -254,6 +261,7 @@ def add_job():
 
     if form.validate_on_submit():
         saved_job_id = SavedJob.save_job(current_user.id, form.data)
+        flash("The job you added was successfully saved!", 'success')
         # ******************** Add failed API error handling ******************
         return redirect(f'/saved-jobs/{saved_job_id}')
 
@@ -318,8 +326,9 @@ def edit_saved_job(saved_job_id):
 
     if form.validate_on_submit():
         resp = SavedJob.edit_saved_job(current_user.id, saved_job_id, form.data)
+        flash("Saved job successfully updated!", 'success')
         # ************************** error handling *******************************
-        import pdb; pdb.set_trace()
+
         return redirect(url_for('show_saved_job', saved_job_id = saved_job_id))
 
     saved_job.job_description = Markup(saved_job.job_description)
@@ -340,8 +349,10 @@ def delete_saved_job(saved_job_id):
         return redirect('/dashboard')
     # ************************** Change below classmethod to regular instance method **********************************
     resp = SavedJob.delete_saved_job(saved_job_id)
+    # ****************************** Add error handling *************************************************
+    flash("Saved job successfully deleted.", 'success')
 
-    return redirect('/dashboard')
+    return redirect('/saved-jobs')
 
 @app.route('/saved-jobs/<saved_job_id>/edit/json', methods=['POST'])
 @login_required
@@ -368,6 +379,7 @@ def dashboard_page_no_hunt():
     if job_hunt_form.validate_on_submit():
         print('Job Hunt form validated')
         new_hunt = JobHunt.save_job_hunt(current_user.id, job_hunt_form.data)
+        flash(f'You successfully created the job hunt "{new_hunt.name}"!', 'success')
         # ******************** Add failed API error handling ******************
         return redirect(f'/dashboard/{new_hunt.id}')
 
@@ -449,6 +461,7 @@ def job_hunt_details(job_hunt_id):
 
     if job_hunt_form.validate_on_submit():
         new_hunt = JobHunt.save_job_hunt(current_user.id, job_hunt_form.data)
+        flash(f'You successfully created the job hunt "{new_hunt.name}"!', 'success')
         # ******************** Add failed API error handling ******************
         return redirect(f'/job-hunts/{new_hunt.id}')
 
@@ -468,11 +481,27 @@ def edit_job_hunt(job_hunt_id):
 
     if form.validate_on_submit():
         resp = JobHunt.edit_job_hunt(current_user.id, job_hunt_id, form.data)
+        flash(f'You successfully updated the job hunt "{job_hunt.name}"!', 'success')
         # ************************** error handling *******************************
         return redirect(url_for('job_hunt_details', job_hunt_id = job_hunt_id))
 
     return render_template('job-hunt-edit.html', form=form, job_hunt=job_hunt)
 
+@app.route('/job-hunts/<job_hunt_id>/delete', methods=['POST'])
+@login_required
+def delete_job_hunt(job_hunt_id):
+    """Deletes a job hunt."""
+
+    job_hunt = JobHunt.get_job_hunt_by_id(job_hunt_id)
+    if job_hunt.user_id != current_user.id:
+        flash("That job hunt is associated with another user's account. You are not authorized to edit that job hunt!", 'failure')
+        return redirect('/dashboard')
+
+    # ************************** Change below classmethod to regular instance method **********************************
+    resp = JobHunt.delete_job_hunt(job_hunt)
+    flash(f'You successfully deleted the job hunt "{job_hunt.name}"!', 'success')
+
+    return redirect('/dashboard')
 
 # ****************** Is this used anywhere????? ***********************************
 @app.route('/job-hunts/add', methods=['POST'])
@@ -550,6 +579,7 @@ def edit_job_app(job_app_id):
             factor_ids_to_associate = oldFactors + resp['body']
             resp = Factor.associate_factors_from_id_list(factor_ids_to_associate, job_app_id, current_user.id)
             if resp['status'] == 200:
+                flash("You successfully updated the job application report!", 'success')
                 return redirect(f'/job-apps/{job_app_id}')
         # **************** flash message ********************************
 
@@ -586,10 +616,12 @@ def delete_job_app(job_app_id):
     resp = JobApp.delete_job_app(current_user.id, job_app_id)
     if resp['status'] == 200:
         job_hunt_id = resp['body']
+        flash("You successfully deleted a job application report!", 'success')
         # ************************* Flash Message successful delete **************************
         return redirect(f'/dashboard/{job_hunt_id}')
 
     # ************************* Flash Message failed delete **************************
+    flash("We were unable to delete the requested job application report. Please try again later!", 'failure')
     return redirect(f'job_apps/{job_app_id}')
 
 @app.route('/factors/add/json', methods=['POST'])
