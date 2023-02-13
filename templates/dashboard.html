@@ -19,7 +19,7 @@
       <div class="top-center-row-1">
         {% if current_hunt %}
         <h3 class="job-hunt-h3">Job Hunt:</h3>
-        <select name="job_hunt" id="job-hunt-select">
+        <select name="job_hunt" id="job-hunt-select" class="isolated-select">
           {% for hunt in current_user.job_hunts|reverse %}
           <option value="{{hunt.id}}" {% if hunt.id == current_hunt.id %}selected{% endif %}>{{hunt.name}}</option>
           {% endfor %}
@@ -104,7 +104,7 @@
   </div>
   <div id="main-lower-left" class="main-grid-quadrant">
     <div class="heading-expand">
-      <h3>Pending Job Applications</h3>
+      <h3>Job Applications</h3>
       {% if job_apps_list %}
       <a href="/job-apps?hunt={{current_hunt.id}}"><img class="expand-icon" src="/static/icons/Expand-icon-30.png"></a>
       {% endif %}
@@ -132,12 +132,12 @@
       {% endif %}
     </div>
     {% if current_hunt %}
-    <div>Status: {{current_hunt.status_translated}}</div>
-    <div>Job Title Desired: {{current_hunt.job_title_desired}}</div>
-    <div>Location: {{current_hunt.location}}</div>
-    <div>Location Radius: {{current_hunt.radius}}</div>
-    <div>Remote: {% if current_hunt.remote %}Yes{% else %}No{% endif %}</div>
-    <div>Date Started: {{current_hunt.date_begun}}</div>
+    <div class="spaced"><b>Status:</b> {{current_hunt.status_translated}}</div>
+    <div class="spaced"><b>Job Title Desired:</b> {{current_hunt.job_title_desired}}</div>
+    <div class="spaced"><b>Location:</b> {{current_hunt.location}}</div>
+    <div class="spaced"><b>Location Radius:</b> {{current_hunt.radius}}</div>
+    <div class="spaced"><b>Remote:</b> {% if current_hunt.remote %}Yes{% else %}No{% endif %}</div>
+    <div class="spaced"><b>Date Started:</b> {{current_hunt.date_begun}}</div>
     {% else %}
     <p>In order to take advantage of many of Jobalyze's features create a "job hunt" now. It should takes less than a minute.</p>
     <div>
