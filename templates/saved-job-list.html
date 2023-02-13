@@ -44,8 +44,8 @@
     {% for job in saved_jobs %}
     <tr>
       <td>{{job.date_saved}}</td>
-      <td>{{job.company}}</td>
-      <td><a href="/saved-jobs/{{job.id}}">{{job.title}}</a></td>
+      <td id="company-{{job.id}}">{{job.company}}</td>
+      <td><a href="/saved-jobs/{{job.id}}" id="title-{{job.id}}">{{job.title}}</a></td>
       <td>{{job.location}}</td>
       <td>{{job.date_posted}}</td>
       <td class="text-center">
@@ -58,9 +58,11 @@
         {% endif %}
       </td>
       <td>
+        {% if not job.job_app %}
         <form method="POST" action="/saved-jobs/{{job.id}}/delete">
-          <button type="submit">Delete</button>
+          <button type="button" class="delete-button button-narrow button-danger" id="{{job.id}}">Delete</button>
         </form>
+        {% endif %}
       </td>
     </tr>
     {% endfor %}
