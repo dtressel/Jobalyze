@@ -32,7 +32,7 @@ main > hr {
 
 .search-results-wrapper {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 2fr 3fr;
   flex: 1 1 auto;
 }
 
@@ -58,6 +58,7 @@ main > hr {
   right: 0;
   bottom: 0;
   left: 0;
+  padding: 0.3rem;
 }
 
 .right-column {
@@ -68,7 +69,7 @@ main > hr {
   right: 0;
   bottom: 0;
   left: 0;
-  padding: 0 6px;
+  padding: 0.6rem;
   background-color: white;
 }
 
@@ -81,7 +82,7 @@ main > hr {
   border: 1px solid gray;
   border-radius: 5px;
   margin: 8px 6px;
-  padding: 6px;
+  padding: 0.6rem;
   background: white;
   box-shadow: 5px 5px 5px 5px gray;
 }
@@ -127,4 +128,26 @@ main > hr {
 
 .results-h3 {
   margin-top: 0;
+}
+
+.list-item-inner-wrapper h3 {
+  margin: 0.3rem 0;
+}
+
+.company {
+  font-size: 1.2rem;
+  margin-bottom: 0.3rem;
+  color: var(--main-color);
+}
+
+.federal-contractor {
+  margin-bottom: 0;
+}
+
+.page-num {
+  margin-right: 0.5rem;
+}
+
+#saved-icon {
+  margin: 0.5rem;
 }
