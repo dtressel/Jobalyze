@@ -42,15 +42,15 @@
 .contenteditable-field {
   min-height: 3rem;
   background-color: inherit;
-  width: 500px;
+  min-width: 500px;
+  width: fit-content;
 }
 
-.field-style-1 .contenteditable-field {
-  /* outline: 1px solid black; */
+/* .field-style-1 .contenteditable-field {
   min-height: 3rem;
   background-color: inherit;
   width: 500px;
-}
+} */
 
 .field-style-1.contenteditable-field-group label {
   display: inline-block;
@@ -66,8 +66,72 @@
   width: 5.3rem !important;
 }
 
-.field-style-1 .width-3-char{
+.field-style-1 .width-3-char {
   width: 3rem;
+}
+
+.field-style-2 label:first-of-type {
+  display: block;
+}
+
+.field-style-2 input, 
+.field-style-2 select, 
+.field-style-2 .contenteditable-field, 
+.field-style-2 textarea, 
+.isolated-input {
+  margin-bottom: 0.5rem;
+  padding: 0.5rem;
+  border-radius: 0.3rem;
+  border: 1px solid rgb(78, 78, 78);
+  background-color: var(--field-background-color);
+}
+
+.field-style-3 input,
+.field-style-3 select {
+  margin-bottom: 0.5rem;
+  padding: 0.2rem;
+  border-radius: 0.3rem;
+  border: 1px solid rgb(78, 78, 78);
+  background-color: var(--field-background-color);
+}
+
+.field-style-2 select {
+  padding: 0.4rem;
+}
+
+.field-style-2 textarea {
+  height: 5rem;
+}
+
+.field-style-2 input:focus, 
+.field-style-2 select:focus, 
+.field-style-2 .contenteditable-field:focus, 
+.field-style-2 textarea:focus, 
+.field-style-3 input:focus,
+.isolated-select:focus, 
+.isolated-input:focus {
+  outline: 1px solid var(--main-color);
+}
+
+.field-style-2:not(.dual-input) input {
+  width: 400px;
+}
+
+.short-input {
+  width: 22rem !important;
+}
+
+.very-short-input {
+  width: 5rem !important;
+}
+
+.isolated-select, .isolated-input {
+  padding: 0.3rem;
+  border-radius: 0.3rem;
+}
+
+input[type=checkbox], input[type=radio] {
+  accent-color: var(--main-color);
 }
 
 /* Error Rows */
@@ -100,12 +164,23 @@ button:hover, button:focus {
   box-shadow: 0 0 7px 2px rgb(235, 233, 205);
 }
 
-.button-narrow {
-  padding: 0.5rem 0.6rem;
-}
-
 .button-danger {
   background-color: var(--button-color-danger);
+}
+
+.button-danger:hover, .button-danger:focus {
+  background-color: var(--button-color-danger-hover);
+}
+
+.button-gray {
+  background-color: var(--body-background-color);
+  color: black;
+}
+
+.button-gray:hover, .button-gray:focus {
+  background-color:rgb(111, 111, 111);
+  color: white;
+  box-shadow: 0 0 3px 1px rgb(235, 233, 205);
 }
 
 .button-primary-outline {
@@ -123,6 +198,16 @@ button:hover, button:focus {
   box-shadow: 0 0 7px 2px rgb(235, 233, 205);
 }
 
+.button-small {
+  padding: 0.3rem 0.6rem;
+  min-width: unset;
+  border-radius: 0.4rem;
+}
+
+.button-narrow {
+  padding: 0.5rem 0.6rem;
+}
+
 .filter-group {
   display: flex;
   align-items: center;
@@ -134,4 +219,8 @@ button:hover, button:focus {
 
 .filter-group input[type="radio"] {
   margin: 0.3rem 0.3rem 0.3rem 1rem;
+}
+
+.extra-margin-right {
+  margin-right: 2rem;
 }
