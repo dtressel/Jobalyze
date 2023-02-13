@@ -210,6 +210,14 @@ class JobHunt(db.Model):
 
         return self
 
+    def delete_job_hunt(self):
+        """Deletes a job hunt."""
+
+        db.session.delete(self)
+        db.session.commit()
+
+        return {'body': 'success!', 'status': 200}
+
     @classmethod
     def save_job_hunt(cls, user_id, hunt_obj):
         """Saves a job hunt."""
@@ -465,8 +473,6 @@ class SavedJob(db.Model):
         if job_to_edit.user_id == user_id:
             print ('************** User Ids matched! *******************')
 
-            import pdb; pdb.set_trace()
-
             if details_obj.get('federal_contractor'):
                 cls.coerce_fc_value(details_obj)
 
@@ -485,7 +491,7 @@ class SavedJob(db.Model):
             # try:
             for key in details_obj:
                 setattr(job_to_edit, key, details_obj[key])
-            import pdb; pdb.set_trace()
+
             db.session.add(job_to_edit)
             db.session.commit()
             # except: 
