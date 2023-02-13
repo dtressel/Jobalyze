@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'base-no-footer.html' %}
 
 {% block stylesheets %}
 <link rel="stylesheet" href="/static/css/cos-search-results.css">
@@ -44,11 +44,10 @@
       <div class="api-job-list-item {% if loop.first %}highlight-card{% endif %}" id="{{loop.index0}}" data-cos-id="{{job['JvId']}}" data-fc="{{job['Fc']}}">
         <div class="list-item-inner-wrapper">
           <h3>{{job['JobTitle']}}</h3>
-          <div>{{job['Company']}}</div>
+          <div class="company">{{job['Company']}}</div>
           <div>{{job['Location']}}</div>
           <p>Date Posted: {{job['AccquisitionDate']}}</p>
-          <p>Posting URL: {{job['URL']}}</p>
-          <p>Federal Contractor: 
+          <p class="federal-contractor">Federal Contractor: 
             {% if job['Fc'] == 'True' %}
             yes
             {% else %}
@@ -59,33 +58,35 @@
       </div>
       {% endfor %}
       <div>
-        <p>Page {{page_data.page_number}}</p>
-        {% if page_data.page_number > 1 %}
-        <form method="Get">
-          <div class="display-none">
-            {{form.keyword}}
-            {{form.location}}
-            {{form.radius}}
-            {{form.days}}
-            {{form.companyName}}
-            {{form.remote}}
-            {{form.startRecord(value = page_data.last_page_record)}}
-          </div>
-          <button type="submit">Last</button>
-        </form>
-        {% endif %}
-        <form method="Get">
-          <div class="display-none">
-            {{form.keyword}}
-            {{form.location}}
-            {{form.radius}}
-            {{form.days}}
-            {{form.companyName}}
-            {{form.remote}}
-            {{form.startRecord(value = page_data.next_page_record)}}
-          </div>
-          <button type="submit">Next</button>
-        </form>
+        <div class="display-flex">
+          <p class="page-num">Page {{page_data.page_number}}</p>
+          {% if page_data.page_number > 1 %}
+          <form method="Get">
+            <div class="display-none">
+              {{form.keyword}}
+              {{form.location}}
+              {{form.radius}}
+              {{form.days}}
+              {{form.companyName}}
+              {{form.remote}}
+              {{form.startRecord(value = page_data.last_page_record)}}
+            </div>
+            <button type="submit" class="button-narrow">Last</button>
+          </form>
+          {% endif %}
+          <form method="Get">
+            <div class="display-none">
+              {{form.keyword}}
+              {{form.location}}
+              {{form.radius}}
+              {{form.days}}
+              {{form.companyName}}
+              {{form.remote}}
+              {{form.startRecord(value = page_data.next_page_record)}}
+            </div>
+            <button type="submit" class="button-narrow">Next</button>
+          </form>
+        </div>
       </div>
     </div>
   </div>
@@ -95,13 +96,13 @@
         <h3 id="details-job-title"></h3>
         <div class="hor-buttons-div">
           <button id="save-button" {% if current_user.is_anonymous %}class="display-none"{% endif %}>Save</button>
-          <div id="saved-icon" class="display-none">Saved</div>
+          <div id="saved-icon" class="display-none">&#x2714; Saved</div>
           <a id="details-url" target="_blank"><button>Apply</button></a>
         </div>
       </div>
       <div class="details-full-screen">
         <div>
-          <div id="details-company-name"></div>
+          <div id="details-company-name" class="company"></div>
           <div id="details-location"></div>
           <div id="details-date-posted"></div>
         </div>
