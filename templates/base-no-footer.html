@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/static/css/variables.css">
+  <link rel="stylesheet" href="/static/css/base.css">
+  <link rel="stylesheet" href="/static/css/quickset-classes.css">
+  <link rel="stylesheet" href="/static/css/forms.css">
+  {% block stylesheets %}{% endblock %}
+  <title>{% block title %}{% endblock %}</title>
+</head>
+<body>
+  <div class="nav-bar-outer-wrapper">
+    <div class="nav-bar-inner-wrapper">
+      <header class="navigation-bar">
+        <a class="logo-a" href="/"><h1 class="logo">Jobalyze</h1></a>
+        <div class="primary-icon-wrapper">
+          {% if current_user.is_authenticated %}
+          <div class="icon-div">
+            <a href="/dashboard"><img class="icon-img" src="/static/icons/dashboard-icon-small.png"></a>
+          </div>
+          {% endif %}
+          <!-- <div class="icon-div">
+            <a href="/"><img class="icon-img" src="/static/icons/home-icon-small.png"></a>
+          </div> -->
+          <div class="icon-div">
+            <a href="/cos-jobs"><img class="icon-img" src="/static/icons/job-search-small.png"></a>
+          </div>
+          {% if current_user.is_authenticated %}
+          <div class="icon-div">
+            <a href="/saved-jobs/add"><img class="icon-img" src="/static/icons/job-add-small.png"></a>
+          </div>
+          {% endif %}
+        </div>
+        {% if current_user.is_authenticated %}
+        <div class="user-icon-div">
+          <div class="icon-div question-mark">
+            <a href="/faq"><img class="icon-img" src="/static/icons/question-mark-small.png"></a>
+          </div>
+          <img class="icon-img" id="user-icon" src="/static/icons/user-icon-small.png">
+          <div class="user-icon-popup display-none" id="user-icon-popup">
+            <div><a href="/logout">logout</a></div>
+            <div><a href="/user/change-password">password</a></div>
+          </div>
+        </div>
+        {% else %}
+        <div class="login-register-buttons-div">
+          <a href="/login"><button>Login</button></a>
+          <a href="/register"><button class="button-primary-outline">Register</button></a>
+          <div class="icon-div">
+            <a href="/faq"><img class="icon-img" src="/static/icons/question-mark-small.png"></a>
+          </div>
+        </div>
+        {% endif %}
+      </header>
+    </div>
+  </div>
+  <div class="main-outer-wrapper">
+    <div class="main-inner-wrapper">
+      <main>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+          <section class="flash-message-container">
+            {% for category, message in messages %}
+            <div class="{{category}}">
+              <div class="flex-align-center">{{message}}</div>
+              <div class="close-x">&#10006</div>
+            </div>
+            {% endfor %}
+          </section>
+          {% endif %}
+        {% endwith %}
+        {% block content %}{% endblock %}
+      </main>
+    </div>
+  </div>
+
+  {% if current_user.is_authenticated %}
+  <script src="/static/js/base-user-icon-popup.js"></script>
+  {% endif %}
+  <script src="/static/js/base-close-x.js"></script>
+
+  {% block scripts %}{% endblock %}
+</body>
+</html>
