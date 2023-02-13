@@ -23,6 +23,7 @@ input {
   border: 1px solid rgb(75, 74, 74);
   box-shadow: inset 0 -3em 3em rgba(0, 0, 0, 0.1), 0 0 0 1px rgb(255, 255, 255),
   0.3em 0.3em 1em rgba(0, 0, 0, 0.3);
+  margin-bottom: 2rem;
 }
 
 .home-job-search-box h3 {
@@ -38,6 +39,30 @@ input {
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+
+.site-preview img {
+  width: 60rem;
+  padding: 1rem;
+  border: 2px solid rgb(171, 171, 171);
+  margin: 2rem;
+  border-radius: 0.5rem;
+  box-shadow: inset 0 -0.5em 1em rgba(255, 255, 255, 0.1), 0 0 0 1px rgb(255, 255, 255),
+  0.3em 0.3em 1em rgba(0, 0, 0, 0.3);
+}
+
+.site-preview p {
+  line-height: 2rem;
+  margin-top: 5rem;
+  font-size: 1.2rem;
+}
+
+.site-preview h3 {
+  margin-bottom: 0;
+}
+
+.site-preview > div > img {
+  width: 55rem;
 }
 
 /* button {
