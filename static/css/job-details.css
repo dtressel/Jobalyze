@@ -17,6 +17,7 @@
 .details-i-applied {
   display: flex;
   justify-content: space-between;
+  align-items: center;
 }
 
 .additional-details-row {
@@ -25,4 +26,22 @@
 
 .edit-delete-buttons-div {
   display: flex;
+}
+
+h3:first-of-type {
+  margin: 0.3rem 0;
+}
+
+.company {
+  font-size: 1.2rem;
+  margin-bottom: 0.3rem;
+  color: var(--main-color);
+}
+
+.spaced {
+  margin: 0.3rem 0;
+}
+
+#saved-icon {
+  margin: 0.5rem;
 }
