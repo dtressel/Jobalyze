@@ -2,6 +2,7 @@
 // Regarding I applied button
 const iAppliedButton = document.getElementById('i-applied-button');
 const youAppliedIcon = document.getElementById('you-applied-icon');
+const deleteButton = document.getElementById('delete-button');
 
 const additionalDetailsDiv = document.getElementById('additional-details');
 const salaryMin = document.getElementById('details-salary-min-value-display');
@@ -24,6 +25,7 @@ if (applyButtonNoUrl) {
 if (iAppliedButton) {
   iAppliedButton.addEventListener('click', iAppliedButtonClick);
 }
+deleteButton.addEventListener('click', deleteButtonClick);
 
 function detailsDivClick(evt) {
   if (evt.target.localName === "button") {
@@ -167,6 +169,13 @@ function applyButtonNoUrlClick() {
 function checkIfPopupJaShouldOpenOnStart() {
   if (popupJa && popupJa.dataset.popupJaStatus === 'open') {
     iAppliedButtonClick();
+  }
+}
+
+function deleteButtonClick(evt) {
+  const text = 'Delete this saved job?';
+  if (confirm(text)) {
+    evt.target.parentElement.submit();
   }
 }
 
