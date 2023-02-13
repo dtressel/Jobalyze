@@ -74,9 +74,20 @@ body {
   margin: 0 clamp(0.1rem, 6%, 0.9rem);
 }
 
+.question-mark {
+  margin-top: 0.2rem;
+  margin-right: 0.7rem;
+}
+
+.question-mark img {
+  height: 35px;
+}
+
 .user-icon-div, .login-register-buttons-div {
   grid-column: 3 / 4;
   position: relative;
+  display: flex;
+  align-items: center;
 }
 
 .user-icon-popup {
@@ -111,28 +122,6 @@ body {
   width: clamp(360px, 100%, 1280px);
 }
 
-.display-none {
-  display: none;
-}
-
-.flex-space-between {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.display-flex {
-  display: flex;
-}
-
-.text-center {
-  text-align: center;
-}
-
-.no-bullets {
-  list-style: none;
-}
-
 .flash-message-container > div {
   display: grid;
   grid-template-columns: 1fr auto;
@@ -163,4 +152,29 @@ body {
   padding: 0.5rem;
   background-color: white;
   border-radius: 0.3rem;
+}
+
+.confirmation-popup {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+}
+
+footer {
+  margin-top: 2rem;
+}
+
+footer small {
+  margin: 0 0.3rem;
+}
+
+footer > div {
+  margin: 0.1rem 0;
+}
+
+.header-main-wrapper {
+  min-height: calc(100vh - 6rem);
 }
