@@ -14,26 +14,31 @@
 {% if current_hunt %}
 <div class="flex-align-center">
   <h3 class="job-hunt-h3">Job Hunt:</h3>
-  <select name="job_hunt" id="job-hunt-select">
+  <select name="job_hunt" id="job-hunt-select" class="isolated-select">
     {% for hunt in current_user.job_hunts|reverse %}
     <option value="{{hunt.id}}" {% if hunt.id == current_hunt.id %}selected{% endif %}>{{hunt.name}}</option>
     {% endfor %}
   </select>
   <a href="/job-hunts/{{current_hunt.id}}/edit"><button class="button-narrow">Edit Details</button></a>
+  <form method="POST" action="/job-hunts/{{current_hunt.id}}/delete">
+    <button type="button" class="button-danger button-narrow" id="delete-button">Delete</button>
+  </form>
   <button id="new-job-hunt-button" class="button-narrow hunt-details-new-hunt-button">New Job Hunt</button>
 </div>
-<p>Status: {{current_hunt.status_translated}}</p>
-<p>Job Title Desired: {{current_hunt.job_title_desired}}</p>
-<p>O*Net-SOC Code: {{current_hunt.o_net_code}}</p>
-<p>Location: {{current_hunt.location}}</p>
-<p>Location Radius: {{current_hunt.radius}}</p>
-<p>Remote: {% if current_hunt.remote %}Yes{% else %}No{% endif %}</p>
-<p>Date Started Hunt: {{current_hunt.date_begun}}</p>
-<p>Description: {{current_hunt.description}}</p>
-<h4>Goals:</h4>
-<p>Date to be hired by: {{current_hunt.hired_by_goal_date}}</p>
-<p>Number of applications {{current_hunt.app_goal_time_frame_translated | lower}}: {{current_hunt.app_goal_number}}</p>
-<h4>Factors Associated With Job Hunt:</h4>
+<p><u>Status</u>: {{current_hunt.status_translated}}</p>
+<p><u>Job Title Desired</u>: {{current_hunt.job_title_desired}}</p>
+<p><u>O*Net-SOC Code</u>: {{current_hunt.o_net_code}}</p>
+<p><u>Location</u>: {{current_hunt.location}}</p>
+<p><u>Location Radius</u>: {{current_hunt.radius}}</p>
+<p><u>Remote</u>: {% if current_hunt.remote %}Yes{% else %}No{% endif %}</p>
+<p><u>Date Started Hunt</u>: {{current_hunt.date_begun}}</p>
+<p><u>Description</u>: {{current_hunt.description}}</p>
+<hr>
+<h3>Goals:</h3>
+<p><u>Date to be hired by</u>: {{current_hunt.hired_by_goal_date}}</p>
+<p><u>Number of applications {{current_hunt.app_goal_time_frame_translated | lower}}</u>: {{current_hunt.app_goal_number}}</p>
+<hr>
+<h3>Factors Associated With Job Hunt:</h3>
 <ul>
   {% for factor in current_hunt.factors %}
     <li>{{factor.name}}</li>
