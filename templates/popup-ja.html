@@ -2,17 +2,12 @@
   <h2 id="popup-ja-header">Report a Job Application</h2>
 
   <div id="popup-ja-0" class="popup-ja-screen">
-    <p>Every job application reported will appear in your Job Apps list. 
-      From there you can keep track of its status and use Jobalyze's analysis 
-      tools to draw conclusions from your application strategies.
-    </p>
     <p>Reporting an application for: </p>
-    <span class="job-title-spans">{{saved_job['title']}}</span>
-    <span> at </span>
-    <span class="company-spans">{{saved_job['company']}}</span>
+    <div class="job-title-spans">{{saved_job['title']}}</div>
+    <div class="company-spans">{{saved_job['company']}}</div>
     <form id="job-app-report-form" data-saved-job-id="{{saved_job['id']}}" data-user-id="{{current_user.id}}">
-      <div class="field-group">
-        <label for="job-hunt-select">This application report is for the</label>
+      <div class="field-style-3">
+        <label for="job-hunt-select">This application is reported for the</label>
         <select id="job-hunt-select">
           {% for hunt in active_hunts %}
           <option value="{{hunt.id}}">{{hunt.name}}</option>
@@ -20,7 +15,7 @@
         </select>
         <span>job hunt.</span>
       </div>
-      <div class="field-group">
+      <div class="field-style-3">
         <label for="applied-date-input">I applied on</label>
         <input type="date" id="applied-date-input">
       </div>
@@ -47,9 +42,9 @@
     <span>:</span>
     <p>Check all boxes for any factors that correspond with this job report.</p>
     <form>
-      <div class="field-group">
-        <input type="text" id="add-factor-input">
-        <button type="button" id="add-factor-button">Add New Factor</button>
+      <div>
+        <input type="text" id="add-factor-input" class="isolated-input">
+        <button type="button" id="add-factor-button" class="button-narrow">Add Factor</button>
       </div>
       <div class="error-row" id="new-factor-error-row"></div>
     </form>
@@ -63,7 +58,7 @@
   </div>
 
   <div class="popup-button-div">
-    <button type="button" id="popup-ja-submit-button">Submit</button>
-    <button type="button" id="popup-ja-cancel-button">Cancel</button>
+    <button type="button" id="popup-ja-submit-button" class="popup-button">Submit</button>
+    <button type="button" id="popup-ja-cancel-button" class="popup-button button-gray">Cancel</button>
   </div>
   </div>

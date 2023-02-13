@@ -16,17 +16,16 @@
 
   <div id="popup-jh-1" class="popup-jh-screen display-none">
     <p>What kind of job are you looking for?</p>
-    <div class="input-group">
+    <div class="field-style-2">
       <label for="job-title-desired">Job Title Desired</label>
-      <input type="text" id="job-title-desired">
+      <input type="text" id="job-title-desired" class="short-input">
     </div>
-    <div class="input-group">
-      <label for="o-net-code">O*NET Code</label>
-      <input type="text" id="o-net-code">
-      <span><i>optional</i></span>
+    <div class="field-style-2">
+      <label for="o-net-code">O*NET Code <i>(optional)</i></label>
+      <input type="text" id="o-net-code" class="short-input">
     </div>
-    <div>For most accurate results find the <a href="https://www.onetonline.org/find/result">O*NET Code</a> for your job title</div>
-    <div>Example: 15-1252.00</div>
+    <p>For the most accurate results find the <a href="https://www.onetonline.org/find/result" target="_blank">O*NET Code</a> for your job title.</p>
+    <p>(Example: 15-1252.00)</p>
   </div>
 
   <div id="popup-jh-2" class="popup-jh-screen display-none">
@@ -72,36 +71,37 @@
 
   <div id="popup-jh-5" class="popup-jh-screen display-none">
     <p>Where in the U.S. are you hoping to work?</p>
-    <div class="input-group">
+    <div class="field-style-3">
       <label for="radius">Within</label>
       <input type="text" id="radius" placeholder="# of miles">
     </div>
-    <div class="input-group">
-      <label for="job-location">Of</label>
+    <div class="field-style-3">
+      <label for="job-location">of</label>
       <input type="text" id="location" placeholder="Zip Code or City, State">
     </div>
   </div>
 
   <div id="popup-jh-6" class="popup-jh-screen display-none">
     <h3>Job Search Goals</h3>
-    <div class="input-group">
+    <div class="field-style-3">
       <label for="app-goal-number">I want to complete</label>
-      <input type="number" id="app-goal-number">
+      <input type="number" id="app-goal-number" class="very-short-input">
       <span>applications</span>
     </div>
-    <div class="input-group">
+    <div class="field-style-3">
       <label for="app-goal-time-frame">every</label>
       <select type="text" id="app-goal-time-frame">
         <option value="d">day</option>
         <option value="w" selected>week</option>
         <option value="m">month</option>
       </select>
+      <span>.</span>
     </div>
   </div>
 
   <div id="popup-jh-7" class="popup-jh-screen display-none">
     <h3>Job Search Goals</h3>
-    <div class="input-group">
+    <div class="field-style-3">
       <label for="hired-by-date">I hope to be hired by</label>
       <input type="date" id="hired-by-date">
     </div>
@@ -109,13 +109,13 @@
 
   <div id="popup-jh-8" class="popup-jh-screen display-none">
     <p>For you to easily identify this job hunt, please provide a job hunt name and description (optional).</p>
-    <div class="input-group">
+    <div class="field-style-2">
       <label for="jh-name">Name</label>
-      <input type="text" id="jh-name">
+      <input type="text" id="jh-name" class="short-input">
     </div>
-    <div class="input-group">
+    <div class="field-style-2">
       <label for="jh-description">Description</label>
-      <textarea id="jh-description"></textarea>
+      <textarea id="jh-description" class="short-input"></textarea>
     </div>
   </div>
 
@@ -124,8 +124,8 @@
   </div>
 
   <div class="popup-button-div">
-    <button id="popup-jh-continue-button">Yes</button>
-    <button id="popup-jh-cancel-button">Cancel</button>
+    <button id="popup-jh-continue-button" class="popup-button">Yes</button>
+    <button id="popup-jh-cancel-button" class="popup-button button-gray">Cancel</button>
   </div>
 </div>
 <form method="POST" class="display-none" id="new-job-hunt-form">

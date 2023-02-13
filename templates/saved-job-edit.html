@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block stylesheets %}
-<link rel="stylesheet" href="/static/css/forms.css">
+<link rel="stylesheet" href="/static/css/job-details.css">
 {% endblock %}
 
 
@@ -15,9 +15,9 @@
 {% if saved_job['cos_id'] %}
 <div class="details-wrapper" id="details-wrapper" data-saved-job-id="{{saved_job.id}}">
   <h3 id="details-job-title">{{saved_job.title}}</h3>
-  <div id="details-company-name">{{saved_job.company}}</div>
-  <div id="details-location">{{saved_job.location}}</div>
-  <div id="details-date-posted">{{saved_job.date_posted}}</div>
+  <div id="details-company-name" class="company">{{saved_job.company}}</div>
+  <div id="details-location" class="spaced">{{saved_job.location}}</div>
+  <div id="details-date-posted" class="spaced">{{saved_job.date_posted}}</div>
   <div id="details-description">{{saved_job.job_description}}</div>
 </div>
 {% endif %}
@@ -28,7 +28,7 @@
 {% if not saved_job['cos_id'] %}
 
   <!-- Text Field: -->
-  <div class="field-group">
+  <div class="field-style-2">
     {{form.title.label}}
     {{form.title(value=saved_job.title)}}
   </div>
@@ -39,7 +39,7 @@
   {% endfor %}
 
   <!-- Text Field: -->
-  <div class="field-group">
+  <div class="field-style-2">
     {{form.company.label}}
     {{form.company(value=saved_job.company)}}
   </div>
@@ -50,7 +50,7 @@
   {% endfor %}
 
   <!-- Text Field: -->
-  <div class="field-group">
+  <div class="field-style-2">
     {{form.location.label}}
     {{form.location(value=saved_job.location)}}
   </div>
@@ -61,7 +61,7 @@
   {% endfor %}
 
   <!-- Date Field: -->
-  <div class="field-group">
+  <div class="field-style-2">
     {{form.date_posted.label}}
     {{form.date_posted(value=saved_job.date_posted)}}
   </div>
@@ -72,7 +72,7 @@
   {% endfor %}
 
   <!-- Text Field: -->
-  <div class="field-group">
+  <div class="field-style-2">
     {{form.application_link.label}}
     {{form.application_link(value=saved_job.application_link)}}
   </div>
@@ -84,7 +84,7 @@
 
   <!-- Text Field: -->
   <!-- Use contenteditable div instead of textarea -->
-  <div class="field-group">
+  <div class="field-style-2">
     {{form.job_description.label}}
     <div id="description-editable-div" contenteditable="true" class="contenteditable-field">{{saved_job.job_description}}</div>
     {{form.job_description(class="display-none")}}
@@ -97,31 +97,33 @@
 
 {% endif %}
 
-  <!-- Select Field: -->
-  <div class="field-group">
-    {{form.job_type.label}}
-    {{form.job_type(data_value=saved_job.job_type)}}
-  </div>
-  {% for err in form.job_type.errors %}
-  <div class="error-row">
-    <div class="error-div">{{err}}</div>
-  </div>
-  {% endfor %}
+  <div class="display-flex">
+    <!-- Select Field: -->
+    <div class="field-style-2 extra-margin-right">
+      {{form.job_type.label}}
+      {{form.job_type(data_value=saved_job.job_type)}}
+    </div>
+    {% for err in form.job_type.errors %}
+    <div class="error-row">
+      <div class="error-div">{{err}}</div>
+    </div>
+    {% endfor %}
 
-  <!-- Select Field: -->
-  <div class="field-group">
-    {{form.experience_level.label}}
-    {{form.experience_level(data_value=saved_job.experience_level)}}
+    <!-- Select Field: -->
+    <div class="field-style-2">
+      {{form.experience_level.label}}
+      {{form.experience_level(data_value=saved_job.experience_level)}}
+    </div>
+    {% for err in form.experience_level.errors %}
+    <div class="error-row">
+      <div class="error-div">{{err}}</div>
+    </div>
+    {% endfor %}
   </div>
-  {% for err in form.experience_level.errors %}
-  <div class="error-row">
-    <div class="error-div">{{err}}</div>
-  </div>
-  {% endfor %}
 
   <!-- Text Field: -->
   <!-- JS manipulates field to add $ and , -->
-  <div class="field-group">
+  <div class="field-style-2 dual-input">
     {{form.salary_min.label}}
     {{form.salary_min(value=saved_job.salary_min)}}
     <label for="salary_max">&ndash;</label>
@@ -138,39 +140,41 @@
   </div>
   {% endfor %}
 
-  <!-- Select Field: -->
-  <div class="field-group">
-  {{form.company_size.label}}
-  {{form.company_size(data_value=saved_job.company_size)}}
-  </div>
-  {% for err in form.company_size.errors %}
-  <div class="error-row">
-  <div class="error-div">{{err}}</div>
-  </div>
-  {% endfor %}
+  <div class="display-flex">
+    <!-- Select Field: -->
+    <div class="field-style-2 extra-margin-right">
+    {{form.company_size.label}}
+    {{form.company_size(data_value=saved_job.company_size)}}
+    </div>
+    {% for err in form.company_size.errors %}
+    <div class="error-row">
+    <div class="error-div">{{err}}</div>
+    </div>
+    {% endfor %}
 
-  {% if saved_job['cos_id'] %}
-  <div id="details-federal-contractor" class="additional-details-row">
-    <span>Federal contractor:</span>
-    <span id="details-federal-contractor-value-display">{{saved_job.federal_contractor}}</span>
-  </div>
+    {% if saved_job['cos_id'] %}
+    <div id="details-federal-contractor" class="additional-details-row">
+      <span>Federal contractor:</span>
+      <span id="details-federal-contractor-value-display">{{saved_job.federal_contractor}}</span>
+    </div>
 
-  {% else %}
-  <!-- Select Field: -->
-  <div class="field-group">
-  {{form.federal_contractor.label}}
-  {{form.federal_contractor(data_value=saved_job.federal_contractor|string)}}
+    {% else %}
+    <!-- Select Field: -->
+    <div class="field-style-2">
+    {{form.federal_contractor.label}}
+    {{form.federal_contractor(data_value=saved_job.federal_contractor|string)}}
+    </div>
+    {% for err in form.federal_contractor.errors %}
+    <div class="error-row">
+    <div class="error-div">{{err}}</div>
+    </div>
+    {% endfor %}
+    {% endif %}
   </div>
-  {% for err in form.federal_contractor.errors %}
-  <div class="error-row">
-  <div class="error-div">{{err}}</div>
-  </div>
-  {% endfor %}
-  {% endif %}
 
   <!-- Text Field: -->
   <!-- Use contenteditable div instead of textarea -->
-  <div class="field-group">
+  <div class="field-style-2">
   {{form.user_notes.label}}
   <div id="user-notes-editable-div" contenteditable="true" class="contenteditable-field">
     {% if saved_job.user_notes != None %}
@@ -186,7 +190,7 @@
   {% endfor %}
 
   <button type="button" id="save-button">Save</button>
-  <a href="/saved-jobs/{{saved_job.id}}"><button type="button">Cancel</button></a>
+  <a href="/saved-jobs/{{saved_job.id}}"><button type="button" class="button-primary-outline">Cancel</button></a>
 </form>
 
 

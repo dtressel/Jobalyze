@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block stylesheets %}
-<link rel="stylesheet" href="/static/css/forms.css">
+<link rel="stylesheet" href="/static/css/job-details.css">
 {% endblock %}
 
 
@@ -11,13 +11,13 @@
 {% block content %}
 <h2>Edit Job App Report</h2>
 <h3>{{job_app.saved_job['title']}}</h3>
-<div>{{job_app.saved_job['company']}}</div>
+<div class="company">{{job_app.saved_job['company']}}</div>
 <br>
 <form method="POST" id="edit-form">
   {{form.hidden_tag()}}
 
   <!-- Date Field: -->
-  <div class="field-group">
+  <div class="field-style-2">
     {{form.date_applied.label}}
     {{form.date_applied(value=job_app.date_applied)}}
   </div>
@@ -28,7 +28,7 @@
   {% endfor %}
   
   <!-- Select Field: -->
-  <div class="field-group">
+  <div class="field-style-2">
     {{form.current_status.label}}
     {{form.current_status(data_value=job_app.current_status)}}
   </div>
@@ -40,7 +40,7 @@
 
   <!-- Text Field: -->
   <!-- Use contenteditable div instead of textarea -->
-  <div class="field-group">
+  <div class="field-style-2">
     {{form.user_notes.label}}
     <div id="user-notes-editable-div" contenteditable="true" class="contenteditable-field">
       {% if job_app.user_notes != None %}
@@ -59,8 +59,8 @@
   <p><i>(All checked factors will be submitted. Add new factors for submission with "Add Factor" field.)</i></p>
   <ul class="no-bullets" id="factor-checkbox-ul">
     <li>
-      <input type="text" placeholder="Add Factor" id="add-factor-input">
-      <button type="button" id="add-factor-button">Add</button>
+      <input type="text" placeholder="Add Factor" id="add-factor-input" class="isolated-input">
+      <button type="button" id="add-factor-button" class="button-narrow">Add</button>
     </li>
     {% for factor in job_hunt_factors_list %}
     <li>
@@ -72,7 +72,7 @@
 
 
   <button type="button" id="save-button">Submit</button>
-  <a href="/job-apps/{{job_app.id}}"><button type="button">Cancel</button></a>
+  <a href="/job-apps/{{job_app.id}}"><button type="button" class="button-primary-outline">Cancel</button></a>
 </form>
 
 {% endblock %}

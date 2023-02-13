@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block stylesheets %}
-<link rel="stylesheet" href="/static/css/forms.css">
+
 {% endblock %}
 
 
@@ -15,7 +15,7 @@
   {{form.hidden_tag()}}
 
   <!-- Text Field: -->
-  <div class="field-group field-style-1">
+  <div class="field-style-1">
     {{form.name.label}}
     {{form.name(value=job_hunt.name)}}
   </div>
@@ -26,7 +26,7 @@
   {% endfor %}
 
   <!-- Select Field: -->
-  <div class="field-group field-style-1">
+  <div class="field-style-1">
     {{form.status.label}}
     {{form.status(data_value=job_hunt.status)}}
   </div>
@@ -37,7 +37,7 @@
   {% endfor %}
 
   <!-- Date Field: -->
-  <div class="field-group field-style-1">
+  <div class="field-style-1">
     {{form.date_begun.label}}
     {{form.date_begun(value=job_hunt.date_begun)}}
   </div>
@@ -48,7 +48,7 @@
   {% endfor %}
 
   <!-- Text Field: -->
-  <div class="field-group field-style-1">
+  <div class="field-style-1">
     {{form.job_title_desired.label}}
     {{form.job_title_desired(value=job_hunt.job_title_desired)}}
   </div>
@@ -59,7 +59,7 @@
   {% endfor %}
 
   <!-- Text Field: -->
-  <div class="field-group field-style-1">
+  <div class="field-style-1">
     {{form.o_net_code.label}}
     {{form.o_net_code(value=job_hunt.o_net_code)}}
   </div>
@@ -70,7 +70,7 @@
   {% endfor %}
 
   <!-- Select Field: -->
-  <div class="field-group field-style-1">
+  <div class="field-style-1">
     {{form.non_us.label}}
     {{form.non_us(data_value=job_hunt.non_us | string)}}
   </div>
@@ -81,7 +81,7 @@
   {% endfor %}
 
   <!-- Text Field: -->
-  <div class="field-group field-style-1">
+  <div class="field-style-1">
     {{form.location.label}}
     {{form.location(value=job_hunt.location)}}
   </div>
@@ -92,7 +92,7 @@
   {% endfor %}
 
   <!-- Integer Field: -->
-  <div class="field-group field-style-1">
+  <div class="field-style-1">
     {{form.radius.label}}
     {{form.radius(value=job_hunt.radius)}}
   </div>
@@ -103,7 +103,7 @@
   {% endfor %}
 
   <!-- Boolean Field: -->
-  <div class="field-group field-style-1">
+  <div class="field-style-1">
     {{form.remote.label}}
     {{form.remote(value=job_hunt.remote)}}
   </div>
@@ -114,7 +114,7 @@
   {% endfor %}
 
   <!-- Date Field: -->
-  <div class="field-group field-style-1">
+  <div class="field-style-1">
     {{form.hired_by_goal_date.label}}
     {{form.hired_by_goal_date(value=job_hunt.hired_by_goal_date)}}
   </div>
@@ -125,7 +125,7 @@
   {% endfor %}
 
   <!-- Dual Integer Field and Select Field: -->
-  <div class="field-group field-style-1">
+  <div class="field-style-1">
     {{form.app_goal_number.label}}
     {{form.app_goal_number(value=job_hunt.app_goal_number, class="width-3-char")}}
     {{form.app_goal_time_frame.label}}
@@ -144,7 +144,7 @@
 
   <!-- Text Field: -->
   <!-- Use contenteditable div instead of textarea -->
-  <div class="field-group field-style-1 contenteditable-field-group">
+  <div class="field-style-1 contenteditable-field-group">
     {{form.description.label}}
     <div id="user-notes-editable-div" contenteditable="true" class="contenteditable-field">
       {% if job_hunt.description != None %}
@@ -177,7 +177,7 @@
 
 
   <button type="button" class="contenteditable-form-submit">Save</button>
-  <a href="/job-hunts/{{job_hunt.id}}"><button type="button">Cancel</button></a>
+  <a href="/job-hunts/{{job_hunt.id}}"><button type="button" class="button-primary-outline">Cancel</button></a>
 </form>
 
 {% endblock %}
