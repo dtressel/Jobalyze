@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block stylesheets %}{% endblock %}
+
+
+{% block title %}FAQs{% endblock %}
+
+
+{% block content %}
+<h2>FAQs:</h2>
+<p><b>What can unregistered users do on Jobalyze?</b></p>
+<p>Unregistered users can search for job postings and apply to job openings through the apply now link.</p>
+<p><b>Why should I register for an account?</b></p>
+<p>The majority Jobalyze's features are only available to registered users. These features include saving job postings, creating job hunts, reporting job applications, and tracking your job applications.</p>
+<p><b>What is a "job hunt" and why do I need to create one?</b></p>
+<p>Creating a job hunt allows users to define what kind of job their looking for and the goals of their job hunt. It also becomes a container to collect and store the application reports for the user's current job hunt. In the future, when the user uses Jobalyze again to start a new job hunt, the user can create a new job hunt while still keeping the information for the user’s old job hunt separate. Users can also decide to define two separate job hunts simultaneously if the user wants to keep information separate for example, if the user is looking for jobs in two different job markets and wants to keep them separate.</p>
+<p><b>What happens when I save a job?</b></p>
+<p>When you save a job, the job is added to the user's saved job list. The user's saved job list is a separate list, not associated with a job hunt, and will always appear the same no matter what job hunt is selected in the user's dashboard.</p>
+<p><b>How do I report a job application?</b></p>
+<p>On the details page for any saved job, click the “Report Application” button to report a job application. A job must first be saved before you can report an application. Reported applications will appear in the user's job applications list.</p>
+<p><b>What is the "Manually Save a Job" page for?</b></p>
+<p>This allows users to save a job to the saved jobs list that the user found outside of Jobalyze. The user can manually enter the job's information through the form. After saving the job, the user can report a job application for the job. This is valuable when a user wants to track a job application for a job found outside of Jobalyze.</p>
+<p><b>What are factors?</b></p>
+<p>Factors are words or short phrases defined by the user that describes characteristics of a particular job application. For example, a user might assign the factor "stretch job" to a job that the user is not fully qualified for. Or a user could assign the factor "video cover letter" to a job where the user submitted a video cover letter as a part of the application. These allow the user to record the unique characteristics of each job application so that the user can later analyze the success of particular job applications according to their unique characteristics or "factors." Factors will also be the basis for analytics features that are still under development. </p>
+<p><b> What is a job application's "success score" or SS and how is it calculated?</b></p>
+<p>Every application gets assigned a success score, which is a score ranging from 0 to 60 that attempts to quantify the success of that particular application. Success scores are based on the user's manipulation of the application's "current status. Whenever a user changes the status of an application to a current status that is not a closed status, that current status is now noted as the applications "furthest status" and a new success score is calculated. Currently, a furthest status of "Initial Screening" is worth 0 points, "Passed IS (initial screening) - No Interview Yet" is worth 3 points, "Interviewed - First Round" is worth 5 points, "Interviewed - Multiple Rounds" is worth 10 points, "Interviewed - Final Round" is worth 24 points, "Job Offer" is worth 50 points, and "Hired" is worth 60 points. A bonus point is added for an application that is closed by choosing "Closed - Rejection Notice." </p>
+<p><b>Where does Jobalyze's job posting search results come from?</b></p>
+<p>Jobalyze uses CareerOneStop's Web API Services to provide job posting search results from the National  Labor Exchange. More information on this service can be found <a href="https://www.careeronestop.org/Developers/WebAPI/web-api.aspx" target="_blank">here</a>.</p>
+<p><b>Is Jobalyze only for U.S. users?</b></p>
+<p>While it is designed for U.S. users, many features can be used for international users who are searching for jobs outside of the U.S. While the job posting search only yields U.S. results, non-U.S. users can manually enter job postings and track their job applications in the same way that a U.S. user can. </p>
+<p><b>Who created Jobalyze?</b></p>
+<p>Jobalyze was built by Daniel Tressel, a Software Developer and musician based in Michigan. Daniel is currently searching for a job in Software Development. Please visit his <a href="https://www.linkedin.com/in/daniel-tressel" target="_blank">Linkedin</a>, <a href="https://github.com/dtressel" target="_blank">GitHub</a>, and <a href="https://twitter.com/TressCello" target="_blank">Twitter</a>.</p>
+<p><b>Can I make suggestions for Jobalyze?</b></p>
+<p>Suggestions are always welcome. Please email Daniel Tressel at dtresseldev@gmail.com.</p>
+<p><b>I forgot my password. How can I restore my account?</b></p>
+<p>Please do your best to remember your password as there currently is no password restoration system built into Jobalyze. If you cannot remember your password and need access to your account, Daniel may be able to reset your password if you email him at dtresseldev@gmail.com from the email account you registered with.</p>
+{% endblock %}
+
+
+{% block scripts %}{% endblock %}
