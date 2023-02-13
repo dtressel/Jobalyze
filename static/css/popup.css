@@ -4,12 +4,13 @@
   left: 0;
   right: 0;
   margin: auto;
-  background-color: var(--main-color);
+  background-color: var(--logo-background-color-greyed);
   width: 400px;
   min-height: 450px;
   border-radius: 10px;
   box-shadow: 10px 5px 30px 5px gray;
   padding: 0 16px;
+  border: 1px solid gray;
 }
 
 .popup > h2 {
@@ -19,4 +20,18 @@
 .popup-button-div {
   display: flex;
   justify-content: center;
+}
+
+.popup-button {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.job-title-spans {
+  font-weight: bold;
+}
+
+.company-spans {
+  margin-top: 0.3rem;
+  margin-bottom: 1rem;
 }
