@@ -1,5 +1,6 @@
 from datetime import date, timedelta
 
+from flask import session
 from flask_bcrypt import Bcrypt
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Table
@@ -463,6 +464,15 @@ class SavedJob(db.Model):
         # **********************need some error handling if not saved**********************
         db.session.add(job_to_save)
         db.session.commit()
+
+        # If the job posting that is being saved is in the dashboard's new job postings list, remove job
+        # postings from session so that a new list is retrieved upon next navigation to dashboard.
+        if session.get('job_postings') and details_obj.get('cos_id'):
+            for job in session['job_postings']['postings']:
+                if job['JvId'] == details_obj['cos_id']:
+                    session.pop('job_postings')
+                    break
+
         return job_to_save.id
 
     @classmethod
