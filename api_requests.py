@@ -1,6 +1,6 @@
 import requests
 import math
-from datetime import date, datetime
+from datetime import date, datetime, timedelta, timezone
 from models import SavedJob
 
 from keys import COS_API_TOKEN, COS_USER_ID, COS_BASE_URL, COS_API_TOKEN_BAD, COS_BASE_URL_BAD
@@ -65,8 +65,10 @@ def get_postings_for_dashboard(hunt, recent_job_postings = None, start_record = 
         get_postings_for_dashboard(hunt, recent_job_postings, start_record + 20, loops = loops + 1)
 
     prepared_job_postings = add_posted_today_flag(recent_job_postings)
+    job_postings_dict = {'expiration': datetime.now(timezone.utc) + timedelta(hours = 1),
+                         'postings': prepared_job_postings}
 
-    return prepared_job_postings
+    return job_postings_dict
 
 def add_posted_today_flag(job_postings):
     for posting in job_postings:
