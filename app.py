@@ -4,6 +4,7 @@ from flask import Flask, render_template, redirect, flash, request, abort, make_
 # For auth:
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from markupsafe import Markup
+from datetime import datetime, timezone
 
 from utilities import is_safe_url
 from models import db, connect_db, User, SavedJob, JobHunt, JobApp, Factor
@@ -431,10 +432,16 @@ def dashboard_page_load_hunt(job_hunt_id):
 
     saved_jobs_list = SavedJob.get_dashboard_saved_jobs_list(current_user.id)
     job_apps_list = JobApp.get_dashboard_job_apps_list(job_hunt_id)
-    if current_hunt.non_us:
-        new_job_postings = None
+
+    if session.get('job_postings') and datetime.now(timezone.utc) < session['job_postings']['expiration']:
+        new_job_postings = session['job_postings']['postings']
+    elif not current_hunt.non_us:
+        new_job_postings_dict = get_postings_for_dashboard(current_hunt)
+        session['job_postings'] = new_job_postings_dict
+        new_job_postings = new_job_postings_dict['postings']
     else:
-        new_job_postings = get_postings_for_dashboard(current_hunt)
+        new_job_postings = None
+        
     goals = None
 
     return render_template('dashboard.html',
