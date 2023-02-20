@@ -53,6 +53,9 @@ def get_postings_for_dashboard(hunt, recent_job_postings = None, start_record = 
         params={"locationFilter": None, "source": "NLx", "showFilters": True},
         headers={"Content-Type": "application/json", "Authorization": f'Bearer {COS_API_TOKEN}'}
     )
+    
+    if resp.status_code is not 200:
+        return {'error': 'Job Postings from the CareerOneStop API are currently unavailable. Refresh the page to try again.'}
 
     for job in resp.json()['Jobs']:
         if not SavedJob.already_saved(hunt.user.id, job['JvId']):

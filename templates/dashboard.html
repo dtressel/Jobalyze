@@ -97,6 +97,8 @@
     {% else %}
       {% if current_hunt.non_us %}
       <p>Job Postings are only available for U.S. job searches.</p>
+      {% elif job_postings_error %}
+      <p>{{job_postings_error}}</p>
       {% else %}
       <p>Create a Job Hunt to see recent job postings here!</p>
       {% endif %}

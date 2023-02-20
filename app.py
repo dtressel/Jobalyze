@@ -432,13 +432,18 @@ def dashboard_page_load_hunt(job_hunt_id):
 
     saved_jobs_list = SavedJob.get_dashboard_saved_jobs_list(current_user.id)
     job_apps_list = JobApp.get_dashboard_job_apps_list(job_hunt_id)
+    job_postings_error = None
 
     if session.get('job_postings') and datetime.now(timezone.utc) < session['job_postings']['expiration']:
         new_job_postings = session['job_postings']['postings']
     elif not current_hunt.non_us:
         new_job_postings_dict = get_postings_for_dashboard(current_hunt)
-        session['job_postings'] = new_job_postings_dict
-        new_job_postings = new_job_postings_dict['postings']
+        if not new_job_postings_dict.get('error'):
+            session['job_postings'] = new_job_postings_dict
+            new_job_postings = new_job_postings_dict['postings']
+        else:
+            new_job_postings = None
+            job_postings_error = new_job_postings_dict['error']
     else:
         new_job_postings = None
         
@@ -449,6 +454,7 @@ def dashboard_page_load_hunt(job_hunt_id):
         saved_jobs_list=saved_jobs_list,
         job_apps_list=job_apps_list,
         new_job_postings=new_job_postings,
+        job_postings_error=job_postings_error,
         goals=goals,
         job_hunt_form=job_hunt_form,
         api_search_form=api_search_form)
