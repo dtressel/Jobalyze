@@ -9,14 +9,14 @@ function textInputToCurrency(textInput) {
 
 function replaceValue(input) {
   const inputValue = input.value;
-  const filteredValue = [...inputValue].filter((char) => !isNaN(char)).join('');
   // Removes all non-number characters
-  const num = +filteredValue;
+  const filteredValue = [...inputValue].filter((char) => !isNaN(char)).join('');
   // Turns string into number
-  const currencyString = num.toLocaleString("en-US", {style:"currency", currency:"USD", maximumFractionDigits: 0});
+  const num = +filteredValue;
   // Adds US currency symbols
-  input.value = currencyString;
+  const currencyString = num.toLocaleString("en-US", {style:"currency", currency:"USD", maximumFractionDigits: 0});
   // Replaces old value with new in currency format
+  input.value = currencyString;
 }
 
 function usLocaleStrToInt(str) {

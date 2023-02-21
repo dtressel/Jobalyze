@@ -447,7 +447,7 @@ class SavedJob(db.Model):
         # COS jobs posting times are weirdly in UTC time zone. I'm subtracting 5 hours to put it in 
         # Eastern or Central US time depending on Daylight Savings Time. 
         # This is not a perfect solution but improves the accuracy of dates and times for US users.
-        if details_obj.get('date_posted'):
+        if details_obj.get('date_posted') and isinstance(details_obj['date_posted'], str):
             new_date = datetime.strptime(details_obj['date_posted'], '%Y-%m-%d %I:%M %p') - timedelta(hours = 5)
             new_date_str = datetime.strftime(new_date, '%Y-%m-%d %I:%M %p')
             details_obj['date_posted'] = new_date_str

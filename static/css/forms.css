@@ -72,6 +72,7 @@
 
 .field-style-2 label:first-of-type {
   display: block;
+  margin-top: 0.5rem;
 }
 
 .field-style-2 input, 
@@ -79,7 +80,6 @@
 .field-style-2 .contenteditable-field, 
 .field-style-2 textarea, 
 .isolated-input {
-  margin-bottom: 0.5rem;
   padding: 0.5rem;
   border-radius: 0.3rem;
   border: 1px solid rgb(78, 78, 78);
@@ -88,11 +88,14 @@
 
 .field-style-3 input,
 .field-style-3 select {
-  margin-bottom: 0.5rem;
   padding: 0.2rem;
   border-radius: 0.3rem;
   border: 1px solid rgb(78, 78, 78);
   background-color: var(--field-background-color);
+}
+
+.field-style-3 label {
+  margin-top: 0.5rem;
 }
 
 .field-style-2 select {

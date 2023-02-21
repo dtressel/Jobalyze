@@ -66,9 +66,14 @@ function popupJh1() {
 }
 
 function popupJh2() {
-  hideAllScreens();
-  // get data from screen 1:
+  // Check if job-title-desired is filled out, if not add message
   newJobHuntObj.job_title_desired = document.getElementById('job-title-desired').value;
+  if (newJobHuntObj.job_title_desired === '') {
+    document.getElementById('job-title-desired-error-div').textContent = 'Input Required';
+    return
+  }
+  hideAllScreens();
+  // get other data from screen 1:
   newJobHuntObj.o_net_code = document.getElementById('o-net-code').value;
   popupJhScreens[3].classList.remove('display-none');
   popupJhWindowNum++;
@@ -119,35 +124,60 @@ function popupJh5() {
 }
 
 function popupJh6() {
-  hideAllScreens();
-  // get data from screen 5:
+  // Check if fields are filled out and get data from screen 5:
   newJobHuntObj.radius = document.getElementById('radius').value;
   newJobHuntObj.location = document.getElementById('location').value;
+  if (newJobHuntObj.radius === '' || newJobHuntObj.location === '') {
+    const radiusErrorDiv = document.getElementById('radius-error-div');
+    const locationErrorDiv = document.getElementById('location-error-div');
+    radiusErrorDiv.textContent = '';
+    locationErrorDiv.textContent = '';
+    if (newJobHuntObj.radius === '') {
+      radiusErrorDiv.textContent = 'Input Required';
+    }
+    if (newJobHuntObj.location === '') {
+      locationErrorDiv.textContent = 'Input Required';
+    }
+    return
+  }
+  hideAllScreens();
   popupJhScreens[7].classList.remove('display-none');
   popupJhWindowNum++;
 }
 
 function popupJh7() {
+  newJobHuntObj.app_goal_number = document.getElementById('app-goal-number').value;
+  if (newJobHuntObj.app_goal_number === '') {
+    document.getElementById('app-goal-number-error-div').textContent = 'Input Required';
+    return
+  }
   hideAllScreens();
   // get data from screen 6:
-  newJobHuntObj.app_goal_number = document.getElementById('app-goal-number').value;
   newJobHuntObj.app_goal_time_frame = document.getElementById('app-goal-time-frame').value;
   popupJhScreens[8].classList.remove('display-none');
   popupJhWindowNum++;
 }
 
 function popupJh8() {
+  newJobHuntObj.hired_by_goal_date = document.getElementById('hired-by-date').value;
+  if (newJobHuntObj.hired_by_goal_date === '') {
+    document.getElementById('hired-by-date-error-div').textContent = 'Input Required';
+    return
+  }
   hideAllScreens();
   // get data from screen 7:
-  newJobHuntObj.hired_by_goal_date = document.getElementById('hired-by-date').value;
   popupJhContinueButton.textContent = 'Finish';
   popupJhScreens[9].classList.remove('display-none');
   popupJhWindowNum++;
 }
 
 function finishJhAdd() {
-  // get data from screen 8:
   newJobHuntObj.name = document.getElementById('jh-name').value;
+  if (newJobHuntObj.name === '') {
+    document.getElementById('name-error-div').textContent = 'Input Required';
+    return
+  }
+  // get data from screen 8:
   newJobHuntObj.description = document.getElementById('jh-description').value;
   // Automatically fill and submit hidden form to send to backend
   fillHiddenForm();

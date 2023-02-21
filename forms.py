@@ -118,12 +118,13 @@ class ApiJobSearchForm(FlaskForm):
 class ManualJobAddForm(FlaskForm):
     """Form to manually add a job."""
 
-    title = StringField("Job Title")
-    company = StringField("Company")
+    title = StringField("Job Title", validators=[InputRequired()])
+    company = StringField("Company", validators=[InputRequired()])
     location = StringField("Location",  validators=[
-        Length(max=100, message="Must be less than 100 characters.")    
+        Length(max=100, message="Must be less than 100 characters."),
+        InputRequired()
     ])
-    date_posted = DateField("Date Posted", validators=[Optional()])
+    date_posted = DateField("Date Posted", validators=[InputRequired()])
     application_link = URLField("Link")
     job_description = StringField("Description")
     job_type = SelectField("Job Type", choices=[
@@ -266,8 +267,8 @@ class SavedJobCosEditForm(FlaskForm):
 class NewJobHuntForm(FlaskForm):
     """Form to create a new Job Hunt from dialog. Form is not displayed."""
 
-    name = StringField()
-    job_title_desired = StringField()
+    name = StringField(validators=[InputRequired()])
+    job_title_desired = StringField(validators=[InputRequired()])
     o_net_code = StringField()
     location = StringField()
     radius = IntegerField(validators=[Optional()])

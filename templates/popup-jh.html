@@ -20,6 +20,9 @@
       <label for="job-title-desired">Job Title Desired</label>
       <input type="text" id="job-title-desired" class="short-input">
     </div>
+    <div class="error-row">
+      <div class="error-div" id="job-title-desired-error-div"></div>
+    </div>
     <div class="field-style-2">
       <label for="o-net-code">O*NET Code <i>(optional)</i></label>
       <input type="text" id="o-net-code" class="short-input">
@@ -73,11 +76,17 @@
     <p>Where in the U.S. are you hoping to work?</p>
     <div class="field-style-3">
       <label for="radius">Within</label>
-      <input type="text" id="radius" placeholder="# of miles">
+      <input type="text" id="radius" placeholder="# of miles" data-input-type="integer">
+    </div>
+    <div class="error-row">
+      <div class="error-div" id="radius-error-div"></div>
     </div>
     <div class="field-style-3">
-      <label for="job-location">of</label>
+      <label for="location">of</label>
       <input type="text" id="location" placeholder="Zip Code or City, State">
+    </div>
+    <div class="error-row">
+      <div class="error-div" id="location-error-div"></div>
     </div>
   </div>
 
@@ -85,8 +94,11 @@
     <h3>Job Search Goals</h3>
     <div class="field-style-3">
       <label for="app-goal-number">I want to complete</label>
-      <input type="number" id="app-goal-number" class="very-short-input">
+      <input type="text" id="app-goal-number" class="very-short-input" data-input-type="integer">
       <span>applications</span>
+    </div>
+    <div class="error-row">
+      <div class="error-div" id="app-goal-number-error-div"></div>
     </div>
     <div class="field-style-3">
       <label for="app-goal-time-frame">every</label>
@@ -95,7 +107,6 @@
         <option value="w" selected>week</option>
         <option value="m">month</option>
       </select>
-      <span>.</span>
     </div>
   </div>
 
@@ -105,16 +116,22 @@
       <label for="hired-by-date">I hope to be hired by</label>
       <input type="date" id="hired-by-date">
     </div>
+    <div class="error-row">
+      <div class="error-div" id="hired-by-date-error-div"></div>
+    </div>
   </div>
 
   <div id="popup-jh-8" class="popup-jh-screen display-none">
-    <p>For you to easily identify this job hunt, please provide a job hunt name and description (optional).</p>
+    <p>For you to easily identify this job hunt, please provide a job hunt name and description.</p>
     <div class="field-style-2">
       <label for="jh-name">Name</label>
       <input type="text" id="jh-name" class="short-input">
     </div>
+    <div class="error-row">
+      <div class="error-div" id="name-error-div"></div>
+    </div>
     <div class="field-style-2">
-      <label for="jh-description">Description</label>
+      <label for="jh-description">Description <i>(optional)</i></label>
       <textarea id="jh-description" class="short-input"></textarea>
     </div>
   </div>

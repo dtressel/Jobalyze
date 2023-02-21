@@ -10,47 +10,56 @@
     {{form.hidden_tag()}}
 
     <div class="display-flex">
-      <div class="field-group field-style-1">
-        {{form.title.label}}
-        {{form.title}}
+      <div>
+        <div class="field-group field-style-1">
+          {{form.title.label}}
+          {{form.title}}
+        </div>
+        {% for err in form.title.errors %}
+        <div class="error-row">
+          <div class="error-div">{{err}}</div>
+        </div>
+        {% endfor %}
       </div>
-      {% for err in form.title.errors %}
-      <div class="error-row">
-        <div class="error-div">{{err}}</div>
-      </div>
-      {% endfor %}
 
-      <div class="field-group field-style-1">
-        {{form.company.label}}
-        {{form.company}}
+      <div>
+        <div class="field-group field-style-1">
+          {{form.company.label}}
+          {{form.company}}
+        </div>
+        {% for err in form.company.errors %}
+        <div class="error-row">
+          <div class="error-div">{{err}}</div>
+        </div>
+        {% endfor %}
       </div>
-      {% for err in form.company.errors %}
-      <div class="error-row">
-        <div class="error-div">{{err}}</div>
-      </div>
-      {% endfor %}
     </div>
 
     <div class="display-flex">
-      <div class="field-group field-style-1">
-        {{form.location.label}}
-        {{form.location}}
+      <div>
+        <div class="field-group field-style-1">
+          {{form.location.label}}
+          {{form.location}}
+        </div>
+        {% for err in form.location.errors %}
+        <div class="error-row">
+          <div class="error-div">{{err}}</div>
+        </div>
+        {% endfor %}
       </div>
-      {% for err in form.location.errors %}
-      <div class="error-row">
-        <div class="error-div">{{err}}</div>
-      </div>
-      {% endfor %}
 
-      <div class="field-group field-style-1">
-        {{form.date_posted.label}}
-        {{form.date_posted}}
+      <div>
+        <div class="field-group field-style-1">
+          {{form.date_posted.label}}
+          {{form.date_posted}}
+        </div>
+        {% for err in form.date_posted.errors %}
+        <div class="error-row">
+          <div class="error-div">{{err}}</div>
+        </div>
+        {% endfor %}
       </div>
-      {% for err in form.date_posted.errors %}
-      <div class="error-row">
-        <div class="error-div">{{err}}</div>
-      </div>
-      {% endfor %}
+
     </div>
 
     <div class="display-flex">
