@@ -386,6 +386,10 @@ def dashboard_page_no_hunt():
 
     current_hunt = User.current_hunt(current_user)
     if current_hunt:
+        selected_hunt_id = session.get('selected_hunt_id')
+        if selected_hunt_id:
+            return redirect(f'/dashboard/{selected_hunt_id}')
+        session['selected_hunt_id'] = current_hunt.id
         return redirect(f'/dashboard/{current_hunt.id}')
 
     saved_jobs_list = SavedJob.get_dashboard_saved_jobs_list(current_user.id)
@@ -412,6 +416,11 @@ def dashboard_page_load_hunt(job_hunt_id):
     current_hunt = JobHunt.get_job_hunt_by_id(job_hunt_id, translate_values=True)
     if current_hunt.user_id != current_user.id:
         return redirect('/dashboard')
+
+    if session.get('selected_hunt_id') != job_hunt_id:
+        session['selected_hunt_id'] = job_hunt_id
+    if session.get('job_postings') and session['job_postings'].get('hunt_id') != job_hunt_id:
+        session.pop('job_postings')
 
     job_hunt_form = NewJobHuntForm()
     api_search_form = ApiJobSearchForm()
@@ -470,6 +479,9 @@ def job_hunt_details(job_hunt_id):
         flash("That job hunt is associated with another user's account. You are not authorized to view that job hunt!", 'failure')
         return redirect('/dashboard') 
     
+    if session.get('selected_hunt_id') != job_hunt_id:
+        session['selected_hunt_id'] = job_hunt_id
+
     job_hunt_form = NewJobHuntForm()
 
     if job_hunt_form.validate_on_submit():
@@ -510,6 +522,8 @@ def delete_job_hunt(job_hunt_id):
         flash("That job hunt is associated with another user's account. You are not authorized to edit that job hunt!", 'failure')
         return redirect('/dashboard')
 
+    session.pop('selected_hunt_id', None)
+    
     # ************************** Change below classmethod to regular instance method **********************************
     resp = JobHunt.delete_job_hunt(job_hunt)
     flash(f'You successfully deleted the job hunt "{job_hunt.name}"!', 'success')
@@ -522,7 +536,8 @@ def delete_job_hunt(job_hunt_id):
 def save_job_hunt():
     """Saves a job hunt to the database"""
 
-    saved_job_hunt = JobHunt.save_job(current_user.id, request.get_json())
+    saved_job_hunt_id = JobHunt.save_job(current_user.id, request.get_json())
+    session['selected_hunt_id'] = saved_job_hunt_id
 
     # fix this return
     return "success"  
@@ -533,6 +548,9 @@ def job_app_list():
     """Shows a list of a users' job apps."""
 
     current_hunt_id = int(request.args['hunt'])
+
+    if current_hunt_id >= 0 and session.get('selected_hunt_id') != current_hunt_id:
+        session['selected_hunt_id'] = current_hunt_id
 
     # job_hunts (retrieved in template from current_user object)
     job_apps = JobApp.get_job_apps_for_list(current_user.id, current_hunt_id, translate_values=True)

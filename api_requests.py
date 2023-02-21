@@ -68,7 +68,8 @@ def get_postings_for_dashboard(hunt, recent_job_postings = None, start_record = 
         get_postings_for_dashboard(hunt, recent_job_postings, start_record + 20, loops = loops + 1)
 
     prepared_job_postings = add_posted_today_flag(recent_job_postings)
-    job_postings_dict = {'expiration': datetime.now(timezone.utc) + timedelta(hours = 1),
+    job_postings_dict = {'hunt_id': str(hunt.id),
+                         'expiration': datetime.now(timezone.utc) + timedelta(hours = 1),
                          'postings': prepared_job_postings}
 
     return job_postings_dict
