@@ -10,7 +10,7 @@
         <label for="job-hunt-select">This application is reported for the</label>
         <select id="job-hunt-select">
           {% for hunt in active_hunts %}
-          <option value="{{hunt.id}}">{{hunt.name}}</option>
+          <option value="{{hunt.id}}" {% if session['selected_hunt_id'] | int == hunt.id %}selected{% endif %}>{{hunt.name}}</option>
           {% endfor %}
         </select>
         <span>job hunt.</span>
