@@ -4,7 +4,7 @@
 - Developed by Daniel Tressel (dtresseldev@gmail.com)
 
 ### Overview
-- Jobalyze is a web application designed to help job seekers organize their job search and track their open applications.
+- Jobalyze is a web application designed to help job seekers organize their job search, find jobs, and track their open applications.
 
 ### Features
 1. Job Postings Search
