@@ -24,10 +24,6 @@ app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', "aji32ojfuJHwp")
 
 connect_db(app)
 
-# with app.app_context():
-#     db.drop_all()
-#     db.create_all()
-
 # For auth:
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -141,6 +137,7 @@ def change_password():
         )
         if authenticated_user and form.new_password.data == form.password_confirm.data:
             current_user.change_password(form.new_password.data)
+            flash('Password successfully updated!', 'success')
             return redirect ('/dashboard')
 
     return render_template('change-password.html', form=form)
