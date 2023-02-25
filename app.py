@@ -1,5 +1,6 @@
 import os
 
+from waitress import serve
 from flask import Flask, render_template, redirect, flash, request, abort, make_response, url_for, jsonify, session
 # For auth:
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
@@ -23,6 +24,8 @@ app.config['SQLALCHEMY_ECHO'] = True
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', "aji32ojfuJHwp")
 
 connect_db(app)
+
+serve(wsgiapp, listen='*:8080')
 
 # For auth:
 login_manager = LoginManager()
