@@ -3,7 +3,10 @@ import math
 from datetime import date, datetime, timedelta, timezone
 from models import SavedJob
 
-from keys import COS_API_TOKEN, COS_USER_ID, COS_BASE_URL, COS_API_TOKEN_BAD, COS_BASE_URL_BAD
+try:
+    from keys import COS_API_TOKEN, COS_USER_ID, COS_BASE_URL, COS_API_TOKEN_BAD, COS_BASE_URL_BAD
+except:
+    pass
 
 def get_jobs(form):
     """form is WTForm form object, convert_to_dict is True (return dict) or False (return json)"""
@@ -54,7 +57,7 @@ def get_postings_for_dashboard(hunt, recent_job_postings = None, start_record = 
         headers={"Content-Type": "application/json", "Authorization": f'Bearer {COS_API_TOKEN}'}
     )
     
-    if resp.status_code is not 200:
+    if resp.status_code != 200:
         return {'error': 'Job Postings from the CareerOneStop API are currently unavailable. Refresh the page to try again.'}
 
     for job in resp.json()['Jobs']:
