@@ -4,9 +4,13 @@ from datetime import date, datetime, timedelta, timezone
 from models import SavedJob
 
 try:
-    from keys import COS_API_TOKEN, COS_USER_ID, COS_BASE_URL, COS_API_TOKEN_BAD, COS_BASE_URL_BAD
+    from keys import COS_API_TOKEN, COS_USER_ID, COS_API_TOKEN_BAD, COS_BASE_URL_BAD
 except:
-    pass
+    import os
+    COS_API_TOKEN = os.environ.get('COS_API_TOKEN')
+    COS_USER_ID = os.environ.get('COS_USER_ID')
+
+COS_BASE_URL = 'https://api.careeronestop.org/v1/jobsearch'
 
 def get_jobs(form):
     """form is WTForm form object, convert_to_dict is True (return dict) or False (return json)"""
