@@ -1,6 +1,6 @@
 # Jobalyze:
 ## Job Application Tracker (and Job Finder)
-- Deployed at jobalyze.com
+- Deployed at https://jobalyze.herokuapp.com/
 - Developed by Daniel Tressel (dtresseldev@gmail.com)
 
 ### Overview
