@@ -42,21 +42,6 @@ class User(db.Model, UserMixin):
         db.Text,
         nullable=False
     )
-    first_name = db.Column(
-        db.String(40)
-    )
-    last_name = db.Column(
-        db.String(40)
-    )
-    country = db.Column(
-        db.String(50)
-    )
-    state = db.Column(
-        db.String(40)
-    )
-    linkedin_url = db.Column(
-        db.String(150)
-    )
     date_registered = db.Column(
         db.Date,
         nullable=False,
