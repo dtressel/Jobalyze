@@ -3,6 +3,7 @@ import os
 from flask import Flask, render_template, redirect, flash, request, abort, make_response, url_for, jsonify, session
 # For auth:
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
+from flask_talisman import Talisman
 from markupsafe import Markup
 from datetime import datetime, timezone
 
@@ -12,6 +13,7 @@ from forms import RegistrationForm, LoginForm, ApiJobSearchForm, ManualJobAddFor
 from api_requests import get_jobs, get_job_details, get_page_navigation_values, get_postings_for_dashboard
 
 app = Flask(__name__)
+Talisman(app)
 
 # Get DB_URI from environ variable (useful for production/testing) or,
 # if not set there, use development local db.
