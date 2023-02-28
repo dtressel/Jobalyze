@@ -13,7 +13,6 @@ from forms import RegistrationForm, LoginForm, ApiJobSearchForm, ManualJobAddFor
 from api_requests import get_jobs, get_job_details, get_page_navigation_values, get_postings_for_dashboard
 
 app = Flask(__name__)
-Talisman(app)
 
 # Get DB_URI from environ variable (useful for production/testing) or,
 # if not set there, use development local db.
@@ -23,6 +22,10 @@ app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = False
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', "aji32ojfuJHwp")
+
+# if running on Heroku, use Talisman
+if os.environ.get('SECRET_KEY', "aji32ojfuJHwp") != "aji32ojfuJHwp":
+    Talisman(app)
 
 connect_db(app)
 
