@@ -139,6 +139,10 @@ body {
   background-color: var(--button-color-danger-03a);
 }
 
+.flash-message-container .info {
+  background-color: var(--logo-background-color-greyed);
+}
+
 .close-x {
   color: rgb(100, 100, 100);
 }
