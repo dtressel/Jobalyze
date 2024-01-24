@@ -5,6 +5,7 @@
 const contenteditableFormGroup = document.querySelectorAll('.field-style-1.contenteditable-field-group');
 const regularFieldFormGroup = document.querySelectorAll('.field-style-1:not(.contenteditable-field-group)');
 
+// Adds a click event listener to div encapsulating label and input field
 for (const field of regularFieldFormGroup) {
   field.addEventListener('click', (evt) => regularFieldFormGroupClick(evt, field));
 }
@@ -19,6 +20,7 @@ for (const field of contenteditableFormGroup) {
 }
 
 function regularFieldFormGroupClick(evt, field) {
+  // if the target of the click is the field group (empty space) and not an inner input or label
   if (evt.target === field) {
     const input = field.querySelectorAll('input, select, textarea')[0];
     input.focus();
